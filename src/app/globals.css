@@ -1,0 +1,156 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Defaults (los reescribe layout.tsx desde demo-config.ts). Esquema semántico:
+       cada rol existe para que el MISMO componente funcione en claro y oscuro. */
+    --demo-bg: #ffffff;
+    --demo-surface: #f5f0e8;        /* cards y secciones alternas */
+    --demo-surface-alt: #ffffff;    /* segundo tono / cards destacadas / inputs */
+    --demo-heading: #1a1a1a;
+    --demo-text: #1a1a1a;
+    --demo-muted: #6b6b6b;          /* texto secundario (color real, no opacity) */
+    --demo-border: #e7ddcf;
+    --demo-accent: #c8a96e;         /* CTA / highlight */
+    --demo-on-accent: #1a1a1a;      /* texto sobre el accent */
+    --demo-structural: #1a1a1a;     /* bandas (navbar / footer / stats) */
+    --demo-on-structural: #ffffff;
+    --demo-font: Inter;
+    --demo-font-heading: Inter;
+    --demo-radius: 0.75rem;         /* botones, chips, inputs, cards chicas */
+    --demo-radius-lg: 1rem;         /* cards grandes, frames de imagen */
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background-color: var(--demo-bg);
+    color: var(--demo-text);
+    font-family: var(--demo-font), sans-serif;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--demo-font-heading), sans-serif;
+  }
+}
+
+@layer components {
+  /* Etiqueta "eyebrow" reutilizable (antes era un bloque inline repetido 10 veces) */
+  .eyebrow {
+    @apply text-sm font-semibold uppercase tracking-[0.3em] mb-3;
+    color: var(--demo-accent);
+  }
+
+  .section-title {
+    @apply text-3xl md:text-4xl font-bold mb-4;
+    color: var(--demo-heading);
+  }
+  .section-subtitle {
+    @apply text-lg max-w-2xl mx-auto;
+    color: var(--demo-muted);
+  }
+  .section-pad { @apply py-20 md:py-28; }
+
+  /* Card temática: el tratamiento (borde / sombra / glass) lo decide
+     data-cards en <html>, seteado desde style.cards del config. */
+  .card {
+    @apply p-6 transition-all duration-200;
+    background-color: var(--demo-surface);
+    border-radius: var(--demo-radius-lg);
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 font-semibold transition-all duration-200;
+    background-color: var(--demo-accent);
+    color: var(--demo-on-accent);
+    border-radius: var(--demo-radius);
+  }
+  .btn-primary:hover { opacity: 0.9; transform: translateY(-2px) scale(1.02); }
+  .btn-primary:active { transform: translateY(0) scale(0.98); }
+
+  .btn-outline {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 font-semibold border-2 transition-all duration-200;
+    border-color: var(--demo-accent);
+    color: var(--demo-accent);
+    border-radius: var(--demo-radius);
+  }
+  .btn-outline:hover { background-color: var(--demo-accent); color: var(--demo-on-accent); transform: translateY(-2px) scale(1.02); }
+  .btn-outline:active { transform: translateY(0) scale(0.98); }
+
+  .input {
+    @apply w-full px-4 py-3 text-sm outline-none transition-colors duration-200;
+    background-color: var(--demo-surface-alt);
+    border: 1px solid var(--demo-border);
+    border-radius: var(--demo-radius);
+    color: var(--demo-text);
+  }
+  .input:focus { border-color: var(--demo-accent); }
+  .input::placeholder { color: var(--demo-muted); }
+  /* Un textarea en forma de píldora (radio 9999px) se ve roto en varias
+     líneas — usa el radio "grande" de cards en vez del de botones/inputs. */
+  textarea.input { border-radius: var(--demo-radius-lg); }
+}
+
+@layer utilities {
+  /* Tratamiento de superficies según style.cards ──────────────── */
+  [data-cards='shadow'] .card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  }
+  [data-cards='border'] .card {
+    border: 1px solid var(--demo-border);
+  }
+  [data-cards='border'] .card:hover {
+    border-color: var(--demo-accent);
+  }
+  [data-cards='glass'] .card {
+    border: 1px solid var(--demo-border);
+    background-color: color-mix(in srgb, var(--demo-surface) 70%, transparent);
+    backdrop-filter: blur(12px);
+  }
+
+  /* Scroll-reveal (lo dispara el componente <Reveal>) ─────────── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+    will-change: opacity, transform;
+  }
+  .reveal-in {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Entrada del Hero al cargar la página (no depende de scroll, ya está
+     visible desde el primer render) — cascada vía --hero-delay por elemento. */
+  @keyframes hero-fade-up {
+    from { opacity: 0; transform: translateY(22px); }
+    to   { opacity: 1; transform: none; }
+  }
+  .hero-in {
+    opacity: 0;
+    animation: hero-fade-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation-delay: var(--hero-delay, 0ms);
+  }
+
+  /* Pulso suave del medallón del Hero — resalta el elemento central sin ser invasivo. */
+  @keyframes medallion-pulse {
+    0%, 100% { box-shadow: 0 0 28px 0 color-mix(in srgb, var(--demo-gold, #f2a01f) 30%, transparent); }
+    50%      { box-shadow: 0 0 44px 6px color-mix(in srgb, var(--demo-gold, #f2a01f) 45%, transparent); }
+  }
+  .medallion-pulse {
+    animation: medallion-pulse 3s ease-in-out infinite;
+  }
+}
+
+/* Accesibilidad: si el usuario pide menos movimiento, no animamos nada. */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .reveal { opacity: 1; transform: none; transition: none; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
