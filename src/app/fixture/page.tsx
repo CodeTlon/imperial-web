@@ -119,7 +119,7 @@ export default function FixturePage() {
                             <Escudo nombre={p.local} />
                             <p className="text-xs sm:text-sm font-semibold text-center" style={{ color: 'var(--demo-heading)' }}>{p.local}</p>
                           </div>
-                          <div className="flex-shrink-0 font-bold text-lg" style={{ color: jugado ? 'var(--demo-accent)' : 'var(--demo-muted)' }}>
+                          <div className={`flex-shrink-0 font-bold ${jugado ? 'text-2xl sm:text-3xl tabular-nums' : 'text-lg'}`} style={{ color: jugado ? 'var(--demo-heading)' : 'var(--demo-muted)' }}>
                             {jugado ? `${p.golesLocal} - ${p.golesVisitante}` : 'VS'}
                           </div>
                           <div className="flex flex-col items-center gap-2 flex-1 max-w-[140px]">

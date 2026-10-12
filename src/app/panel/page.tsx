@@ -70,7 +70,7 @@ function Descargos() {
             ))}
             <div className="flex gap-2">
               <input value={msg[s.id] ?? ''} onChange={(e) => setMsg({ ...msg, [s.id]: e.target.value })} placeholder="Responder al delegado"
-                className="flex-1 rounded-xl border border-[#e3e7ee] bg-[#f2f4f8] px-4 py-2.5 text-sm outline-none focus:border-[#0c1d3d]" />
+                className="flex-1 min-w-0 rounded-xl border border-[#e3e7ee] bg-[#f2f4f8] px-4 py-2.5 text-sm outline-none focus:border-[#0c1d3d]" />
               <Boton variante="suave" disabled={!(msg[s.id] ?? '').trim()} onClick={() => { mensaje(s.id, msg[s.id].trim()); setMsg({ ...msg, [s.id]: '' }) }}>Enviar</Boton>
             </div>
             {s.estado === 'En revisión' && (
@@ -118,9 +118,9 @@ function Sanciones() {
       <Tarjeta titulo={`Sanciones (${datos.sanciones.length})`}>
         <ul className="divide-y divide-[#e3e7ee]">
           {pag.items.map((s) => (
-            <li key={s.id} className="py-3 flex items-center justify-between gap-3">
+            <li key={s.id} className="py-3 flex flex-wrap items-center justify-between gap-3">
               <div className="min-w-0">
-                <p className="font-bold truncate">{s.jugador} · {s.equipo}</p>
+                <p className="font-bold">{s.jugador} · {s.equipo}</p>
                 <p className="text-xs text-[#6b7685]">{s.tipo} · {s.articulo} · {s.fechasSuspension} fecha(s) · {s.fecha}</p>
               </div>
               <Etiqueta texto={s.estado} />
@@ -202,11 +202,13 @@ function Resultados() {
         {datos.resultados.length === 0 && <p className="text-sm text-[#6b7685]">Todavía no cargaste resultados.</p>}
         <ul className="divide-y divide-[#e3e7ee]">
           {pag.items.map((r) => (
-            <li key={r.id} className="py-3 flex items-center justify-between gap-3 text-sm">
-              <span className="text-xs text-[#6b7685] w-24">{r.categoria} · F{r.fecha}</span>
-              <span className="flex-1 text-right font-semibold">{r.local}</span>
-              <span className="font-heading text-lg px-2">{r.golesLocal} - {r.golesVisitante}</span>
-              <span className="flex-1 font-semibold">{r.visitante}</span>
+            <li key={r.id} className="py-3 space-y-1 text-sm">
+              <p className="text-xs text-[#6b7685]">{r.categoria} · Fecha {r.fecha}</p>
+              <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3">
+                <span className="text-right font-semibold">{r.local}</span>
+                <span className="font-heading text-lg px-2 whitespace-nowrap">{r.golesLocal} - {r.golesVisitante}</span>
+                <span className="font-semibold">{r.visitante}</span>
+              </div>
             </li>
           ))}
         </ul>

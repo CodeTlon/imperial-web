@@ -56,7 +56,7 @@ export function PanelShell({ rol, titulo, tabs, tab, setTab, children }: {
 
 export function Tarjeta({ titulo, children, derecha }: { titulo?: string; children: ReactNode; derecha?: ReactNode }) {
   return (
-    <section className="bg-white rounded-2xl border border-[#e3e7ee] p-5">
+    <section className="bg-white rounded-2xl border border-[#e3e7ee] p-4 sm:p-5 min-w-0">
       {(titulo || derecha) && (
         <div className="flex items-center justify-between gap-3 mb-4">
           {titulo && <h2 className="font-heading text-xl" style={{ color: NAVY }}>{titulo}</h2>}
@@ -80,9 +80,9 @@ export function Boton({ variante = 'primario', className = '', ...p }: ButtonHTM
 
 export function Campo({ label, className = '', ...p }: InputHTMLAttributes<HTMLInputElement> & { label: string }) {
   return (
-    <label className="block">
+    <label className="block min-w-0">
       <span className="block text-xs font-bold uppercase tracking-wide mb-1.5" style={{ color: NAVY }}>{label}</span>
-      <input {...p} className={`w-full rounded-xl border border-[#e3e7ee] bg-[#f2f4f8] px-4 py-3 text-sm outline-none focus:border-[#0c1d3d] ${className}`} />
+      <input {...p} className={`w-full min-w-0 rounded-xl border border-[#e3e7ee] bg-[#f2f4f8] px-4 py-3 text-sm outline-none focus:border-[#0c1d3d] ${className}`} />
     </label>
   )
 }

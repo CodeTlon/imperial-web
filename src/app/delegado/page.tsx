@@ -64,7 +64,7 @@ function Descargos() {
                   value={msg[s.id] ?? ''}
                   onChange={(e) => setMsg({ ...msg, [s.id]: e.target.value })}
                   placeholder="Mensaje a la organización"
-                  className="flex-1 rounded-xl border border-[#e3e7ee] bg-[#f2f4f8] px-4 py-2.5 text-sm outline-none focus:border-[#0c1d3d]"
+                  className="flex-1 min-w-0 rounded-xl border border-[#e3e7ee] bg-[#f2f4f8] px-4 py-2.5 text-sm outline-none focus:border-[#0c1d3d]"
                 />
                 <Boton variante="suave" disabled={!(msg[s.id] ?? '').trim()} onClick={() => { mensaje(s.id, msg[s.id].trim()); setMsg({ ...msg, [s.id]: '' }) }}>Enviar</Boton>
               </div>
@@ -128,14 +128,14 @@ function Plantel() {
       <Tarjeta titulo={`Plantel de ${sesion?.equipo} (${propios.length})`}>
         <ul className="divide-y divide-[#e3e7ee]">
           {pag.items.map((j) => (
-            <li key={j.id} className="py-3 flex items-center gap-3">
+            <li key={j.id} className="py-3 flex flex-wrap items-center gap-3">
               {j.foto ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={j.foto} alt={j.nombre} className="h-12 w-12 rounded-full object-cover" />
               ) : (
                 <div className="h-12 w-12 rounded-full bg-[#f2f4f8] flex items-center justify-center text-[#6b7685] font-bold">{j.nombre[0]}</div>
               )}
-              <div className="flex-1 min-w-0">
+              <div className="flex-1 min-w-[140px]">
                 <p className="font-bold truncate">{j.nombre}</p>
                 <p className="text-xs text-[#6b7685]">{j.posicion} · DNI {j.dni}</p>
               </div>
