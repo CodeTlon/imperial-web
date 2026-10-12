@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { CATEGORIAS } from '@/lib/categorias-mock'
 import { useDemo } from '@/lib/demo-store'
+import { posiciones, type Categoria } from '@/lib/torneo-data'
 import { Boton, Campo, Etiqueta, Paginador, PanelShell, Tarjeta, usePaginas } from '@/components/panel/ui'
 
 const TABS = ['Resumen', 'Descargos', 'Sanciones', 'Jugadores', 'Resultados', 'Goleadores', 'Contenido']
@@ -186,11 +187,12 @@ function Resultados() {
       <Tarjeta titulo="Cargar resultado">
         <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); if (!ok) return; cargarResultado(f); setF({ ...vacio, categoria: f.categoria, fecha: f.fecha }) }}>
           <Selector valor={f.categoria} onChange={(categoria) => setF({ ...f, categoria })} />
+          <EquiposLista categoria={f.categoria} id="eq-res" />
           <Campo label="Fecha número" type="number" min={1} value={f.fecha} onChange={(e) => setF({ ...f, fecha: Number(e.target.value) || 1 })} />
           <div className="grid grid-cols-[1fr_72px] gap-3">
-            <Campo label="Local" value={f.local} onChange={(e) => setF({ ...f, local: e.target.value })} />
+            <Campo label="Local" list="eq-res" value={f.local} onChange={(e) => setF({ ...f, local: e.target.value })} />
             <Campo label="Goles" type="number" min={0} value={f.golesLocal} onChange={(e) => setF({ ...f, golesLocal: Number(e.target.value) || 0 })} />
-            <Campo label="Visitante" value={f.visitante} onChange={(e) => setF({ ...f, visitante: e.target.value })} />
+            <Campo label="Visitante" list="eq-res" value={f.visitante} onChange={(e) => setF({ ...f, visitante: e.target.value })} />
             <Campo label="Goles" type="number" min={0} value={f.golesVisitante} onChange={(e) => setF({ ...f, golesVisitante: Number(e.target.value) || 0 })} />
           </div>
           <Boton type="submit" disabled={!ok}>Cargar resultado</Boton>
@@ -226,7 +228,8 @@ function Goleadores() {
         <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); if (!ok) return; cargarGoles(f); setF({ ...vacio, categoria: f.categoria }) }}>
           <Selector valor={f.categoria} onChange={(categoria) => setF({ ...f, categoria })} />
           <Campo label="Jugador" value={f.jugador} onChange={(e) => setF({ ...f, jugador: e.target.value })} />
-          <Campo label="Equipo" value={f.equipo} onChange={(e) => setF({ ...f, equipo: e.target.value })} />
+          <Campo label="Equipo" list="eq-gol" value={f.equipo} onChange={(e) => setF({ ...f, equipo: e.target.value })} />
+          <EquiposLista categoria={f.categoria} id="eq-gol" />
           <Campo label="Goles" type="number" min={1} value={f.goles} onChange={(e) => setF({ ...f, goles: Number(e.target.value) || 1 })} />
           <Boton type="submit" disabled={!ok}>Sumar goles</Boton>
         </form>
@@ -258,6 +261,12 @@ function Contenido() {
       </form>
     </Tarjeta>
   )
+}
+
+// Lista de equipos de la categoría para autocompletar (los resultados solo suman si el nombre coincide).
+function EquiposLista({ categoria, id }: { categoria: string; id: string }) {
+  const equipos = posiciones[categoria as Categoria] ?? []
+  return <datalist id={id}>{equipos.map((e) => <option key={e.nombre} value={e.nombre} />)}</datalist>
 }
 
 function Selector({ valor, onChange }: { valor: string; onChange: (c: string) => void }) {

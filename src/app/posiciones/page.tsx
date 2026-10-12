@@ -9,6 +9,8 @@ import PageHeader from '@/components/ui/PageHeader'
 import CategoryTabs from '@/components/ui/CategoryTabs'
 import { categoriasConDatos, posiciones, goleadores, sanciones, type Categoria } from '@/lib/torneo-data'
 import { useCategoria } from '@/lib/category-context'
+import { useDemo } from '@/lib/demo-store'
+import { aplicarGoles, aplicarResultados } from '@/lib/aplicar-datos'
 
 type Equipo = (typeof posiciones)[Categoria][number]
 
@@ -61,8 +63,9 @@ function TablaPosiciones({ equipos, conAjustes }: { equipos: Equipo[]; conAjuste
 
 export default function PosicionesPage() {
   const { categoria: cat, setCategoria: setCat } = useCategoria()
-  const tabla = posiciones[cat]
-  const top = goleadores[cat]
+  const { datos } = useDemo()
+  const tabla = aplicarResultados(posiciones[cat], datos.resultados, cat)
+  const top = aplicarGoles(goleadores[cat], datos.goleadores, cat)
   const sancionados = sanciones[cat]
 
   const conAjustes = tabla.some((e) => e.ap || e.qp)

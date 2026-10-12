@@ -2,63 +2,56 @@
 
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
-import { usePathname } from 'next/navigation'
-import { demoConfig } from '@/lib/demo-config'
 
-const DURACION_SPLASH = 1700
-const CLAVE = 'imperial-splash-visto'
+const CLAVE = 'ti-splash-visto'
+const DURACION = 2600
 
-// Pantalla de arranque con el logo (una vez por sesión) + velo corto con el
-// logo al cambiar de página. Solo CSS: sin librerías de animación.
+// Pantalla de carga con la misma identidad que la app: video de la cancha bajo una capa navy,
+// escudo en fundido (sin rebotes) y el wordmark. Se muestra una vez por sesión y respeta reduced-motion.
 export default function LoadingScreen() {
-  const pathname = usePathname()
-  const [pathInicial] = useState(pathname)
-  // Arranca visible (también en el HTML del servidor) para que no haya un
-  // destello del contenido antes de que cargue.
-  const [fase, setFase] = useState<'visible' | 'saliendo' | 'oculta'>('visible')
+  const [visible, setVisible] = useState(false)
+  const [saliendo, setSaliendo] = useState(false)
 
   useEffect(() => {
-    let visto = false
     try {
-      visto = window.sessionStorage.getItem(CLAVE) === '1'
-    } catch {}
-    const sinMovimiento = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    if (visto || sinMovimiento) {
-      setFase('oculta')
-      return
-    }
-    try {
+      if (window.sessionStorage.getItem(CLAVE) === '1') return
       window.sessionStorage.setItem(CLAVE, '1')
     } catch {}
-    const salir = setTimeout(() => setFase('saliendo'), DURACION_SPLASH)
-    const fin = setTimeout(() => setFase('oculta'), DURACION_SPLASH + 450)
-    return () => {
-      clearTimeout(salir)
-      clearTimeout(fin)
-    }
+    const reducido = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    setVisible(true)
+    const a = setTimeout(() => setSaliendo(true), reducido ? 600 : DURACION)
+    const b = setTimeout(() => setVisible(false), (reducido ? 600 : DURACION) + 600)
+    return () => { clearTimeout(a); clearTimeout(b) }
   }, [])
 
+  if (!visible) return null
   return (
-    <>
-      {fase !== 'oculta' && (
-        <div
-          aria-hidden
-          className={`splash ${fase === 'saliendo' ? 'splash-out' : ''}`}
-          style={{ backgroundColor: 'var(--demo-structural)' }}
-        >
-          <div className="splash-logo-wrap">
-            <span className="splash-ring" />
-            <Image src="/images/logo-mark.png" alt="" width={180} height={320} priority className="splash-logo" />
-          </div>
-          <p className="splash-title" style={{ color: 'var(--demo-on-structural)' }}>{demoConfig.business.name}</p>
-          <div className="splash-bar"><span style={{ animationDuration: `${DURACION_SPLASH}ms` }} /></div>
+    <div
+      aria-hidden="true"
+      className={`fixed inset-0 z-[100] overflow-hidden bg-[#0c1d3d] transition-opacity duration-500 ${saliendo ? 'opacity-0' : 'opacity-100'}`}
+    >
+      <video className="absolute inset-0 h-full w-full object-cover" src="/video/splash.mp4" autoPlay muted loop playsInline />
+      <div className="absolute inset-0 bg-[#0c1d3d]/90" />
+      <div className="absolute inset-0 flex items-center justify-center pb-40">
+        <Image src="/images/logo-mark.png" alt="" width={150} height={150} priority className="h-36 w-36 object-contain animate-[ti-fade_0.9s_ease-out_both]" />
+      </div>
+      <div className="absolute left-7 right-7 bottom-24 text-white">
+        <p className="font-heading text-6xl sm:text-7xl leading-[1.05] animate-[ti-up_0.8s_0.5s_ease-out_both]">TORNEO</p>
+        <p className="font-heading text-6xl sm:text-7xl leading-[1.05] animate-[ti-up_0.8s_0.7s_ease-out_both]">IMPERIAL</p>
+        <div className="mt-4 flex items-center gap-3 animate-[ti-fade_0.8s_1.2s_ease-out_both]">
+          <span className="h-0.5 w-8 bg-[#ffc72c]" />
+          <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#ffc72c]">Coronado de Gloria</span>
         </div>
-      )}
-      {pathname !== pathInicial && fase === 'oculta' && (
-        <div key={pathname} aria-hidden className="route-veil" style={{ backgroundColor: 'var(--demo-structural)' }}>
-          <Image src="/images/logo-mark.png" alt="" width={180} height={320} className="route-veil-logo" />
-        </div>
-      )}
-    </>
+      </div>
+      <div className="absolute left-7 right-7 bottom-14 h-0.5 rounded bg-white/15 overflow-hidden">
+        <div className="h-full bg-[#ffc72c] animate-[ti-barra_2.4s_0.3s_ease-in-out_both]" />
+      </div>
+      <style>{`
+        @keyframes ti-fade{from{opacity:0}to{opacity:1}}
+        @keyframes ti-up{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+        @keyframes ti-barra{from{width:0}to{width:100%}}
+        @media (prefers-reduced-motion: reduce){*{animation:none!important}}
+      `}</style>
+    </div>
   )
 }
