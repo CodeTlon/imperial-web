@@ -33,6 +33,8 @@ export const demoConfig = {
     { label: 'Fixture',    href: '/fixture' },
     { label: 'Equipos',    href: '/equipos' },
     { label: 'Campeones',  href: '/campeones' },
+    { label: 'Reglamento', href: '/reglamento' },
+    { label: 'Sanciones',  href: '/sanciones' },
   ],
 
   // ── Identidad visual (tokens semánticos) ─────────────────
@@ -96,7 +98,7 @@ export const demoConfig = {
     appShowcase:  true,
     schedule:     false,
     pricing:      false,
-    testimonials: true,
+    testimonials: false,
     team:         false,
     faq:          true,
     cta:          true,
@@ -168,7 +170,7 @@ export const demoConfig = {
       },
       {
         question: '¿Qué pasa con las tarjetas y las expulsiones?',
-        answer: 'Un jugador expulsado por doble amarilla se pierde la fecha siguiente; una roja directa suma más fechas según la gravedad de la falta. Acumular 5 amarillas en el torneo son 1 fecha de suspensión, 10 amarillas son 2 fechas — se resetean al terminar la fase regular.',
+        answer: 'Un jugador expulsado por doble amarilla se pierde la fecha siguiente; una roja directa suma más fechas según la gravedad de la falta. 5 amarillas acumuladas en el torneo son 1 fecha de suspensión y, al llegar a 10, se suman 2 fechas más — se limpian al terminar la fase regular.',
       },
       {
         question: '¿Hay arbitraje en todos los partidos?',

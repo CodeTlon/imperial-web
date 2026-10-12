@@ -35,11 +35,25 @@ const requisitos = [
 export default function InscripcionPage() {
   const { business } = demoConfig
   const [enviado, setEnviado] = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(null)
 
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
     const form = new FormData(e.currentTarget)
     const datos = Object.fromEntries(form.entries()) as Record<string, string>
+
+    // Validación mínima antes de abrir WhatsApp (el formulario no guarda nada en servidor).
+    const digitos = (datos.telefono ?? '').replace(/\D/g, '')
+    const jugadores = datos.jugadores ? Number(datos.jugadores) : null
+    if (digitos.length < 10 || digitos.length > 13) {
+      setError('Ingresá un WhatsApp válido, con código de área (ej. 351 123 4567).')
+      return
+    }
+    if (jugadores !== null && (!Number.isInteger(jugadores) || jugadores < 1 || jugadores > 25)) {
+      setError('La lista de buena fe es de hasta 25 jugadores.')
+      return
+    }
+    setError(null)
     const link = waLink(business.whatsapp, armarMensaje(datos))
     setEnviado(link)
     window.open(link, '_blank', 'noopener,noreferrer')
@@ -92,7 +106,12 @@ export default function InscripcionPage() {
                     </a>
                   </div>
                 ) : (
-                  <form onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                  <form onSubmit={handleSubmit} noValidate={false} className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              {error && (
+                <p role="alert" className="sm:col-span-2 text-sm font-semibold" style={{ color: '#dc2626' }}>
+                  {error}
+                </p>
+              )}
                     <div className="sm:col-span-2">
                       <label htmlFor="equipo" className="block text-sm font-semibold mb-2" style={{ color: 'var(--demo-heading)' }}>Nombre del equipo</label>
                       <input id="equipo" name="equipo" required placeholder="Ej: Atlético Guiñazú" className="input" />

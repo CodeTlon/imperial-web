@@ -1,4 +1,4 @@
-import { ListOrdered, Target, ShieldAlert, BookOpen, Trophy } from 'lucide-react'
+import { ListOrdered, Target, ShieldAlert, BookOpen, Trophy, Smartphone } from 'lucide-react'
 import { WhatsAppIcon } from '@/components/icons/BrandIcons'
 import { demoConfig } from '@/lib/demo-config'
 import { waLink } from '@/lib/utils'
@@ -9,12 +9,15 @@ import { waLink } from '@/lib/utils'
 const accesos = [
   { icon: ListOrdered, label: 'Tabla de posiciones', href: '/posiciones' },
   { icon: Target,      label: 'Goleadores',          href: '/posiciones' },
-  { icon: ShieldAlert, label: 'Sanciones y descargos', href: '/posiciones' },
-  { icon: BookOpen,    label: 'Reglamento',           href: '#faq' },
+  { icon: ShieldAlert, label: 'Sanciones y descargos', href: '/sanciones' },
+  { icon: BookOpen,    label: 'Reglamento',           href: '/reglamento' },
   { icon: Trophy,      label: 'Campeones',            href: '/campeones' },
 ]
 
-const roles = ['Jugador', 'Delegado', 'Veedor', 'Organización', 'Hincha']
+const roles = ['Jugador', 'Delegado', 'Organización', 'Hincha']
+
+// Esquema de la app (app.json → scheme). Si la app está instalada abre directo; si no, no pasa nada.
+const APP_LINK = 'torneoimperial://'
 
 export default function AppShowcase() {
   const { business } = demoConfig
@@ -35,7 +38,7 @@ export default function AppShowcase() {
           </h2>
           <p className="text-lg max-w-2xl mx-auto opacity-80" style={{ color: 'var(--demo-on-structural)' }}>
             Además de este sitio, Torneo Imperial tiene una app con un rol distinto para cada uno:
-            jugadores, delegados, veedores y organización.
+            jugadores, delegados, hinchas y organización: tablas y resultados de todas las categorías apenas se cargan, sin esperar al lunes.
           </p>
         </div>
 
@@ -81,6 +84,14 @@ export default function AppShowcase() {
           >
             <WhatsAppIcon size={18} />
             Quiero conocer la app
+          </a>
+          <a
+            href={APP_LINK}
+            className="inline-flex items-center gap-2 px-6 py-3 font-semibold whitespace-nowrap transition-opacity hover:opacity-90"
+            style={{ border: '1px solid var(--demo-on-structural)', color: 'var(--demo-on-structural)', borderRadius: 'var(--demo-radius)' }}
+          >
+            <Smartphone size={18} />
+            Abrir en la app
           </a>
         </div>
       </div>

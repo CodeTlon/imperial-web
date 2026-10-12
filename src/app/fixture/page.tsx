@@ -8,7 +8,7 @@ import Footer from '@/components/layout/Footer'
 import WhatsAppButton from '@/components/layout/WhatsAppButton'
 import PageHeader from '@/components/ui/PageHeader'
 import CategoryTabs from '@/components/ui/CategoryTabs'
-import { categorias, fixturePorCategoria, proximaFechaDe, escudoPorEquipo, type Categoria } from '@/lib/torneo-data'
+import { categoriasConDatos, fixturePorCategoria, proximaFechaDe, escudoPorEquipo, type Categoria } from '@/lib/torneo-data'
 import { useCategoria } from '@/lib/category-context'
 
 const initials = (nombre: string) =>
@@ -52,13 +52,13 @@ export default function FixturePage() {
         <section className="section-pad">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <PageHeader
-              eyebrow="Torneo en vivo"
+              eyebrow="Resultados y tablas"
               title="Fixture"
               subtitle="Elegí una categoría y una fecha para ver el fixture."
-              pills={[{ label: 'Torneo', value: 'Apertura 2026' }, { label: 'Categoría', value: cat }]}
+              pills={[{ label: 'Torneo', value: 'Clausura 2026' }, { label: 'Categoría', value: cat }]}
             />
 
-            <CategoryTabs options={categorias} value={cat} onChange={(c) => setCat(c as Categoria)} />
+            <CategoryTabs options={categoriasConDatos} value={cat} onChange={(c) => setCat(c as Categoria)} />
 
             {/* Selector de fecha (jornada) */}
             <div className="card mb-8">
@@ -91,8 +91,13 @@ export default function FixturePage() {
                   <p className="text-sm uppercase tracking-wide mt-1" style={{ color: 'var(--demo-muted)' }}>{fecha.fechaLabel}</p>
                 </div>
 
-                <div className="space-y-4">
-                  {fecha.partidos.map((p, i) => {
+                {(['A', 'B'] as const).map((zona) => {
+                  const delaZona = fecha.partidos.filter((p) => p.zona === zona)
+                  if (delaZona.length === 0) return null
+                  return (
+                <div key={zona} className="space-y-4 mb-8">
+                  <p className="eyebrow !mb-2 text-center">Zona {zona}</p>
+                  {delaZona.map((p, i) => {
                     const jugado = p.golesLocal !== undefined && p.golesVisitante !== undefined
                     return (
                       <div key={i} className="card">
@@ -123,6 +128,8 @@ export default function FixturePage() {
                     )
                   })}
                 </div>
+                  )
+                })}
               </div>
             )}
           </div>

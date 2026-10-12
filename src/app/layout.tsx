@@ -1,37 +1,35 @@
+import CardSpotlight from '@/components/ui/CardSpotlight'
+import LoadingScreen from '@/components/layout/LoadingScreen'
 import type { Metadata } from 'next'
-import { Inter, Playfair_Display, Montserrat, Roboto, Lato, Open_Sans, Poppins, Raleway, Oswald, Nunito } from 'next/font/google'
+import { Montserrat, Oswald } from 'next/font/google'
 import './globals.css'
 import { demoConfig } from '@/lib/demo-config'
 import { CategoryProvider } from '@/lib/category-context'
 
-// Fuentes pre-cargadas disponibles para demos
-const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
-const playfair = Playfair_Display({ subsets: ['latin'], variable: '--font-playfair' })
-const montserrat = Montserrat({ subsets: ['latin'], variable: '--font-montserrat' })
-const roboto = Roboto({ subsets: ['latin'], weight: ['400', '700'], variable: '--font-roboto' })
-const lato = Lato({ subsets: ['latin'], weight: ['400', '700'], variable: '--font-lato' })
-const openSans = Open_Sans({ subsets: ['latin'], variable: '--font-opensans' })
-const poppins = Poppins({ subsets: ['latin'], weight: ['400', '600', '700'], variable: '--font-poppins' })
-const raleway = Raleway({ subsets: ['latin'], variable: '--font-raleway' })
-const oswald = Oswald({ subsets: ['latin'], variable: '--font-oswald' })
-const nunito = Nunito({ subsets: ['latin'], variable: '--font-nunito' })
+// Solo las fuentes de la marca (misma tipografía que la app: títulos Oswald, texto Montserrat)
+const montserrat = Montserrat({ subsets: ['latin'], variable: '--font-montserrat', display: 'swap' })
+const oswald = Oswald({ subsets: ['latin'], variable: '--font-oswald', display: 'swap' })
 
 const FONT_MAP: Record<string, string> = {
-  'Inter': '--font-inter',
-  'Playfair Display': '--font-playfair',
   'Montserrat': '--font-montserrat',
-  'Roboto': '--font-roboto',
-  'Lato': '--font-lato',
-  'Open Sans': '--font-opensans',
-  'Poppins': '--font-poppins',
-  'Raleway': '--font-raleway',
   'Oswald': '--font-oswald',
-  'Nunito': '--font-nunito',
 }
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://torneoimperial.vercel.app'
+
 export const metadata: Metadata = {
-  title: demoConfig.business.name,
+  metadataBase: new URL(SITE_URL),
+  title: { default: `${demoConfig.business.name} · Fútbol amateur en Córdoba`, template: `%s · ${demoConfig.business.name}` },
   description: demoConfig.business.tagline,
+  openGraph: {
+    title: demoConfig.business.name,
+    description: demoConfig.business.tagline,
+    type: 'website',
+    locale: 'es_AR',
+    images: [{ url: '/images/hero.jpg', width: 1600, height: 900, alt: demoConfig.business.name }],
+  },
+  twitter: { card: 'summary_large_image', title: demoConfig.business.name, description: demoConfig.business.tagline },
+  robots: { index: true, follow: true },
 }
 
 const RADIUS_MAP: Record<string, [string, string]> = {
@@ -43,8 +41,8 @@ const RADIUS_MAP: Record<string, [string, string]> = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const { brand, style } = demoConfig
-  const headingFontVar = FONT_MAP[brand.headingFont] ?? '--font-inter'
-  const bodyFontVar = FONT_MAP[brand.bodyFont] ?? '--font-inter'
+  const headingFontVar = FONT_MAP[brand.headingFont] ?? '--font-montserrat'
+  const bodyFontVar = FONT_MAP[brand.bodyFont] ?? '--font-montserrat'
   const [radius, radiusLg] = RADIUS_MAP[style.radius] ?? RADIUS_MAP.round
 
   const cssVars = {
@@ -65,22 +63,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     '--demo-radius-lg': radiusLg,
   } as React.CSSProperties
 
-  const allFontVars = [
-    inter.variable,
-    playfair.variable,
-    montserrat.variable,
-    roboto.variable,
-    lato.variable,
-    openSans.variable,
-    poppins.variable,
-    raleway.variable,
-    oswald.variable,
-    nunito.variable,
-  ].join(' ')
+  const allFontVars = [montserrat.variable, oswald.variable].join(' ')
 
   return (
     <html lang="es" className={allFontVars} data-cards={style.cards}>
       <body style={cssVars}>
+        <LoadingScreen />
+        <CardSpotlight />
         <CategoryProvider>{children}</CategoryProvider>
       </body>
     </html>

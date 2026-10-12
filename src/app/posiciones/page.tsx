@@ -7,7 +7,7 @@ import Footer from '@/components/layout/Footer'
 import WhatsAppButton from '@/components/layout/WhatsAppButton'
 import PageHeader from '@/components/ui/PageHeader'
 import CategoryTabs from '@/components/ui/CategoryTabs'
-import { categorias, posiciones, goleadores, sanciones, type Categoria } from '@/lib/torneo-data'
+import { categoriasConDatos, posiciones, goleadores, sanciones, type Categoria } from '@/lib/torneo-data'
 import { useCategoria } from '@/lib/category-context'
 
 type Equipo = (typeof posiciones)[Categoria][number]
@@ -26,7 +26,7 @@ function TablaPosiciones({ equipos, conAjustes }: { equipos: Equipo[]; conAjuste
       </thead>
       <tbody>
         {equipos.map((e, i) => (
-          <tr key={e.nombre} className="border-b last:border-0" style={{ borderColor: 'var(--demo-border)' }}>
+          <tr key={e.nombre} className="border-b last:border-0 fila-in" style={{ borderColor: 'var(--demo-border)', ['--i' as string]: i } as React.CSSProperties}>
             <td className="py-3 px-2 font-bold" style={{ color: i < 2 ? 'var(--demo-accent)' : 'var(--demo-muted)' }}>{i + 1}</td>
             <td className="py-3 px-2 font-medium">
               <div className="flex items-center gap-2 whitespace-nowrap">
@@ -75,13 +75,13 @@ export default function PosicionesPage() {
         <section className="section-pad">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <PageHeader
-              eyebrow="Torneo en vivo"
+              eyebrow="Resultados y tablas"
               title="Posiciones"
               subtitle="Tabla acumulada de la temporada, categoría por categoría."
-              pills={[{ label: 'Torneo', value: 'Apertura 2026' }, { label: 'Categoría', value: cat }]}
+              pills={[{ label: 'Torneo', value: 'Clausura 2026' }, { label: 'Categoría', value: cat }]}
             />
 
-            <CategoryTabs options={categorias} value={cat} onChange={(c) => setCat(c as Categoria)} />
+            <CategoryTabs options={categoriasConDatos} value={cat} onChange={(c) => setCat(c as Categoria)} />
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               {/* Tabla(s) de posiciones */}

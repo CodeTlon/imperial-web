@@ -38,7 +38,7 @@ export default function EquiposPage() {
               eyebrow="La competencia"
               title="Equipos"
               subtitle="Todos los equipos inscriptos en Torneo Imperial, por categoría."
-              pills={[{ label: 'Torneo', value: 'Apertura 2026' }, { label: 'Categoría', value: cat }]}
+              pills={[{ label: 'Torneo', value: 'Clausura 2026' }, { label: 'Categoría', value: cat }]}
             />
 
             <CategoryTabs options={['Todas', ...categorias]} value={cat} onChange={handleChange} />

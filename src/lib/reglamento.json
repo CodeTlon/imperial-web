@@ -1,0 +1,118 @@
+{
+  "categorias": [
+    {
+      "nombre": "Libre",
+      "edad": "Clase 2009 en adelante",
+      "minutos": "2 x 40′",
+      "cambios": 7
+    },
+    {
+      "nombre": "+30",
+      "edad": "Clase 1995 en adelante",
+      "minutos": "2 x 35′",
+      "cambios": 7
+    },
+    {
+      "nombre": "+35",
+      "edad": "Clase 1990 en adelante",
+      "minutos": "2 x 35′",
+      "cambios": 7
+    },
+    {
+      "nombre": "+40",
+      "edad": "Clase 1984 en adelante",
+      "minutos": "2 x 35′",
+      "cambios": 10
+    },
+    {
+      "nombre": "+45",
+      "edad": "Clase 1981 en adelante",
+      "minutos": "2 x 35′",
+      "cambios": 10
+    }
+  ],
+  "capitulos": [
+    {
+      "id": "formato",
+      "titulo": "Formato del torneo",
+      "puntos": [
+        "Victoria = 3 puntos · Empate = 1 punto · Derrota = 0 puntos.",
+        "Tolerancia de 15 minutos desde el horario pactado para dar inicio al partido.",
+        "Fase regular (todos contra todos, una rueda) + Play Off por copa de Oro, Plata y Bronce según posición.",
+        "Desempate: puntos → diferencia de gol → goles a favor → resultado entre sí → sorteo."
+      ]
+    },
+    {
+      "id": "equipos",
+      "titulo": "Obligaciones de los equipos",
+      "puntos": [
+        "Mínimo 7 jugadores en cancha para poder presentarse a jugar (menos de 7 = partido perdido).",
+        "Camisetas numeradas y legibles, canilleras cubiertas por las medias, sin tapones de aluminio.",
+        "Lista de buena fe: máximo 25 jugadores, con plazo hasta la segunda fecha para completarla.",
+        "Cada equipo debe tener un juego de camiseta alternativo por si coincide el color con el rival."
+      ]
+    },
+    {
+      "id": "sanciones",
+      "titulo": "Sanciones por tarjetas",
+      "puntos": [
+        "5 amarillas acumuladas en el torneo = 1 fecha de suspensión. Al llegar a 10, se suman 2 fechas más. Se limpian al terminar la fase regular.",
+        "Doble amonestación (2 amarillas) en el mismo partido = 1 fecha de suspensión.",
+        "Roja directa: de 1 a 30 fechas de suspensión según la gravedad de la falta (agresión, juego brusco, protesta, etc).",
+        "Reincidencia (2 sanciones de 3+ fechas en 6 meses) suma fechas adicionales de forma acumulativa."
+      ]
+    },
+    {
+      "id": "descargos",
+      "titulo": "Descargos y apelaciones",
+      "puntos": [
+        "El descargo se presenta por mail, siempre a través del delegado del equipo — nunca por un jugador suelto.",
+        "Las apelaciones solo se reciben los días martes; fuera de ese día no son válidas.",
+        "Toda sanción de 3 fechas o más se cumple en su totalidad, sin excepción ni apelación posible.",
+        "La organización puede dar por cumplida o reducir una sanción antes de su vencimiento si hay razones suficientes."
+      ]
+    }
+  ],
+  "articulosSancion": [
+    {
+      "codigo": "Art. 34 A",
+      "descripcion": "Agresión física al árbitro",
+      "tipo": "Roja directa"
+    },
+    {
+      "codigo": "Art. 34 B",
+      "descripcion": "Agravio, amenaza u ofensa al árbitro",
+      "tipo": "Roja directa"
+    },
+    {
+      "codigo": "Art. 36",
+      "descripcion": "Expulsión por doble amonestación",
+      "tipo": "Amarillas acumuladas"
+    },
+    {
+      "codigo": "Art. 37",
+      "descripcion": "Agravio o incitación a la violencia entre jugadores",
+      "tipo": "Roja directa"
+    },
+    {
+      "codigo": "Art. 39",
+      "descripcion": "Juego brusco",
+      "tipo": "Roja directa"
+    },
+    {
+      "codigo": "Art. 39 C",
+      "descripcion": "Agresión a un jugador rival",
+      "tipo": "Roja directa"
+    },
+    {
+      "codigo": "Art. 42 D.1",
+      "descripcion": "Falta de respeto a un directivo",
+      "tipo": "Roja directa"
+    },
+    {
+      "codigo": "Art. 43 Bis",
+      "descripcion": "Acumulación de 5 tarjetas amarillas",
+      "tipo": "Amarillas acumuladas"
+    }
+  ]
+}

@@ -6,7 +6,13 @@
 // Orden: +30 primero (única categoría con datos 100% reales —
 // escudos, goleadores, sancionados), después +35/+40/+45 ascendente, Libre y
 // Femenino al final (siguen con datos de demostración).
+import { datosMock, fixtureMas30, type FechaFixture } from './categorias-mock'
+
 export const categorias = ['+30', '+35', '+40', '+45', 'Libre', 'Femenino'] as const
+
+// +30 tiene tabla, goleadores y sanciones reales (torneoimperial.com.ar/mas-30). El resto de las categorías
+// son mock (ver categorias-mock.ts) pero se muestran igual en los selectores, como en la app.
+export const categoriasConDatos = categorias
 export type Categoria = (typeof categorias)[number]
 
 type Equipo = {
@@ -22,7 +28,7 @@ const tabla = (equipos: Omit<Equipo, 'pj'>[]): Equipo[] =>
     .map((e) => ({ ...e, pj: e.pg + e.pe + e.pp }))
     .sort((a, b) => (b.pg * 3 + b.pe) - (a.pg * 3 + a.pe) || (b.gf - b.gc) - (a.gf - a.gc))
 
-export const posiciones: Record<Categoria, Equipo[]> = {
+const posicionesBase: Record<Categoria, Equipo[]> = {
   'Libre': tabla([
     { nombre: 'Atlético Guiñazú',     pg: 9, pe: 2, pp: 1, gf: 28, gc: 12 },
     { nombre: 'Deportivo Argüello',   pg: 8, pe: 3, pp: 1, gf: 24, gc: 14 },
@@ -95,7 +101,21 @@ export const posiciones: Record<Categoria, Equipo[]> = {
   ]),
 }
 
-export const goleadores: Record<Categoria, { jugador: string; equipo: string; goles: number }[]> = {
+const MOCK = datosMock()
+const aEquipoSitio = (e: { nombre: string; zona: 'A' | 'B'; g: number; e: number; p: number; gf: number; gc: number }): Equipo => ({
+  nombre: e.nombre, zona: e.zona, pj: e.g + e.e + e.p, pg: e.g, pe: e.e, pp: e.p, gf: e.gf, gc: e.gc,
+})
+
+export const posiciones: Record<Categoria, Equipo[]> = {
+  ...posicionesBase,
+  Libre: tabla(MOCK.Libre.equipos.map(aEquipoSitio)),
+  '+35': tabla(MOCK['+35'].equipos.map(aEquipoSitio)),
+  '+40': tabla(MOCK['+40'].equipos.map(aEquipoSitio)),
+  '+45': tabla(MOCK['+45'].equipos.map(aEquipoSitio)),
+  Femenino: tabla(MOCK.Femenino.equipos.map(aEquipoSitio)),
+}
+
+const goleadoresBase: Record<Categoria, { jugador: string; equipo: string; goles: number }[]> = {
   'Libre':   [ { jugador: 'M. Ferreyra', equipo: 'Atlético Guiñazú', goles: 14 }, { jugador: 'J. Correa', equipo: 'Deportivo Argüello', goles: 11 }, { jugador: 'N. Ríos', equipo: 'Juniors del Norte', goles: 9 } ],
   '+30':     [
     { jugador: 'Emanuel Reartes',  equipo: 'El Tala +30',          goles: 17 },
@@ -108,6 +128,15 @@ export const goleadores: Record<Categoria, { jugador: string; equipo: string; go
   '+40':     [ { jugador: 'D. Romero', equipo: 'Deportivo San Martín', goles: 9 }, { jugador: 'C. Ibáñez', equipo: 'El Pasaje +40', goles: 7 }, { jugador: 'A. Torres', equipo: 'Nacional +40', goles: 6 } ],
   '+45':     [ { jugador: 'O. Bustos', equipo: 'Los Fundadores', goles: 8 }, { jugador: 'E. Díaz', equipo: 'Veteranos del Norte', goles: 6 }, { jugador: 'G. Farías', equipo: 'Atlético Yofre +45', goles: 5 } ],
   'Femenino': [ { jugador: 'M. Torres', equipo: 'Las Imperiales FEM', goles: 16 }, { jugador: 'C. Gómez', equipo: 'Guerreras del Sur', goles: 12 }, { jugador: 'V. Acosta', equipo: 'Atlético Femenino CBA', goles: 8 } ],
+}
+
+export const goleadores: Record<Categoria, { jugador: string; equipo: string; goles: number }[]> = {
+  ...goleadoresBase,
+  Libre: MOCK.Libre.goleadores,
+  '+35': MOCK['+35'].goleadores,
+  '+40': MOCK['+40'].goleadores,
+  '+45': MOCK['+45'].goleadores,
+  Femenino: MOCK.Femenino.goleadores,
 }
 
 // Jugadores suspendidos — real de torneoimperial.com.ar/mas-30. "Por cumplir" según
@@ -141,6 +170,7 @@ export const sanciones: Record<Categoria, { jugador: string; equipo: string; san
 // tanto /fixture como el chip del Hero derivan "próximo partido" y "últimos
 // resultados" de acá, para tener una sola fuente de verdad.
 export type Partido = {
+  zona?: 'A' | 'B'
   local: string
   visitante: string
   hora: string
@@ -155,7 +185,8 @@ export type Fecha = {
   partidos: Partido[]
 }
 
-export const fixturePorCategoria: Record<Categoria, Fecha[]> = {
+// Fixture viejo (solo para referencia de los partidos reales de +30). La fuente vigente es `fixturePorCategoria`, de abajo.
+export const fixtureViejo: Record<Categoria, Fecha[]> = {
   'Libre': [
     { numero: 1, fechaLabel: 'SÁBADO 01-08', partidos: [
       { local: 'Deportivo Argüello', visitante: 'Unión Villa Retiro', hora: '18:00 hs', cancha: 'Cancha 1', golesLocal: 3, golesVisitante: 1 },
@@ -226,6 +257,46 @@ export const fixturePorCategoria: Record<Categoria, Fecha[]> = {
       { local: 'Guerreras del Sur', visitante: 'Atlético Femenino CBA', hora: '17:30 hs', cancha: 'Cancha 2' },
     ] },
   ],
+}
+
+// Se juega todos los sábados; la próxima fecha de cada categoría es el sábado
+// 10/10/2026. Misma generación que la app (ida y vuelta, resultados fijos).
+const aFecha = (f: FechaFixture): Fecha => ({
+  numero: f.numero,
+  fechaLabel: f.fechaTexto.toUpperCase().replace('/', '-'),
+  partidos: f.partidos.map((p) => ({
+    zona: p.zona,
+    local: p.local,
+    visitante: p.visitante,
+    hora: `${p.hora} hs`,
+    cancha: p.cancha,
+    ...(p.golesLocal !== undefined ? { golesLocal: p.golesLocal, golesVisitante: p.golesVisitante } : {}),
+  })),
+})
+
+const fixtureMas30Sitio = fixtureMas30(
+  posicionesBase['+30'].map((e) => ({ nombre: e.nombre, zona: (e.zona ?? 'A') as 'A' | 'B' })),
+  [
+    { local: 'Atl.Gral.Bustos +30', visitante: 'Ankara +30', hora: 'Sáb 10:00' },
+    { local: 'Alianza +30', visitante: 'Celtic +30', hora: 'Sáb 11:30' },
+    { local: 'Triangulo +30', visitante: 'Monaco FC +30', hora: 'Sáb 13:00' },
+  ],
+  [
+    { local: 'Atl.Gral.Bustos +30', golesLocal: 4, visitante: 'El Banco +30', golesVisitante: 0 },
+    { local: 'Smata +30', golesLocal: 2, visitante: 'Ankara +30', golesVisitante: 1 },
+    { local: 'Alianza +30', golesLocal: 3, visitante: 'Las Torres +30', golesVisitante: 1 },
+    { local: 'El Tala +30', golesLocal: 3, visitante: 'Chape +30', golesVisitante: 2 },
+    { local: 'Newbery +30', golesLocal: 1, visitante: 'Ospaca +30', golesVisitante: 1 },
+  ]
+)
+
+export const fixturePorCategoria: Record<Categoria, Fecha[]> = {
+  Libre: MOCK.Libre.fixture.map(aFecha),
+  '+30': fixtureMas30Sitio.map(aFecha),
+  '+35': MOCK['+35'].fixture.map(aFecha),
+  '+40': MOCK['+40'].fixture.map(aFecha),
+  '+45': MOCK['+45'].fixture.map(aFecha),
+  Femenino: MOCK.Femenino.fixture.map(aFecha),
 }
 
 // Escudo por nombre de equipo, para pintar los cruces del fixture (solo +30

@@ -154,3 +154,58 @@
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Pantalla de carga con el logo (LoadingScreen): arranque + velo entre páginas. */
+.splash {
+  position: fixed; inset: 0; z-index: 100;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.5rem;
+  transition: opacity 0.45s ease, transform 0.45s ease;
+}
+.splash-out { opacity: 0; transform: scale(1.04); pointer-events: none; }
+.splash-logo-wrap { position: relative; display: flex; align-items: center; justify-content: center; width: 9rem; height: 9rem; }
+.splash-logo { height: 7rem; width: auto; animation: splash-pop 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+.splash-ring {
+  position: absolute; inset: 0.5rem; border-radius: 9999px;
+  border: 2px solid var(--demo-accent);
+  animation: splash-ring 1.4s ease-out 0.3s infinite;
+}
+.splash-title {
+  font-family: var(--font-oswald), sans-serif; font-size: 1.5rem; letter-spacing: 0.25em; text-transform: uppercase;
+  animation: hero-fade-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.45s both;
+}
+.splash-bar { width: 9rem; height: 4px; border-radius: 9999px; background: rgba(255, 255, 255, 0.15); overflow: hidden; }
+.splash-bar span {
+  display: block; height: 100%; width: 100%; border-radius: 9999px; background: var(--demo-accent);
+  transform-origin: left; animation: splash-bar linear both;
+}
+@keyframes splash-pop { from { opacity: 0; transform: scale(0.55); } to { opacity: 1; transform: none; } }
+@keyframes splash-ring { from { opacity: 0.6; transform: scale(0.8); } to { opacity: 0; transform: scale(1.7); } }
+@keyframes splash-bar { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+.route-veil {
+  position: fixed; inset: 0; z-index: 90; display: flex; align-items: center; justify-content: center;
+  pointer-events: none; opacity: 0; animation: route-veil 0.55s ease both;
+}
+.route-veil-logo { height: 5rem; width: auto; animation: splash-pop 0.5s ease-out both; }
+@keyframes route-veil { 0% { opacity: 0; } 20% { opacity: 1; } 55% { opacity: 1; } 100% { opacity: 0; } }
+
+/* Carrusel infinito de sponsors (Sponsors) */
+.marquee { overflow: hidden; mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
+.marquee-track { display: flex; gap: 1rem; width: max-content; animation: marquee 28s linear infinite; }
+.marquee:hover .marquee-track { animation-play-state: paused; }
+@keyframes marquee { to { transform: translateX(calc(-50% - 0.5rem)); } }
+
+/* Brillo que sigue al mouse sobre las cards (CardSpotlight) */
+@media (hover: hover) and (pointer: fine) {
+  .card { position: relative; }
+  .card::after {
+    content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0;
+    background: radial-gradient(260px circle at var(--mx, 50%) var(--my, 50%), color-mix(in srgb, var(--demo-accent) 16%, transparent), transparent 70%);
+    transition: opacity 0.25s ease;
+  }
+  .card:hover::after { opacity: 1; }
+}
+
+/* Filas de tabla que entran en cascada (Posiciones) */
+@keyframes fila-in { from { opacity: 0; transform: translateX(-8px); } to { opacity: 1; transform: none; } }
+.fila-in { animation: fila-in 0.4s ease both; animation-delay: calc(var(--i, 0) * 35ms); }

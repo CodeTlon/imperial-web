@@ -1,4 +1,5 @@
 import { demoConfig } from '@/lib/demo-config'
+import CountUp from '@/components/ui/CountUp'
 
 // A diferencia de la v1 (franja de stats de ancho completo, en flujo normal),
 // acá el bloque "flota" superpuesto sobre el borde inferior del Hero — patrón
@@ -19,7 +20,7 @@ export default function Stats() {
         {content.stats.map((stat, i) => (
           <div key={i} className="text-center transition-transform duration-300 hover:-translate-y-1">
             <div className="text-4xl md:text-5xl font-bold mb-2" style={{ color: 'var(--demo-accent)' }}>
-              {stat.value}
+              <CountUp value={stat.value} />
             </div>
             <div
               className="text-sm uppercase tracking-widest font-medium"
