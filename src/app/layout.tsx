@@ -5,6 +5,7 @@ import { Montserrat, Oswald } from 'next/font/google'
 import './globals.css'
 import { demoConfig } from '@/lib/demo-config'
 import { CategoryProvider } from '@/lib/category-context'
+import { DemoProvider } from '@/lib/demo-store'
 
 // Solo las fuentes de la marca (misma tipografía que la app: títulos Oswald, texto Montserrat)
 const montserrat = Montserrat({ subsets: ['latin'], variable: '--font-montserrat', display: 'swap' })
@@ -70,7 +71,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body style={cssVars}>
         <LoadingScreen />
         <CardSpotlight />
-        <CategoryProvider>{children}</CategoryProvider>
+        <CategoryProvider><DemoProvider>{children}</DemoProvider></CategoryProvider>
       </body>
     </html>
   )

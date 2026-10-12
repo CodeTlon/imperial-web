@@ -7,6 +7,7 @@ import Hero from '@/components/sections/Hero'
 import About from '@/components/sections/About'
 import Services from '@/components/sections/Services'
 import Gallery from '@/components/sections/Gallery'
+import FotoFecha from '@/components/sections/FotoFecha'
 import AppShowcase from '@/components/sections/AppShowcase'
 import Pricing from '@/components/sections/Pricing'
 import Testimonials from '@/components/sections/Testimonials'
@@ -30,6 +31,7 @@ export default function Home() {
         {sections.about        && <Reveal><About /></Reveal>}
         {sections.services     && <Reveal><Services /></Reveal>}
         {sections.gallery      && <Reveal><Gallery /></Reveal>}
+        <Reveal><FotoFecha /></Reveal>
         {sections.appShowcase  && <Reveal><AppShowcase /></Reveal>}
         <Reveal><Sponsors /></Reveal>
         {sections.schedule     && <Reveal><Schedule /></Reveal>}

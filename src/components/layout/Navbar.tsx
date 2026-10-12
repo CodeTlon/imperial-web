@@ -12,6 +12,9 @@ const navLinks = [
   { label: 'Instalaciones',  href: '#gallery',  show: 'gallery' },
   { label: 'Reglamento',     href: '#faq',      show: 'faq' },
   { label: 'Contacto',       href: '#contact',  show: 'contact' },
+  { label: 'Carta',          href: '/carta' },
+  { label: 'Cómo llegar',    href: '/como-llegar' },
+  { label: 'Ingresar',       href: '/ingresar' },
 ] as const
 
 export default function Navbar() {

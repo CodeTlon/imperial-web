@@ -1,0 +1,3 @@
+Contact: mailto:codetloncordoba@gmail.com
+Expires: 2027-10-12T00:00:00.000Z
+Preferred-Languages: es, en
