@@ -1,5 +1,6 @@
 'use client'
 
+import { SANCIONES_APP, PLANTEL_APP } from '@/lib/datos-app'
 import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from 'react'
 
 // Estado de la demo del sitio: login mockeado y datos de los paneles guardados en el navegador (localStorage).
@@ -15,11 +16,12 @@ export type Sancion = {
   equipo: string
   partido: string
   fecha: string
-  tipo: 'Roja directa' | 'Doble amarilla'
+  tipo: string
   articulo: string
   fechasSuspension: number
   motivo: string
   estado: 'Firme' | 'En revisión' | 'Descargo aceptado' | 'Descargo rechazado'
+  cumplida?: boolean
   descargo?: string
   mensajes: Mensaje[]
 }
@@ -45,32 +47,14 @@ export const CUENTAS: (Sesion & { clave: string })[] = [
 type Datos = { sanciones: Sancion[]; plantel: JugadorPlantel[]; resultados: Resultado[]; goleadores: Gol[]; fotoFechaUrl: string }
 
 const INICIAL: Datos = {
-  sanciones: [
-    {
-      id: 's1', jugador: 'Cristian Salussolia', equipo: 'Ankara +30', partido: 'vs. Los Ñoquis +30', fecha: '13/07', tipo: 'Roja directa',
-      articulo: 'Art. 39', fechasSuspension: 2, motivo: 'Juego brusco grave.', estado: 'En revisión',
-      descargo: 'El contacto fue accidental, el jugador disputaba la pelota.', mensajes: [],
-    },
-    {
-      id: 's2', jugador: 'Luciano Romano', equipo: 'Ankara +30', partido: 'vs. El Banco +30', fecha: '06/07', tipo: 'Roja directa',
-      articulo: 'Art. 39', fechasSuspension: 4, motivo: 'Juego brusco — 4 fechas de suspensión.', estado: 'Firme', mensajes: [],
-    },
-    {
-      id: 's3', jugador: 'Martín Pereyra', equipo: 'Belgrano Vet. +30', partido: 'vs. Ankara +30', fecha: '29/06', tipo: 'Doble amarilla',
-      articulo: 'Art. 36', fechasSuspension: 1, motivo: 'Doble amonestación.', estado: 'Firme', mensajes: [],
-    },
-  ],
-  plantel: [
-    { id: 'j1', equipo: 'Ankara +30', nombre: 'Cristian Salussolia', dni: '28.114.220', posicion: 'Mediocampista', estadoDoc: 'Aprobado' },
-    { id: 'j2', equipo: 'Ankara +30', nombre: 'Mallky Godoy', dni: '30.552.118', posicion: 'Delantero', estadoDoc: 'Pendiente' },
-    { id: 'j3', equipo: 'Ankara +30', nombre: 'Luciano Romano', dni: '29.847.003', posicion: 'Defensor', estadoDoc: 'Observado' },
-  ],
+  sanciones: SANCIONES_APP,
+  plantel: PLANTEL_APP,
   resultados: [],
   goleadores: [],
   fotoFechaUrl: 'https://drive.google.com/drive/folders/1UijkT6B73qCudx_L0uSlaxrv83ILYRQA',
 }
 
-const CLAVE_DATOS = 'ti-demo-datos'
+const CLAVE_DATOS = 'ti-demo-datos-v2'
 const CLAVE_SESION = 'ti-demo-sesion'
 const hoy = () => new Date().toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit' })
 const nuevoId = (p: string) => `${p}${Date.now().toString(36)}${Math.random().toString(36).slice(2, 5)}`

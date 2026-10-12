@@ -42,3 +42,18 @@ export function aplicarGoles(base: Goleador[], goles: Gol[], categoria: string):
   }
   return lista.sort((a, b) => b.goles - a.goles)
 }
+
+type PartidoFx = { local: string; visitante: string; golesLocal?: number; golesVisitante?: number }
+
+// Marca como jugados los partidos de una fecha que tienen resultado cargado desde el panel.
+export function aplicarAFecha<P extends PartidoFx, F extends { numero: number; partidos: P[] }>(fecha: F, resultados: Resultado[], categoria: string): F {
+  const delaFecha = resultados.filter((r) => r.categoria === categoria && r.fecha === fecha.numero)
+  if (delaFecha.length === 0) return fecha
+  return {
+    ...fecha,
+    partidos: fecha.partidos.map((p) => {
+      const r = delaFecha.find((x) => clave(x.local) === clave(p.local) && clave(x.visitante) === clave(p.visitante))
+      return r ? { ...p, golesLocal: r.golesLocal, golesVisitante: r.golesVisitante } : p
+    }),
+  }
+}

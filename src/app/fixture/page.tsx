@@ -10,6 +10,8 @@ import PageHeader from '@/components/ui/PageHeader'
 import CategoryTabs from '@/components/ui/CategoryTabs'
 import { categoriasConDatos, fixturePorCategoria, proximaFechaDe, escudoPorEquipo, type Categoria } from '@/lib/torneo-data'
 import { useCategoria } from '@/lib/category-context'
+import { useDemo } from '@/lib/demo-store'
+import { aplicarAFecha } from '@/lib/aplicar-datos'
 
 const initials = (nombre: string) =>
   nombre.split(' ').filter((w) => w[0] === w[0].toUpperCase()).slice(0, 2).map((w) => w[0]).join('')
@@ -43,7 +45,8 @@ export default function FixturePage() {
     setNumeroFecha(proximaFechaDe(cat).numero)
   }, [cat])
 
-  const fecha = fechas.find((f) => f.numero === numeroFecha) ?? fechas[0]
+  const { datos } = useDemo()
+  const fecha = aplicarAFecha(fechas.find((f) => f.numero === numeroFecha) ?? fechas[0], datos.resultados, cat)
 
   return (
     <>
