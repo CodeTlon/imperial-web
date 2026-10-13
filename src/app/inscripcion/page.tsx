@@ -5,7 +5,6 @@ import Image from 'next/image'
 import { CheckCircle2, ShieldCheck, Users, CalendarCheck } from 'lucide-react'
 import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
-import WhatsAppButton from '@/components/layout/WhatsAppButton'
 import { demoConfig } from '@/lib/demo-config'
 import { categorias } from '@/lib/torneo-data'
 import { waLink } from '@/lib/utils'
@@ -155,7 +154,6 @@ export default function InscripcionPage() {
         </section>
       </main>
       <Footer />
-      <WhatsAppButton />
     </>
   )
 }

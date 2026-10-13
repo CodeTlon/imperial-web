@@ -5,7 +5,6 @@ import Image from 'next/image'
 import { Trophy } from 'lucide-react'
 import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
-import WhatsAppButton from '@/components/layout/WhatsAppButton'
 import PageHeader from '@/components/ui/PageHeader'
 import CategoryTabs from '@/components/ui/CategoryTabs'
 import { campeonesData, categoriasCampeones } from '@/lib/campeones-data'
@@ -71,7 +70,6 @@ export default function CampeonesPage() {
         </section>
       </main>
       <Footer />
-      <WhatsAppButton />
     </>
   )
 }

@@ -1,3 +1,4 @@
+import PageTransition from '@/components/layout/PageTransition'
 import CardSpotlight from '@/components/ui/CardSpotlight'
 import type { Metadata } from 'next'
 import { Montserrat, Oswald } from 'next/font/google'
@@ -68,6 +69,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="es" className={allFontVars} data-cards={style.cards}>
       <body style={cssVars}>
+        <PageTransition />
         <CardSpotlight />
         <CategoryProvider><DemoProvider>{children}</DemoProvider></CategoryProvider>
       </body>

@@ -4,7 +4,6 @@ import { useState } from 'react'
 import Image from 'next/image'
 import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
-import WhatsAppButton from '@/components/layout/WhatsAppButton'
 import PageHeader from '@/components/ui/PageHeader'
 import CategoryTabs from '@/components/ui/CategoryTabs'
 import { categorias, posiciones, type Categoria } from '@/lib/torneo-data'
@@ -83,7 +82,6 @@ export default function EquiposPage() {
         </section>
       </main>
       <Footer />
-      <WhatsAppButton />
     </>
   )
 }

@@ -5,7 +5,6 @@ import Image from 'next/image'
 import { CalendarDays, Clock, MapPin } from 'lucide-react'
 import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
-import WhatsAppButton from '@/components/layout/WhatsAppButton'
 import PageHeader from '@/components/ui/PageHeader'
 import CategoryTabs from '@/components/ui/CategoryTabs'
 import { categoriasConDatos, fixturePorCategoria, proximaFechaDe, escudoPorEquipo, type Categoria } from '@/lib/torneo-data'
@@ -139,7 +138,6 @@ export default function FixturePage() {
         </section>
       </main>
       <Footer />
-      <WhatsAppButton />
     </>
   )
 }

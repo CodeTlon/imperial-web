@@ -4,7 +4,6 @@ import Image from 'next/image'
 import { Trophy, ShieldAlert } from 'lucide-react'
 import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
-import WhatsAppButton from '@/components/layout/WhatsAppButton'
 import PageHeader from '@/components/ui/PageHeader'
 import CategoryTabs from '@/components/ui/CategoryTabs'
 import { categoriasConDatos, posiciones, goleadores, sanciones, type Categoria } from '@/lib/torneo-data'
@@ -169,7 +168,6 @@ export default function PosicionesPage() {
         </section>
       </main>
       <Footer />
-      <WhatsAppButton />
     </>
   )
 }
