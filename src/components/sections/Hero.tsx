@@ -1,15 +1,25 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { ChevronDown } from 'lucide-react'
 import CountUp from '@/components/ui/CountUp'
 import { categorias, posiciones, proximaFechaDe, type Categoria } from '@/lib/torneo-data'
 import { useCategoria } from '@/lib/category-context'
+import { fechaDelPartido } from '@/components/match/MiProximoPartido'
 
 // Home a pantalla completa: video de la cancha bajo una capa navy (misma identidad que la app),
 // título con brillo (idea de react-bits/ShinyText, en CSS) y las 6 categorías como stats clicables.
 export default function Hero() {
   const { categoria, setCategoria } = useCategoria()
+
+  // Cuenta regresiva a la próxima fecha de la categoría elegida (solo si la fecha es futura).
+  const [ahora, setAhora] = useState<number | null>(null)
+  useEffect(() => { setAhora(Date.now()); const t = setInterval(() => setAhora(Date.now()), 60000); return () => clearInterval(t) }, [])
+  const prox = proximaFechaDe(categoria)
+  const inicio = fechaDelPartido(prox.fechaLabel, prox.partidos[0]?.hora ?? '')
+  const falta = ahora && inicio ? inicio.getTime() - ahora : 0
+  const dias = Math.floor(falta / 86400000), horas = Math.floor((falta % 86400000) / 3600000)
 
   const elegir = (c: Categoria) => {
     setCategoria(c)
@@ -31,6 +41,11 @@ export default function Hero() {
         <p className="hero-in text-xs font-bold uppercase tracking-[0.25em] text-[#ffc72c] mb-5" style={{ ['--d' as string]: '0ms' }}>
           Coronado de Gloria · Córdoba
         </p>
+        {falta > 0 && (
+          <p className="hero-in mb-4 px-4 py-1.5 text-xs sm:text-sm font-semibold border border-white/25 bg-white/10 backdrop-blur-sm rounded-full" style={{ ['--d' as string]: '60ms' }}>
+            {categoria} · Fecha {prox.numero} · faltan {dias > 0 ? `${dias} d ` : ''}{horas} h
+          </p>
+        )}
         <h1 className="font-heading text-6xl sm:text-7xl md:text-8xl leading-[1.02] uppercase">
           <span className="hero-in block" style={{ ['--d' as string]: '120ms' }}>Torneo</span>
           <span className="hero-in block hero-shine" style={{ ['--d' as string]: '240ms' }}>Imperial</span>

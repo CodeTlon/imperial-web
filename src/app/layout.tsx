@@ -27,7 +27,6 @@ export const metadata: Metadata = {
     description: demoConfig.business.tagline,
     type: 'website',
     locale: 'es_AR',
-    images: [{ url: '/images/hero.jpg', width: 1600, height: 900, alt: demoConfig.business.name }],
   },
   twitter: { card: 'summary_large_image', title: demoConfig.business.name, description: demoConfig.business.tagline },
   robots: { index: true, follow: true },
@@ -69,6 +68,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="es" className={allFontVars} data-cards={style.cards}>
       <body style={cssVars}>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'SportsOrganization',
+            name: demoConfig.business.name,
+            sport: 'Soccer',
+            description: demoConfig.business.tagline,
+            url: SITE_URL,
+            logo: `${SITE_URL}/images/logo-mark.png`,
+            address: { '@type': 'PostalAddress', addressLocality: 'Córdoba', addressCountry: 'AR' },
+          }) }}
+        />
         <PageTransition />
         <CardSpotlight />
         <CategoryProvider><DemoProvider>{children}</DemoProvider></CategoryProvider>

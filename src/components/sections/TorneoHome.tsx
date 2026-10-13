@@ -3,33 +3,18 @@
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { CalendarDays, Clock, MapPin, Trophy, ArrowRight } from 'lucide-react'
+import { CalendarDays, Trophy, ArrowRight } from 'lucide-react'
+import MatchCard from '@/components/match/MatchCard'
+import ShareButton from '@/components/share/ShareButton'
+import MiProximoPartido from '@/components/match/MiProximoPartido'
 import CategoryTabs from '@/components/ui/CategoryTabs'
 import {
-  categoriasConDatos, fixturePorCategoria, proximaFechaDe, escudoPorEquipo, posiciones, goleadores,
+  categoriasConDatos, fixturePorCategoria, proximaFechaDe, posiciones, goleadores,
   type Categoria,
 } from '@/lib/torneo-data'
 import { useCategoria } from '@/lib/category-context'
 import { useDemo } from '@/lib/demo-store'
 import { aplicarAFecha, aplicarGoles, aplicarResultados } from '@/lib/aplicar-datos'
-
-const iniciales = (n: string) =>
-  n.split(' ').filter((w) => w[0] === w[0].toUpperCase()).slice(0, 2).map((w) => w[0]).join('')
-
-function Escudo({ nombre, size = 44 }: { nombre: string; size?: number }) {
-  const escudo = escudoPorEquipo[nombre]
-  if (escudo) {
-    return <span className="relative flex-shrink-0" style={{ width: size, height: size }}><Image src={escudo} alt="" fill className="object-contain" /></span>
-  }
-  return (
-    <span
-      className="rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
-      style={{ width: size, height: size, backgroundColor: 'var(--demo-accent)', color: 'var(--demo-on-accent)' }}
-    >
-      {iniciales(nombre)}
-    </span>
-  )
-}
 
 // Info del torneo en el home: primero el fixture (con el selector de categoría arriba),
 // debajo las posiciones y al costado los goleadores.
@@ -83,39 +68,19 @@ export default function TorneoHome() {
             ))}
           </div>
 
+          <MiProximoPartido />
+
           <div className="space-y-3">
-            {fecha.partidos.map((p, i) => {
-              const jugado = p.golesLocal !== undefined && p.golesVisitante !== undefined
-              return (
-                <div key={i} className="card !p-4">
-                  <div className="flex flex-wrap items-center justify-center gap-3 mb-3 text-xs font-semibold" style={{ color: 'var(--demo-muted)' }}>
-                    {p.zona && <span>Zona {p.zona}</span>}
-                    <span className="inline-flex items-center gap-1.5"><Clock size={13} style={{ color: 'var(--demo-accent)' }} /> {p.hora}</span>
-                    {p.cancha && <span className="inline-flex items-center gap-1.5"><MapPin size={13} style={{ color: 'var(--demo-accent)' }} /> {p.cancha}</span>}
-                  </div>
-                  <div className="flex items-center justify-between gap-2">
-                    <div className="flex-1 flex flex-col items-center gap-1.5 min-w-0">
-                      <Escudo nombre={p.local} />
-                      <p className="text-xs sm:text-sm font-semibold text-center" style={{ color: 'var(--demo-heading)' }}>{p.local}</p>
-                    </div>
-                    <div
-                      className={`flex-shrink-0 font-heading tabular-nums ${jugado ? 'text-3xl sm:text-4xl px-3 py-1' : 'text-lg'}`}
-                      style={jugado
-                        ? { backgroundColor: 'var(--demo-structural)', color: 'var(--demo-on-structural)', borderRadius: 'var(--demo-radius)' }
-                        : { color: 'var(--demo-muted)' }}
-                    >
-                      {jugado ? `${p.golesLocal} - ${p.golesVisitante}` : 'VS'}
-                    </div>
-                    <div className="flex-1 flex flex-col items-center gap-1.5 min-w-0">
-                      <Escudo nombre={p.visitante} />
-                      <p className="text-xs sm:text-sm font-semibold text-center" style={{ color: 'var(--demo-heading)' }}>{p.visitante}</p>
-                    </div>
-                  </div>
-                </div>
-              )
-            })}
+            {fecha.partidos.map((p, i) => <MatchCard key={i} p={p} categoria={cat} />)}
           </div>
-          <div className="text-center mt-5">
+          <div className="flex flex-wrap items-center justify-center gap-4 mt-5">
+            <ShareButton
+              texto={`Torneo Imperial ${cat} · Fecha ${fecha.numero} (${fecha.fechaLabel})\n` +
+                fecha.partidos.map((p) => `${p.hora} ${p.local} ${p.golesLocal !== undefined ? `${p.golesLocal}-${p.golesVisitante}` : 'vs'} ${p.visitante}`).join('\n')}
+              categoria={cat}
+            />
+          </div>
+          <div className="text-center mt-3">
             <Link href="/fixture" className="inline-flex items-center gap-1.5 text-sm font-semibold" style={{ color: 'var(--demo-heading)' }}>
               Fixture completo <ArrowRight size={15} />
             </Link>
@@ -142,7 +107,7 @@ export default function TorneoHome() {
                       {filas.map((e, i) => (
                         <tr key={e.nombre} className="border-b last:border-0" style={{ borderColor: 'var(--demo-border)' }}>
                           <td className="py-2.5 px-2 font-bold" style={{ color: i < 2 ? 'var(--demo-accent)' : 'var(--demo-muted)' }}>{i + 1}</td>
-                          <td className="py-2.5 px-2 font-medium">
+                          <td className="py-2.5 px-2 font-medium sticky left-0" style={{ backgroundColor: 'var(--demo-surface)' }}>
                             <span className="flex items-center gap-2 whitespace-nowrap" style={{ color: 'var(--demo-heading)' }}>
                               {e.escudo && <span className="relative w-6 h-6 flex-shrink-0"><Image src={e.escudo} alt="" fill className="object-contain" /></span>}
                               {e.nombre}

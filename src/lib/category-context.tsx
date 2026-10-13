@@ -12,21 +12,28 @@ type CategoryContextValue = {
 
 const CategoryContext = createContext<CategoryContextValue | null>(null)
 
+const esCategoria = (c: string | null): c is Categoria => !!c && (categorias as readonly string[]).includes(c)
+
 export function CategoryProvider({ children }: { children: ReactNode }) {
   const [categoria, setCategoriaState] = useState<Categoria>('+30')
 
-  // Se hidrata desde localStorage recién en el cliente para no generar
-  // mismatch de hidratación SSR (el render inicial siempre usa el default).
+  // Se hidrata en el cliente para no generar mismatch de hidratación SSR (el render inicial siempre usa
+  // el default). Prioridad: ?cat= de la URL (link compartido) > localStorage > default.
   useEffect(() => {
-    const stored = window.localStorage.getItem(STORAGE_KEY)
-    if (stored && (categorias as readonly string[]).includes(stored)) {
-      setCategoriaState(stored as Categoria)
-    }
+    const deUrl = new URLSearchParams(window.location.search).get('cat')
+    let guardada: string | null = null
+    try { guardada = window.localStorage.getItem(STORAGE_KEY) } catch {}
+    const inicial = esCategoria(deUrl) ? deUrl : esCategoria(guardada) ? guardada : null
+    if (inicial) setCategoriaState(inicial)
   }, [])
 
   const setCategoria = (c: Categoria) => {
     setCategoriaState(c)
-    window.localStorage.setItem(STORAGE_KEY, c)
+    try { window.localStorage.setItem(STORAGE_KEY, c) } catch {}
+    // La categoría queda en la URL para que el link compartido muestre lo mismo.
+    const url = new URL(window.location.href)
+    url.searchParams.set('cat', c)
+    window.history.replaceState(null, '', url)
   }
 
   return <CategoryContext.Provider value={{ categoria, setCategoria }}>{children}</CategoryContext.Provider>

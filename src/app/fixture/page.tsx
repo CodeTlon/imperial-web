@@ -1,38 +1,17 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import Image from 'next/image'
-import { CalendarDays, Clock, MapPin } from 'lucide-react'
+import { CalendarDays } from 'lucide-react'
+import MatchCard from '@/components/match/MatchCard'
+import ShareButton from '@/components/share/ShareButton'
 import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
 import PageHeader from '@/components/ui/PageHeader'
 import CategoryTabs from '@/components/ui/CategoryTabs'
-import { categoriasConDatos, fixturePorCategoria, proximaFechaDe, escudoPorEquipo, type Categoria } from '@/lib/torneo-data'
+import { categoriasConDatos, fixturePorCategoria, proximaFechaDe, type Categoria } from '@/lib/torneo-data'
 import { useCategoria } from '@/lib/category-context'
 import { useDemo } from '@/lib/demo-store'
 import { aplicarAFecha } from '@/lib/aplicar-datos'
-
-const initials = (nombre: string) =>
-  nombre.split(' ').filter((w) => w[0] === w[0].toUpperCase()).slice(0, 2).map((w) => w[0]).join('')
-
-function Escudo({ nombre }: { nombre: string }) {
-  const escudo = escudoPorEquipo[nombre]
-  if (escudo) {
-    return (
-      <div className="relative w-14 h-14 flex-shrink-0">
-        <Image src={escudo} alt="" fill className="object-contain" />
-      </div>
-    )
-  }
-  return (
-    <div
-      className="w-14 h-14 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0"
-      style={{ backgroundColor: 'var(--demo-accent)', color: 'var(--demo-on-accent)' }}
-    >
-      {initials(nombre)}
-    </div>
-  )
-}
 
 export default function FixturePage() {
   const { categoria: cat, setCategoria: setCat } = useCategoria()
@@ -99,39 +78,16 @@ export default function FixturePage() {
                   return (
                 <div key={zona} className="space-y-4 mb-8">
                   <p className="eyebrow !mb-2 text-center">Zona {zona}</p>
-                  {delaZona.map((p, i) => {
-                    const jugado = p.golesLocal !== undefined && p.golesVisitante !== undefined
-                    return (
-                      <div key={i} className="card">
-                        <div className="flex flex-wrap items-center justify-center gap-3 mb-4 text-xs font-semibold" style={{ color: 'var(--demo-muted)' }}>
-                          <span className="inline-flex items-center gap-1.5">
-                            <Clock size={14} style={{ color: 'var(--demo-accent)' }} /> {p.hora}
-                          </span>
-                          {p.cancha && (
-                            <span className="inline-flex items-center gap-1.5">
-                              <MapPin size={14} style={{ color: 'var(--demo-accent)' }} /> {p.cancha}
-                            </span>
-                          )}
-                        </div>
-                        <div className="flex items-center justify-center gap-4 sm:gap-8">
-                          <div className="flex flex-col items-center gap-2 flex-1 max-w-[140px]">
-                            <Escudo nombre={p.local} />
-                            <p className="text-xs sm:text-sm font-semibold text-center" style={{ color: 'var(--demo-heading)' }}>{p.local}</p>
-                          </div>
-                          <div className={`flex-shrink-0 font-bold ${jugado ? 'text-2xl sm:text-3xl tabular-nums' : 'text-lg'}`} style={{ color: jugado ? 'var(--demo-heading)' : 'var(--demo-muted)' }}>
-                            {jugado ? `${p.golesLocal} - ${p.golesVisitante}` : 'VS'}
-                          </div>
-                          <div className="flex flex-col items-center gap-2 flex-1 max-w-[140px]">
-                            <Escudo nombre={p.visitante} />
-                            <p className="text-xs sm:text-sm font-semibold text-center" style={{ color: 'var(--demo-heading)' }}>{p.visitante}</p>
-                          </div>
-                        </div>
-                      </div>
-                    )
-                  })}
+                  {delaZona.map((p, i) => <MatchCard key={i} p={p} categoria={cat} />)}
                 </div>
                   )
                 })}
+                <div className="flex justify-center">
+                  <ShareButton
+                    texto={`Torneo Imperial ${cat} · Fecha ${fecha.numero} (${fecha.fechaLabel})\n` + fecha.partidos.map((p) => `${p.hora} ${p.local} ${p.golesLocal !== undefined ? `${p.golesLocal}-${p.golesVisitante}` : 'vs'} ${p.visitante}`).join('\n')}
+                    categoria={cat}
+                  />
+                </div>
               </div>
             )}
           </div>
