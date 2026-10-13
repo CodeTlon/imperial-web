@@ -161,7 +161,7 @@ export default function PosicionesPage() {
                   </tbody>
                 </table>
                 <p className="text-xs mt-4 px-1" style={{ color: 'var(--demo-muted)' }}>
-                  Artículos citados: ver <a href="/#faq" className="underline">reglamento completo</a>, Capítulo 6 — Sanciones disciplinarias individuales.
+                  Artículos citados: ver <a href="/reglamento" className="underline">reglamento completo</a>, Capítulo 6 — Sanciones disciplinarias individuales.
                 </p>
               </div>
             )}

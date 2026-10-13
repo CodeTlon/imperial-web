@@ -1,5 +1,4 @@
 import CardSpotlight from '@/components/ui/CardSpotlight'
-import LoadingScreen from '@/components/layout/LoadingScreen'
 import type { Metadata } from 'next'
 import { Montserrat, Oswald } from 'next/font/google'
 import './globals.css'
@@ -69,7 +68,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="es" className={allFontVars} data-cards={style.cards}>
       <body style={cssVars}>
-        <LoadingScreen />
         <CardSpotlight />
         <CategoryProvider><DemoProvider>{children}</DemoProvider></CategoryProvider>
       </body>

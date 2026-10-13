@@ -1,114 +1,83 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { Menu, X } from 'lucide-react'
 import { demoConfig } from '@/lib/demo-config'
 
-const navLinks = [
-  { label: 'Inicio',         href: '#hero' },
-  { label: 'Nosotros',       href: '#about',    show: 'about' },
-  { label: 'Nuestras Ligas', href: '#services', show: 'services' },
-  { label: 'Instalaciones',  href: '#gallery',  show: 'gallery' },
-  { label: 'Reglamento',     href: '#faq',      show: 'faq' },
-  { label: 'Contacto',       href: '#contact',  show: 'contact' },
-  { label: 'Carta',          href: '/carta' },
-  { label: 'Cómo llegar',    href: '/como-llegar' },
-  { label: 'Ingresar',       href: '/ingresar' },
-] as const
-
+// Sobre el home (video a pantalla completa) arranca transparente y pasa a navy al scrollear.
 export default function Navbar() {
   const [open, setOpen] = useState(false)
-  const { sections, business, cta, sitemap } = demoConfig
+  const [scrolled, setScrolled] = useState(false)
+  const esHome = usePathname() === '/'
+  const { business, cta, sitemap } = demoConfig
+  const links = [...sitemap, { label: 'Ingresar', href: '/ingresar' }]
+  const solido = !esHome || scrolled || open
 
-  const visibleLinks = [
-    ...sitemap,
-    ...navLinks.filter((l) => !('show' in l) || sections[l.show as keyof typeof sections]),
-  ]
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 40)
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
 
   return (
     <header
-      className="fixed top-0 left-0 right-0 z-50 border-b"
-      style={{ backgroundColor: 'var(--demo-structural)', borderColor: 'var(--demo-border)' }}
+      className="fixed top-0 left-0 right-0 z-50 border-b transition-colors duration-300"
+      style={{
+        backgroundColor: solido ? 'var(--demo-structural)' : 'transparent',
+        borderColor: solido ? 'var(--demo-border)' : 'transparent',
+      }}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          {/* Logo / Nombre */}
-          <a href="#hero" className="flex items-center gap-2.5 flex-shrink-0 mr-6">
+          <Link href="/" className="flex items-center gap-2.5 flex-shrink-0 mr-6">
             <span className="flex-shrink-0 w-8 h-8 rounded-full bg-white p-1 flex items-center justify-center">
               <Image src="/images/logo-mark.png" alt="" width={180} height={320} className="w-full h-full object-contain" />
             </span>
             <span className="text-xl font-bold tracking-tight whitespace-nowrap" style={{ color: 'var(--demo-on-structural)' }}>
               {business.name}
             </span>
-          </a>
+          </Link>
 
-          {/* Desktop nav */}
-          <nav className="hidden md:flex items-center gap-4 lg:gap-5">
-            {visibleLinks.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                className="text-sm font-medium whitespace-nowrap transition-opacity hover:opacity-70"
-                style={{ color: 'var(--demo-on-structural)' }}
-              >
-                {link.label}
-              </a>
+          <nav className="hidden md:flex items-center gap-5">
+            {links.map((l) => (
+              <Link key={l.href} href={l.href} className="text-sm font-medium whitespace-nowrap transition-opacity hover:opacity-70" style={{ color: 'var(--demo-on-structural)' }}>
+                {l.label}
+              </Link>
             ))}
-            <a
+            <Link
               href="/inscripcion"
-              className="px-4 py-2 text-sm font-semibold whitespace-nowrap flex-shrink-0 transition-opacity hover:opacity-90"
-              style={{
-                backgroundColor: 'var(--demo-accent)',
-                color: 'var(--demo-on-accent)',
-                borderRadius: 'var(--demo-radius)',
-              }}
+              className="px-4 py-2 text-sm font-semibold whitespace-nowrap transition-opacity hover:opacity-90"
+              style={{ backgroundColor: 'var(--demo-accent)', color: 'var(--demo-on-accent)', borderRadius: 'var(--demo-radius)' }}
             >
               {cta.label}
-            </a>
+            </Link>
           </nav>
 
-          {/* Mobile burger */}
-          <button
-            className="md:hidden p-2"
-            onClick={() => setOpen(!open)}
-            style={{ color: 'var(--demo-on-structural)' }}
-            aria-label="Menú"
-          >
+          <button className="md:hidden p-2" onClick={() => setOpen(!open)} style={{ color: 'var(--demo-on-structural)' }} aria-label="Menú">
             {open ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
       </div>
 
-      {/* Mobile menu */}
       {open && (
-        <div
-          className="md:hidden border-t px-4 py-4 flex flex-col gap-3"
-          style={{ backgroundColor: 'var(--demo-structural)', borderColor: 'var(--demo-border)' }}
-        >
-          {visibleLinks.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              className="text-sm font-medium py-2 transition-opacity hover:opacity-70"
-              style={{ color: 'var(--demo-on-structural)' }}
-              onClick={() => setOpen(false)}
-            >
-              {link.label}
-            </a>
+        <div className="md:hidden border-t px-4 py-4 flex flex-col gap-3" style={{ backgroundColor: 'var(--demo-structural)', borderColor: 'var(--demo-border)' }}>
+          {links.map((l) => (
+            <Link key={l.href} href={l.href} className="text-sm font-medium py-2" style={{ color: 'var(--demo-on-structural)' }} onClick={() => setOpen(false)}>
+              {l.label}
+            </Link>
           ))}
-          <a
+          <Link
             href="/inscripcion"
             className="mt-2 px-4 py-2 text-sm font-semibold text-center"
-            style={{
-              backgroundColor: 'var(--demo-accent)',
-              color: 'var(--demo-on-accent)',
-              borderRadius: 'var(--demo-radius)',
-            }}
+            style={{ backgroundColor: 'var(--demo-accent)', color: 'var(--demo-on-accent)', borderRadius: 'var(--demo-radius)' }}
             onClick={() => setOpen(false)}
           >
             {cta.label}
-          </a>
+          </Link>
         </div>
       )}
     </header>
