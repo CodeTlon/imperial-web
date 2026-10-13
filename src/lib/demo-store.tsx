@@ -6,7 +6,7 @@ import { createContext, useCallback, useContext, useEffect, useState, type React
 // Estado de la demo del sitio: login mockeado y datos de los paneles guardados en el navegador (localStorage).
 // No hay backend: nada de lo que se carga acá sale del dispositivo. No subir DNI reales.
 
-export type Rol = 'organizacion' | 'delegado'
+export type Rol = 'organizacion' | 'delegado' | 'jugador'
 export type Sesion = { email: string; nombre: string; rol: Rol; equipo?: string }
 
 export type Mensaje = { de: 'organizacion' | 'delegado'; texto: string; fecha: string }
@@ -19,7 +19,10 @@ export type Sancion = {
   tipo: string
   articulo: string
   fechasSuspension: number
+  // Informe de expulsión: lo que cuenta el informe del árbitro (el campo se llama `motivo` por compatibilidad con datos guardados).
   motivo: string
+  // Artículos del reglamento imputados (ej. 'Art. 39'). Las sanciones viejas solo tienen `articulo`.
+  articulos?: string[]
   estado: 'Firme' | 'En revisión' | 'Descargo aceptado' | 'Descargo rechazado'
   cumplida?: boolean
   descargo?: string
@@ -36,12 +39,27 @@ export type JugadorPlantel = {
   dniDorso?: string
   estadoDoc: 'Pendiente' | 'Aprobado' | 'Observado'
 }
+export const TOPE_PLANTEL = 25
+
+// Una sanción admite descargo solo si sigue abierta: no resuelta ni ya cumplida.
+export const admiteDescargo = (s: Pick<Sancion, 'estado' | 'cumplida'>) =>
+  (s.estado === 'Firme' || s.estado === 'En revisión') && !s.cumplida
+
+// Artículos imputados: los guardados o, en datos viejos, los que se nombran en el texto.
+export function articulosDe(s: Pick<Sancion, 'articulos' | 'articulo' | 'motivo'>): string[] {
+  if (s.articulos && s.articulos.length) return s.articulos
+  const hallados = s.motivo.match(/Art\. ?\d+(?: ?(?:Bis|[A-Z](?:\.\d)?))?/g)
+  const lista = hallados && hallados.length ? hallados : [s.articulo]
+  return Array.from(new Set(lista.map((a) => a.replace(/^Art\.?\s*/, 'Art. '))))
+}
+
 export type Resultado = { id: string; categoria: string; fecha: number; local: string; visitante: string; golesLocal: number; golesVisitante: number }
 export type Gol = { id: string; categoria: string; jugador: string; equipo: string; goles: number }
 
 export const CUENTAS: (Sesion & { clave: string })[] = [
   { email: 'organizacion@imperial.com', nombre: 'Comisión Disciplinaria', rol: 'organizacion', clave: 'imperial123' },
   { email: 'delegado@imperial.com', nombre: 'Roberto Ibáñez', rol: 'delegado', equipo: 'Ankara +30', clave: 'imperial123' },
+  { email: 'jugador@imperial.com', nombre: 'Cristian Agustín Salussolia', rol: 'jugador', equipo: 'Ankara +30', clave: 'imperial123' },
 ]
 
 type Datos = { sanciones: Sancion[]; plantel: JugadorPlantel[]; resultados: Resultado[]; goleadores: Gol[]; fotoFechaUrl: string }
@@ -70,6 +88,12 @@ type Ctx = {
   mensaje: (id: string, texto: string) => void
   resolver: (id: string, aceptar: boolean) => void
   crearSancion: (s: Omit<Sancion, 'id' | 'mensajes' | 'estado'>) => void
+  editarSancion: (id: string, cambios: Partial<Omit<Sancion, 'id'>>) => void
+  quitarSancion: (id: string) => void
+  editarResultado: (id: string, cambios: Partial<Omit<Resultado, 'id'>>) => void
+  quitarResultado: (id: string) => void
+  editarGol: (id: string, cambios: Partial<Omit<Gol, 'id'>>) => void
+  quitarGol: (id: string) => void
   guardarJugador: (j: Omit<JugadorPlantel, 'id' | 'estadoDoc'> & { id?: string }) => void
   quitarJugador: (id: string) => void
   revisarDoc: (id: string, estado: JugadorPlantel['estadoDoc']) => void
@@ -125,14 +149,30 @@ export function DemoProvider({ children }: { children: ReactNode }) {
 
   const value: Ctx = {
     listo, sesion, datos, ingresar, salir, reiniciar,
-    enviarDescargo: (id, texto) => actualizarSancion(id, (s) => ({ ...s, descargo: texto, estado: 'En revisión' })),
+    enviarDescargo: (id, texto) => actualizarSancion(id, (s) => (admiteDescargo(s) ? { ...s, descargo: texto, estado: 'En revisión' } : s)),
     mensaje: (id, texto) =>
-      actualizarSancion(id, (s) => ({ ...s, mensajes: [...s.mensajes, { de: sesion?.rol ?? 'delegado', texto, fecha: hoy() }] })),
+      actualizarSancion(id, (s) => ({ ...s, mensajes: [...s.mensajes, { de: sesion?.rol === 'organizacion' ? 'organizacion' : 'delegado', texto, fecha: hoy() }] })),
     resolver: (id, aceptar) => actualizarSancion(id, (s) => ({ ...s, estado: aceptar ? 'Descargo aceptado' : 'Descargo rechazado' })),
     crearSancion: (s) => guardar((d) => ({ ...d, sanciones: [{ ...s, id: nuevoId('s'), estado: 'Firme', mensajes: [] }, ...d.sanciones] })),
+    editarSancion: (id, cambios) => actualizarSancion(id, (s) => ({ ...s, ...cambios })),
+    quitarSancion: (id) => guardar((d) => ({ ...d, sanciones: d.sanciones.filter((s) => s.id !== id) })),
+    editarResultado: (id, cambios) => guardar((d) => ({ ...d, resultados: d.resultados.map((r) => (r.id === id ? { ...r, ...cambios } : r)) })),
+    quitarResultado: (id) => guardar((d) => ({ ...d, resultados: d.resultados.filter((r) => r.id !== id) })),
+    editarGol: (id, cambios) => guardar((d) => ({ ...d, goleadores: d.goleadores.map((g) => (g.id === id ? { ...g, ...cambios } : g)) })),
+    quitarGol: (id) => guardar((d) => ({ ...d, goleadores: d.goleadores.filter((g) => g.id !== id) })),
     guardarJugador: (j) =>
       guardar((d) => {
-        if (j.id) return { ...d, plantel: d.plantel.map((p) => (p.id === j.id ? { ...p, ...j, id: p.id, estadoDoc: 'Pendiente' } : p)) }
+        if (j.id) {
+          // Solo vuelve a "Pendiente" si cambió algo documental (DNI o fotos); nombre o posición no reabren la revisión.
+          return {
+            ...d,
+            plantel: d.plantel.map((p) => {
+              if (p.id !== j.id) return p
+              const documental = j.dni !== p.dni || j.foto !== p.foto || j.dniFrente !== p.dniFrente || j.dniDorso !== p.dniDorso
+              return { ...p, ...j, id: p.id, estadoDoc: documental ? 'Pendiente' : p.estadoDoc }
+            }),
+          }
+        }
         return { ...d, plantel: [...d.plantel, { ...j, id: nuevoId('j'), estadoDoc: 'Pendiente' }] }
       }),
     quitarJugador: (id) => guardar((d) => ({ ...d, plantel: d.plantel.filter((p) => p.id !== id) })),
