@@ -15,11 +15,11 @@ type Equipo = (typeof posiciones)[Categoria][number]
 
 function TablaPosiciones({ equipos, conAjustes }: { equipos: Equipo[]; conAjustes: boolean }) {
   return (
-    <table className="w-full text-sm">
+    <table className="w-full text-xs sm:text-sm 2xl:text-base">
       <thead>
         <tr className="text-left border-b" style={{ borderColor: 'var(--demo-border)' }}>
           {['#', 'Equipo', 'PJ', 'PG', 'PE', 'PP', 'GF', 'GC', 'DG', ...(conAjustes ? ['AP', 'QP'] : []), 'Pts'].map((h) => (
-            <th key={h} className="py-3 px-2 font-semibold uppercase text-xs tracking-wider whitespace-nowrap" style={{ color: 'var(--demo-muted)' }}>
+            <th key={h} className={`${['GF', 'GC', 'AP', 'QP'].includes(h) ? 'hidden sm:table-cell ' : ''}py-3 px-1 sm:px-2 font-semibold uppercase text-[10px] sm:text-xs tracking-wider whitespace-nowrap`} style={{ color: 'var(--demo-muted)' }}>
               {h}
             </th>
           ))}
@@ -28,31 +28,31 @@ function TablaPosiciones({ equipos, conAjustes }: { equipos: Equipo[]; conAjuste
       <tbody>
         {equipos.map((e, i) => (
           <tr key={e.nombre} className="border-b last:border-0 fila-in" style={{ borderColor: 'var(--demo-border)', ['--i' as string]: i } as React.CSSProperties}>
-            <td className="py-3 px-2 font-bold" style={{ color: i < 2 ? 'var(--demo-accent)' : 'var(--demo-muted)' }}>{i + 1}</td>
-            <td className="py-3 px-2 font-medium">
-              <div className="flex items-center gap-2 whitespace-nowrap">
+            <td className="py-2.5 px-1 sm:py-3 sm:px-2 font-bold" style={{ color: i < 2 ? 'var(--demo-accent)' : 'var(--demo-muted)' }}>{i + 1}</td>
+            <td className="py-2.5 px-1 sm:py-3 sm:px-2 font-medium">
+              <div className="flex items-center gap-1.5 sm:gap-2 sm:whitespace-nowrap">
                 {e.escudo && (
-                  <span className="relative w-6 h-6 flex-shrink-0">
+                  <span className="relative w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0">
                     <Image src={e.escudo} alt="" fill className="object-contain" />
                   </span>
                 )}
                 <span style={{ color: 'var(--demo-heading)' }}>{e.nombre}</span>
               </div>
             </td>
-            <td className="py-3 px-2" style={{ color: 'var(--demo-text)' }}>{e.pj}</td>
-            <td className="py-3 px-2" style={{ color: 'var(--demo-text)' }}>{e.pg}</td>
-            <td className="py-3 px-2" style={{ color: 'var(--demo-text)' }}>{e.pe}</td>
-            <td className="py-3 px-2" style={{ color: 'var(--demo-text)' }}>{e.pp}</td>
-            <td className="py-3 px-2" style={{ color: 'var(--demo-text)' }}>{e.gf}</td>
-            <td className="py-3 px-2" style={{ color: 'var(--demo-text)' }}>{e.gc}</td>
-            <td className="py-3 px-2" style={{ color: 'var(--demo-text)' }}>{e.gf - e.gc}</td>
+            <td className="py-2.5 px-1 sm:py-3 sm:px-2" style={{ color: 'var(--demo-text)' }}>{e.pj}</td>
+            <td className="py-2.5 px-1 sm:py-3 sm:px-2" style={{ color: 'var(--demo-text)' }}>{e.pg}</td>
+            <td className="py-2.5 px-1 sm:py-3 sm:px-2" style={{ color: 'var(--demo-text)' }}>{e.pe}</td>
+            <td className="py-2.5 px-1 sm:py-3 sm:px-2" style={{ color: 'var(--demo-text)' }}>{e.pp}</td>
+            <td className="hidden sm:table-cell py-2.5 px-1 sm:py-3 sm:px-2" style={{ color: 'var(--demo-text)' }}>{e.gf}</td>
+            <td className="hidden sm:table-cell py-2.5 px-1 sm:py-3 sm:px-2" style={{ color: 'var(--demo-text)' }}>{e.gc}</td>
+            <td className="py-2.5 px-1 sm:py-3 sm:px-2" style={{ color: 'var(--demo-text)' }}>{e.gf - e.gc}</td>
             {conAjustes && (
               <>
-                <td className="py-3 px-2" style={{ color: 'var(--demo-muted)' }}>{e.ap ?? '–'}</td>
-                <td className="py-3 px-2" style={{ color: 'var(--demo-muted)' }}>{e.qp ?? '–'}</td>
+                <td className="hidden sm:table-cell py-2.5 px-1 sm:py-3 sm:px-2" style={{ color: 'var(--demo-muted)' }}>{e.ap ?? '–'}</td>
+                <td className="hidden sm:table-cell py-2.5 px-1 sm:py-3 sm:px-2" style={{ color: 'var(--demo-muted)' }}>{e.qp ?? '–'}</td>
               </>
             )}
-            <td className="py-3 px-2 font-bold" style={{ color: 'var(--demo-accent)' }}>{e.pg * 3 + e.pe}</td>
+            <td className="py-2.5 px-1 sm:py-3 sm:px-2 font-bold" style={{ color: 'var(--demo-accent)' }}>{e.pg * 3 + e.pe}</td>
           </tr>
         ))}
       </tbody>
@@ -137,11 +137,11 @@ export default function PosicionesPage() {
                 <h3 className="font-bold text-lg mb-5 flex items-center gap-2" style={{ color: 'var(--demo-heading)' }}>
                   <ShieldAlert size={20} style={{ color: 'var(--demo-accent)' }} /> Jugadores suspendidos — {cat}
                 </h3>
-                <table className="w-full text-sm">
+                <table className="w-full text-xs sm:text-sm 2xl:text-base">
                   <thead>
                     <tr className="text-left border-b" style={{ borderColor: 'var(--demo-border)' }}>
                       {['Jugador', 'Equipo', 'Sanción', 'Por cumplir', 'Motivo'].map((h) => (
-                        <th key={h} className="py-3 px-2 font-semibold uppercase text-xs tracking-wider whitespace-nowrap" style={{ color: 'var(--demo-muted)' }}>
+                        <th key={h} className="py-3 px-1 sm:px-2 font-semibold uppercase text-[10px] sm:text-xs tracking-wider whitespace-nowrap" style={{ color: 'var(--demo-muted)' }}>
                           {h}
                         </th>
                       ))}
@@ -150,11 +150,11 @@ export default function PosicionesPage() {
                   <tbody>
                     {sancionados.map((s) => (
                       <tr key={`${s.jugador}-${s.equipo}`} className="border-b last:border-0" style={{ borderColor: 'var(--demo-border)' }}>
-                        <td className="py-3 px-2 font-medium whitespace-nowrap" style={{ color: 'var(--demo-heading)' }}>{s.jugador}</td>
-                        <td className="py-3 px-2 whitespace-nowrap" style={{ color: 'var(--demo-text)' }}>{s.equipo}</td>
-                        <td className="py-3 px-2" style={{ color: 'var(--demo-text)' }}>{s.sancion} {s.sancion === 1 ? 'fecha' : 'fechas'}</td>
-                        <td className="py-3 px-2 font-bold" style={{ color: 'var(--demo-accent)' }}>{s.porCumplir}</td>
-                        <td className="py-3 px-2 whitespace-nowrap" style={{ color: 'var(--demo-muted)' }}>{s.motivo}</td>
+                        <td className="py-2.5 px-1 sm:py-3 sm:px-2 font-medium whitespace-nowrap" style={{ color: 'var(--demo-heading)' }}>{s.jugador}</td>
+                        <td className="py-2.5 px-1 sm:py-3 sm:px-2 whitespace-nowrap" style={{ color: 'var(--demo-text)' }}>{s.equipo}</td>
+                        <td className="py-2.5 px-1 sm:py-3 sm:px-2" style={{ color: 'var(--demo-text)' }}>{s.sancion} {s.sancion === 1 ? 'fecha' : 'fechas'}</td>
+                        <td className="py-2.5 px-1 sm:py-3 sm:px-2 font-bold" style={{ color: 'var(--demo-accent)' }}>{s.porCumplir}</td>
+                        <td className="py-2.5 px-1 sm:py-3 sm:px-2 whitespace-nowrap" style={{ color: 'var(--demo-muted)' }}>{s.motivo}</td>
                       </tr>
                     ))}
                   </tbody>

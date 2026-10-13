@@ -204,3 +204,7 @@
 /* Filas de tabla que entran en cascada (Posiciones) */
 @keyframes fila-in { from { opacity: 0; transform: translateX(-8px); } to { opacity: 1; transform: none; } }
 .fila-in { animation: fila-in 0.4s ease both; animation-delay: calc(var(--i, 0) * 35ms); }
+
+/* Pantallas muy anchas: escala todo lo basado en rem (contenedores y tipografía). */
+@media (min-width: 1920px) { html { font-size: 118%; } }
+@media (min-width: 2400px) { html { font-size: 137.5%; } }
