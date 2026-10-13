@@ -27,7 +27,7 @@ function Formulario() {
       return setError('Email o contraseña incorrectos.')
     }
     const rol = CUENTAS.find((c) => c.email === email.trim().toLowerCase())?.rol
-    router.replace(desde ?? (rol === 'organizacion' ? '/panel' : '/delegado'))
+    router.replace(desde ?? (rol === 'organizacion' ? '/panel' : rol === 'jugador' ? '/jugador' : '/delegado'))
   }
 
   return (
@@ -51,7 +51,7 @@ function Formulario() {
         <p className="font-bold text-[#062f36]">Cuentas de la demo (contraseña imperial123)</p>
         {CUENTAS.map((c) => (
           <button key={c.email} type="button" onClick={() => { setEmail(c.email); setClave('imperial123'); setError('') }} className="block underline">
-            {c.email} · {c.rol === 'organizacion' ? 'Organización' : 'Delegado'}
+            {c.email} · {c.rol === 'organizacion' ? 'Organización' : c.rol === 'jugador' ? 'Jugador' : 'Delegado'}
           </button>
         ))}
       </div>
@@ -86,7 +86,7 @@ export default function IngresarPage() {
             <span className="font-heading text-2xl" style={{ color: NAVY }}>TORNEO IMPERIAL</span>
           </Link>
           <h1 className="font-heading text-3xl" style={{ color: NAVY }}>Ingresar</h1>
-          <p className="mb-6 mt-1 text-sm text-[#5b7479]">Acceso para delegados y organización.</p>
+          <p className="mb-6 mt-1 text-sm text-[#5b7479]">Acceso para jugadores, delegados y organización.</p>
           <Suspense><Formulario /></Suspense>
           <p className="mt-8 text-center text-xs text-[#5b7479]">
             <Link href="/" className="underline">Volver al sitio</Link> · Desarrollado por CodeTlon

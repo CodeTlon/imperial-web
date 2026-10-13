@@ -8,29 +8,23 @@ import { usePathname, useRouter } from 'next/navigation'
 type Fase = 'inicio' | 'idle' | 'entra' | 'tapa' | 'sale'
 
 const INICIO_MS = 2600   // mínimo que se ve la pantalla de carga al abrir el sitio
-const ENTRA_MS = 900
+const ENTRA_MS = 1000
 const TAPA_MS = 1300     // mínimo que se ve el logo al cambiar de página, ya con la página nueva cargada
-const SALE_MS = 1100
+const SALE_MS = 1300
 
-const CIRCULO_0 = 'clip-path:circle(0% at 50% 50%)'
-const CIRCULO_1 = 'clip-path:circle(150% at 50% 50%)'
-const ESQ_TL_0 = 'clip-path:polygon(0 0,0 0,0 0)'
-const ESQ_TL_1 = 'clip-path:polygon(0 0,300% 0,0 300%)'
-const ESQ_BR_0 = 'clip-path:polygon(100% 100%,100% 100%,100% 100%)'
-const ESQ_BR_1 = 'clip-path:polygon(100% 100%,-200% 100%,100% -200%)'
-const TAPA_1 = 'clip-path:inset(0 0 0 0)'
 
-// Un solo efecto: iris circular (el escudo se abre/cierra desde el centro).
-const ENTRADA: [string, string] = [CIRCULO_0, CIRCULO_1]
-const SALIDA: [string, string] = [CIRCULO_1, CIRCULO_0]
+// Un solo efecto: cortina que sube. Entra desde abajo y sale hacia arriba, siempre en la misma dirección,
+// y se anima con transform (compuesto por la GPU), que es lo más fluido.
+const ENTRADA: [string, string] = ['transform:translate3d(0,100%,0)', 'transform:translate3d(0,0,0)']
+const SALIDA: [string, string] = ['transform:translate3d(0,0,0)', 'transform:translate3d(0,-100%,0)']
 
-const EASE = 'cubic-bezier(.65,0,.35,1)'
+const EASE = 'cubic-bezier(.83,0,.17,1)'
 const CSS = [
   `@keyframes pt-in{from{${ENTRADA[0]}}to{${ENTRADA[1]}}}.pt-in{animation:pt-in ${ENTRA_MS}ms ${EASE} both}`,
   `@keyframes pt-out{from{${SALIDA[0]}}to{${SALIDA[1]}}}.pt-out{animation:pt-out ${SALE_MS}ms ${EASE} both}`,
   `.pt-logo{animation:pt-logo .8s .1s cubic-bezier(.22,1,.36,1) both}`,
   `.pt-aro{stroke-dasharray:100;stroke-dashoffset:100;animation:pt-aro 2s .25s ease-in-out forwards}`,
-  `.pt-in,.pt-out{will-change:clip-path}.pt-out .pt-logo{animation:pt-logo-out .55s ease-in both}`,
+  `.pt-in,.pt-out{will-change:transform}.pt-out .pt-logo{animation:pt-logo-out .55s ease-in both}`,
   `.pt-out .pt-aro{animation:none;stroke-dashoffset:0}`,
   `@keyframes pt-logo-out{from{opacity:1;transform:none}to{opacity:0;transform:scale(1.18)}}`,
   `@keyframes pt-logo{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:none}}`,
@@ -38,7 +32,7 @@ const CSS = [
 ].join('')
 
 // Pantalla de carga con el escudo: cubre todo al abrir el sitio (ya viene en el HTML del servidor, así que se ve
-// antes que la página) y también al cambiar de página interceptando los links internos. Entrada y salida usan siempre el iris.
+// antes que la página) y también al cambiar de página interceptando los links internos. Entrada y salida usan siempre la cortina que sube.
 export default function PageTransition() {
   const router = useRouter()
   const pathname = usePathname()

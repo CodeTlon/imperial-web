@@ -46,7 +46,7 @@ export default function Navbar() {
             <Link
               href="/inscripcion"
               className="px-4 py-2 text-sm font-semibold whitespace-nowrap transition-opacity hover:opacity-90"
-              style={{ backgroundColor: 'var(--demo-accent)', color: 'var(--demo-on-accent)', borderRadius: 'var(--demo-radius)' }}
+              style={{ backgroundColor: 'var(--demo-accent)', color: 'var(--demo-on-accent)', borderRadius: '0.5rem' }}
             >
               {cta.label}
             </Link>
@@ -68,7 +68,7 @@ export default function Navbar() {
           <Link
             href="/inscripcion"
             className="mt-2 px-4 py-2 text-sm font-semibold text-center"
-            style={{ backgroundColor: 'var(--demo-accent)', color: 'var(--demo-on-accent)', borderRadius: 'var(--demo-radius)' }}
+            style={{ backgroundColor: 'var(--demo-accent)', color: 'var(--demo-on-accent)', borderRadius: '0.5rem' }}
             onClick={() => setOpen(false)}
           >
             {cta.label}

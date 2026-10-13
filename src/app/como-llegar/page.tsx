@@ -20,12 +20,12 @@ export default function ComoLlegarPage() {
       <main className="min-h-screen" style={{ backgroundColor: 'var(--demo-bg)' }}>
         <PageHeader eyebrow="Predio del torneo" title="Cómo llegar" backgroundImage="/images/hero.jpg" />
         <section className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-12 space-y-6">
-          <div className="rounded-3xl overflow-hidden border border-[#e3e7ee] bg-[#f2f4f8] h-[420px]">
+          <div className="rounded-3xl overflow-hidden border border-[#d9e8ea] bg-[#eef6f7] h-[420px]">
             <iframe title="Mapa del predio del Torneo Imperial" src={EMBED} loading="lazy" className="h-full w-full border-0" allowFullScreen referrerPolicy="no-referrer-when-downgrade" />
           </div>
           <div className="flex flex-wrap gap-3">
-            <a href={GOOGLE} target="_blank" rel="noopener noreferrer" className="rounded-2xl bg-[#0c1d3d] px-6 py-3.5 text-sm font-bold text-white hover:opacity-90">Abrir en Google Maps</a>
-            <a href={APPLE} target="_blank" rel="noopener noreferrer" className="rounded-2xl border border-[#e3e7ee] bg-white px-6 py-3.5 text-sm font-bold text-[#0c1d3d] hover:bg-[#f2f4f8]">Abrir en Apple Maps</a>
+            <a href={GOOGLE} target="_blank" rel="noopener noreferrer" className="rounded-2xl bg-[#062f36] px-6 py-3.5 text-sm font-bold text-white hover:opacity-90">Abrir en Google Maps</a>
+            <a href={APPLE} target="_blank" rel="noopener noreferrer" className="rounded-2xl border border-[#d9e8ea] bg-white px-6 py-3.5 text-sm font-bold text-[#062f36] hover:bg-[#eef6f7]">Abrir en Apple Maps</a>
           </div>
         </section>
       </main>

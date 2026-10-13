@@ -39,7 +39,7 @@ export default function Hero() {
           <span className="hero-in block" style={{ ['--d' as string]: '120ms' }}>Torneo</span>
           <span className="hero-in block hero-shine" style={{ ['--d' as string]: '240ms' }}>Imperial</span>
         </h1>
-        <p className="hero-in mt-3 sm:mt-5 max-w-xl 2xl:max-w-3xl text-sm sm:text-base xl:text-lg 2xl:text-2xl text-white/80" style={{ ['--d' as string]: '380ms' }}>
+        <p className="hero-in mt-6 sm:mt-8 xl:mt-10 max-w-xl 2xl:max-w-3xl text-sm sm:text-base xl:text-lg 2xl:text-2xl text-white/80" style={{ ['--d' as string]: '380ms' }}>
           Fixture, posiciones, goleadores y sanciones de las seis categorías, siempre al día.
         </p>
       </div>
