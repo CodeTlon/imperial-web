@@ -1,7 +1,17 @@
-import Image from 'next/image'
+import Link from 'next/link'
+import Marca from './Marca'
 import { MapPin, Phone, Mail } from 'lucide-react'
 import { InstagramIcon, FacebookIcon } from '@/components/icons/BrandIcons'
+import Image from 'next/image'
 import { demoConfig } from '@/lib/demo-config'
+
+const sponsors = [
+  { name: 'Gatorade', src: '/images/sponsors/gatorade.png' },
+  { name: 'Quilmes', src: '/images/sponsors/quilmes.png' },
+  { name: 'IFK Sports', src: '/images/sponsors/ifk.jpeg' },
+  { name: 'Speed Unlimited', src: '/images/sponsors/speed.png' },
+  { name: 'Vidón Bar', src: '/images/sponsors/vidon.png' },
+]
 
 export default function Footer() {
   const { business, sitemap } = demoConfig
@@ -13,12 +23,7 @@ export default function Footer() {
 
           {/* Columna 1: Nombre + tagline */}
           <div>
-            <div className="flex items-center gap-3 mb-3">
-              <span className="flex-shrink-0 w-10 h-10 rounded-full bg-white p-1.5 flex items-center justify-center">
-                <Image src="/images/logo-mark.png" alt="" width={180} height={320} className="w-full h-full object-contain" />
-              </span>
-              <h3 className="text-2xl font-bold">{business.name}</h3>
-            </div>
+            <Link href="/" className="inline-block mb-3"><Marca /></Link>
             <p className="text-sm opacity-60 leading-relaxed">{business.tagline}</p>
           </div>
 
@@ -95,8 +100,19 @@ export default function Footer() {
           </div>
         </div>
 
+        <div className="mt-12 pt-8 border-t text-center" style={{ borderColor: 'var(--demo-border)' }}>
+          <p className="text-xs font-semibold uppercase tracking-widest opacity-50 mb-5">Nos acompañan</p>
+          <ul className="flex flex-wrap items-center justify-center gap-4 2xl:gap-6">
+            {sponsors.map((s) => (
+              <li key={s.name} className="relative h-16 w-16 sm:h-20 sm:w-20 2xl:h-24 2xl:w-24 overflow-hidden rounded-xl grayscale opacity-80 transition hover:grayscale-0 hover:opacity-100">
+                <Image src={s.src} alt={s.name} fill sizes="96px" className="object-cover" />
+              </li>
+            ))}
+          </ul>
+        </div>
+
         <div
-          className="mt-12 pt-8 border-t text-center text-xs opacity-40"
+          className="mt-8 pt-8 border-t text-center text-xs opacity-40"
           style={{ borderColor: 'var(--demo-border)' }}
         >
           © {new Date().getFullYear()} {business.name}. Todos los derechos reservados.

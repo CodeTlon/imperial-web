@@ -36,22 +36,19 @@ export const demoConfig = {
   ],
 
   // ── Identidad visual (tokens semánticos) ─────────────────
-  // Paleta alineada 1:1 con la app mobile (torneo-imperial-app/tailwind.config.js
-  // `colors.demo`) a pedido de Mateo (2026-07-24): navy #0c1d3d + amarillo #ffc72c,
-  // para que web y app se sientan la misma marca. El escudo real de las fotos del
-  // torneo es teal/dorado (ver public/images/logo-mark.png) — se prioriza
-  // consistencia con la app por sobre el color exacto del isologo.
+  // Paleta del escudo real (logo-mark.png): teal #0494a4 + dorado #f3a21c. El fondo
+  // oscuro (#062f36) es un teal profundo derivado del logo, para que el escudo se lea.
   brand: {
     background:   '#ffffff',
-    surface:      '#f2f4f8',
+    surface:      '#eef6f7',
     surfaceAlt:   '#ffffff',
-    heading:      '#0c1d3d',
-    text:         '#233240',
-    muted:        '#6b7685',
-    border:       '#e3e7ee',
-    accent:       '#ffc72c',
-    onAccent:     '#0c1d3d',
-    structural:   '#0c1d3d',
+    heading:      '#062f36',
+    text:         '#1f3a40',
+    muted:        '#5b7479',
+    border:       '#d9e8ea',
+    accent:       '#f3a21c',
+    onAccent:     '#062f36',
+    structural:   '#062f36',
     onStructural: '#ffffff',
     // Par de fuentes: Oswald (condensada, ya usada en la marca real del torneo) para
     // títulos + Montserrat para el cuerpo — el mismo par que usan los clubes de
@@ -91,16 +88,15 @@ export const demoConfig = {
     hero:         true,
     stats:        true,
     about:        true,
-    services:     true,
     gallery:      true,
-    appShowcase:  true,
+    appShowcase:  false,
     schedule:     false,
     pricing:      false,
     testimonials: false,
     team:         false,
     faq:          true,
     cta:          true,
-    contact:      true,
+    contact:      false,
   },
 
   // ── Contenido editable ───────────────────────────────────
@@ -121,17 +117,6 @@ export const demoConfig = {
       title: '¿Tu equipo ya tiene lugar en la próxima fecha?',
       subtitle: 'Anotate en Torneo Imperial y sumate a la mejor competencia amateur de Córdoba.',
     },
-
-    // Orden: +30 primero (única categoría con escudos/goleadores/sancionados reales
-    // en /posiciones, /fixture y /equipos), después +35/+40/+45, Libre y Femenino al final.
-    services: [
-      { icon: 'Users',   title: '+30',      description: 'Para los que siguen a pura garra y experiencia.',    price: 'Domingos AM' },
-      { icon: 'Shield',  title: '+35',      description: 'Roce, jerarquía y mucho fútbol cada fecha.',         price: 'Domingos AM' },
-      { icon: 'Medal',   title: '+40',      description: 'Fútbol con respeto y muchísima historia.',           price: 'Domingos PM' },
-      { icon: 'Crown',   title: '+45',      description: 'Los veteranos que marcan la cancha.',                price: 'Domingos PM' },
-      { icon: 'Trophy', title: 'Libre',     description: 'La categoría más competitiva, sin límite de edad.', price: 'Sábados' },
-      { icon: 'Venus',   title: 'Femenino', description: 'Fútbol 7 femenino, la categoría que más crece.',     price: 'Sábados' },
-    ],
 
     testimonials: [
       {

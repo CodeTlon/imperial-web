@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import Image from 'next/image'
+import Marca from './Marca'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Menu, X } from 'lucide-react'
@@ -33,13 +33,8 @@ export default function Navbar() {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          <Link href="/" className="flex items-center gap-2.5 flex-shrink-0 mr-6">
-            <span className="flex-shrink-0 w-8 h-8 rounded-full bg-white p-1 flex items-center justify-center">
-              <Image src="/images/logo-mark.png" alt="" width={180} height={320} className="w-full h-full object-contain" />
-            </span>
-            <span className="text-xl font-bold tracking-tight whitespace-nowrap" style={{ color: 'var(--demo-on-structural)' }}>
-              {business.name}
-            </span>
+          <Link href="/" className="flex-shrink-0 mr-6">
+            <Marca />
           </Link>
 
           <nav className="hidden md:flex items-center gap-5">

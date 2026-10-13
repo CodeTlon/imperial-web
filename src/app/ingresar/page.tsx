@@ -5,7 +5,8 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { CUENTAS, useDemo } from '@/lib/demo-store'
-import { Boton, Campo, NAVY, ORO } from '@/components/panel/ui'
+import { Eye, EyeOff, Loader2 } from 'lucide-react'
+import { Boton, NAVY } from '@/components/panel/ui'
 
 function Formulario() {
   const { ingresar } = useDemo()
@@ -14,22 +15,40 @@ function Formulario() {
   const [email, setEmail] = useState('')
   const [clave, setClave] = useState('')
   const [error, setError] = useState('')
+  const [ver, setVer] = useState(false)
+  const [cargando, setCargando] = useState(false)
 
   function enviar(e: React.FormEvent) {
     e.preventDefault()
-    if (!ingresar(email, clave)) return setError('Email o contraseña incorrectos.')
+    if (cargando) return
+    setCargando(true)
+    if (!ingresar(email, clave)) {
+      setCargando(false)
+      return setError('Email o contraseña incorrectos.')
+    }
     const rol = CUENTAS.find((c) => c.email === email.trim().toLowerCase())?.rol
     router.replace(desde ?? (rol === 'organizacion' ? '/panel' : '/delegado'))
   }
 
   return (
     <form onSubmit={enviar} className="space-y-4">
-      <Campo label="Email" type="email" value={email} onChange={(e) => { setEmail(e.target.value); setError('') }} autoComplete="username" placeholder="delegado@imperial.com" />
-      <Campo label="Contraseña" type="password" value={clave} onChange={(e) => { setClave(e.target.value); setError('') }} autoComplete="current-password" />
+      <label className="block">
+        <span className="mb-1.5 block text-sm font-semibold text-[#062f36]">Email</span>
+        <input type="email" required value={email} onChange={(e) => { setEmail(e.target.value); setError('') }} autoComplete="username" placeholder="delegado@imperial.com" className="w-full rounded-xl border border-[#d9e8ea] bg-[#eef6f7] px-4 py-3 text-base outline-none focus:border-[#0494a4] focus:ring-2 focus:ring-[#0494a4]/30" />
+      </label>
+      <label className="block">
+        <span className="mb-1.5 block text-sm font-semibold text-[#062f36]">Contraseña</span>
+        <span className="relative block">
+          <input type={ver ? 'text' : 'password'} required value={clave} onChange={(e) => { setClave(e.target.value); setError('') }} autoComplete="current-password" placeholder="Tu contraseña" className="w-full rounded-xl border border-[#d9e8ea] bg-[#eef6f7] py-3 pl-4 pr-12 text-base outline-none focus:border-[#0494a4] focus:ring-2 focus:ring-[#0494a4]/30" />
+          <button type="button" onClick={() => setVer(!ver)} aria-label={ver ? 'Ocultar contraseña' : 'Mostrar contraseña'} className="absolute inset-y-0 right-0 flex w-12 items-center justify-center text-[#5b7479] hover:text-[#062f36]">
+            {ver ? <EyeOff size={20} /> : <Eye size={20} />}
+          </button>
+        </span>
+      </label>
       {error && <p role="alert" className="text-sm text-[#dc2626]">{error}</p>}
-      <Boton type="submit" className="w-full py-3.5">Ingresar</Boton>
-      <div className="rounded-xl bg-[#f2f4f8] p-4 text-xs text-[#6b7685] space-y-1">
-        <p className="font-bold text-[#0c1d3d]">Cuentas de la demo (contraseña imperial123)</p>
+      <Boton type="submit" disabled={cargando} className="w-full py-3.5">{cargando ? <span className="inline-flex items-center justify-center gap-2"><Loader2 size={18} className="animate-spin" />Ingresando…</span> : 'Ingresar'}</Boton>
+      <div className="rounded-xl bg-[#eef6f7] p-4 text-xs text-[#5b7479] space-y-1">
+        <p className="font-bold text-[#062f36]">Cuentas de la demo (contraseña imperial123)</p>
         {CUENTAS.map((c) => (
           <button key={c.email} type="button" onClick={() => { setEmail(c.email); setClave('imperial123'); setError('') }} className="block underline">
             {c.email} · {c.rol === 'organizacion' ? 'Organización' : 'Delegado'}
@@ -40,24 +59,41 @@ function Formulario() {
   )
 }
 
+function Foto({ className }: { className: string }) {
+  return (
+    <div className={`relative overflow-hidden ${className}`}>
+      <Image src="/images/hero.jpg" alt="" fill priority sizes="(min-width:1024px) 50vw, 100vw" className="object-cover object-[60%_40%]" />
+      <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(6,47,54,0.95) 0%, rgba(4,112,124,0.55) 55%, rgba(4,148,164,0.25) 100%)' }} />
+      <div className="absolute inset-x-0 bottom-0 flex items-end gap-4 p-6 text-white lg:p-12 2xl:p-16">
+        <Image src="/images/logo-mark.png" alt="" width={180} height={320} className="h-14 w-auto object-contain lg:h-24 2xl:h-28" />
+        <div>
+          <p className="font-heading text-2xl leading-tight sm:text-3xl lg:text-5xl 2xl:text-6xl">Coronado de Gloria</p>
+          <p className="mt-1 hidden text-sm text-white/80 lg:block 2xl:text-lg">Seguí tu equipo, cargá resultados y gestioná tu plantel.</p>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export default function IngresarPage() {
   return (
-    <main className="min-h-screen flex flex-col" style={{ background: NAVY }}>
-      <div className="px-6 pt-12 pb-16 text-center text-white">
-        <Image src="/images/logo-mark.png" alt="" width={84} height={84} className="mx-auto h-20 w-20 object-contain" />
-        <p className="font-heading text-3xl mt-3">TORNEO IMPERIAL</p>
-        <p className="text-xs uppercase tracking-[0.3em] mt-2" style={{ color: ORO }}>Coronado de Gloria</p>
-      </div>
-      <div className="flex-1 bg-white rounded-t-[32px] px-6 pt-8 pb-10 -mt-6">
-        <div className="mx-auto max-w-md">
-          <h1 className="font-heading text-2xl" style={{ color: NAVY }}>Ingresar</h1>
-          <p className="text-sm text-[#6b7685] mb-6">Acceso para delegados y organización.</p>
+    <main className="min-h-screen bg-white lg:grid lg:grid-cols-2">
+      <Foto className="h-[28vh] min-h-[200px] lg:hidden" />
+      <section className="flex items-center justify-center px-6 py-10 lg:min-h-screen lg:py-16">
+        <div className="w-full max-w-md 2xl:max-w-lg">
+          <Link href="/" className="mb-8 flex items-center gap-3">
+            <Image src="/images/logo-mark.png" alt="" width={180} height={320} className="h-12 w-auto object-contain" />
+            <span className="font-heading text-2xl" style={{ color: NAVY }}>TORNEO IMPERIAL</span>
+          </Link>
+          <h1 className="font-heading text-3xl" style={{ color: NAVY }}>Ingresar</h1>
+          <p className="mb-6 mt-1 text-sm text-[#5b7479]">Acceso para delegados y organización.</p>
           <Suspense><Formulario /></Suspense>
-          <p className="text-center mt-8 text-xs text-[#6b7685]">
+          <p className="mt-8 text-center text-xs text-[#5b7479]">
             <Link href="/" className="underline">Volver al sitio</Link> · Desarrollado por CodeTlon
           </p>
         </div>
-      </div>
+      </section>
+      <Foto className="hidden lg:block lg:min-h-screen" />
     </main>
   )
 }
