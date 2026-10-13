@@ -8,9 +8,12 @@ export default function manifest(): MetadataRoute.Manifest {
     description: 'Fixture, posiciones y goleadores del Torneo Imperial.',
     start_url: '/',
     display: 'standalone',
-    background_color: '#0c1d3d',
-    theme_color: '#0c1d3d',
+    background_color: '#062f36',
+    theme_color: '#062f36',
     lang: 'es-AR',
-    icons: [{ src: '/images/logo-mark.png', sizes: '180x320', type: 'image/png' }],
+    icons: [
+      { src: '/icon-192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
+      { src: '/icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
+    ],
   }
 }
