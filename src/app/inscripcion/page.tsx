@@ -40,11 +40,9 @@ const pasos = [
 ]
 
 const necesitas = [
-  'Nombre del equipo y categoría en la que querés jugar',
   'Un delegado responsable, con WhatsApp de contacto',
-  'Lista de buena fe: hasta 25 jugadores',
   'De cada jugador: nombre, DNI (frente y dorso) y una foto',
-  'Completar la lista antes de la segunda fecha',
+  'Elegir la categoría en la que querés jugar',
 ]
 
 const preguntas = [
@@ -110,6 +108,27 @@ export default function InscripcionPage() {
                     ))}
                   </ul>
                 </div>
+          <div className="card">
+            <h2 className="font-heading text-2xl mb-5 flex items-center gap-2" style={{ color: 'var(--demo-heading)' }}>
+              <CreditCard size={22} style={{ color: 'var(--demo-accent)' }} /> Qué necesitás para inscribirte
+            </h2>
+            <ul className="space-y-3">
+              {necesitas.map((t) => (
+                <li key={t} className="flex items-start gap-3 text-sm leading-relaxed" style={{ color: 'var(--demo-text)' }}>
+                  <CheckCircle2 size={18} className="mt-0.5 flex-shrink-0" style={{ color: 'var(--demo-accent)' }} />
+                  {t}
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="card">
+            <h2 className="font-heading text-2xl mb-5 flex items-center gap-2" style={{ color: 'var(--demo-heading)' }}>
+              <MapPin size={22} style={{ color: 'var(--demo-accent)' }} /> Sede
+            </h2>
+            <p className="text-sm leading-relaxed" style={{ color: 'var(--demo-text)' }}>
+              Los partidos se juegan en {business.address}. Cada partido tiene árbitro y veedor.
+            </p>
+          </div>
               </div>
 
               {/* Formulario */}
@@ -174,52 +193,6 @@ export default function InscripcionPage() {
           </div>
         </section>
 
-      <section className="section-pad" style={{ backgroundColor: 'var(--demo-surface)' }}>
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="section-title text-center mb-10">¿Cómo es el proceso?</h2>
-          <ol className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            {pasos.map((p, i) => (
-              <li key={p.titulo} className="card relative pt-9">
-                <span className="absolute -top-4 left-5 flex h-9 w-9 items-center justify-center rounded-full font-heading text-lg" style={{ backgroundColor: 'var(--demo-accent)', color: 'var(--demo-on-accent)' }}>{i + 1}</span>
-                <p.icon size={22} style={{ color: 'var(--demo-accent)' }} className="mb-3" />
-                <h3 className="font-bold mb-1.5" style={{ color: 'var(--demo-heading)' }}>{p.titulo}</h3>
-                <p className="text-sm leading-relaxed" style={{ color: 'var(--demo-muted)' }}>{p.texto}</p>
-              </li>
-            ))}
-          </ol>
-        </div>
-      </section>
-
-      <section className="section-pad">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <div className="card">
-            <h2 className="font-heading text-2xl mb-5 flex items-center gap-2" style={{ color: 'var(--demo-heading)' }}>
-              <CreditCard size={22} style={{ color: 'var(--demo-accent)' }} /> Qué necesitás para inscribirte
-            </h2>
-            <ul className="space-y-3">
-              {necesitas.map((t) => (
-                <li key={t} className="flex items-start gap-3 text-sm leading-relaxed" style={{ color: 'var(--demo-text)' }}>
-                  <CheckCircle2 size={18} className="mt-0.5 flex-shrink-0" style={{ color: 'var(--demo-accent)' }} />
-                  {t}
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div className="card">
-            <h2 className="font-heading text-2xl mb-5 flex items-center gap-2" style={{ color: 'var(--demo-heading)' }}>
-              <MapPin size={22} style={{ color: 'var(--demo-accent)' }} /> Categorías y sede
-            </h2>
-            <div className="flex flex-wrap gap-2 mb-5">
-              {categorias.map((c) => (
-                <span key={c} className="px-4 py-1.5 text-sm font-semibold rounded-full" style={{ backgroundColor: 'var(--demo-surface)', color: 'var(--demo-heading)', border: '1px solid var(--demo-border)' }}>{c}</span>
-              ))}
-            </div>
-            <p className="text-sm leading-relaxed" style={{ color: 'var(--demo-text)' }}>
-              Los partidos se juegan en {business.address}. Cada partido tiene árbitro y veedor.
-            </p>
-          </div>
-        </div>
-      </section>
 
       <section className="section-pad" style={{ backgroundColor: 'var(--demo-surface)' }}>
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">

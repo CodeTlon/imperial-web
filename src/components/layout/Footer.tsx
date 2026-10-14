@@ -99,9 +99,9 @@ export default function Footer() {
             </div>
 
             <p className="mt-6 mb-3 text-[10px] font-semibold uppercase tracking-widest opacity-50">Nos acompañan</p>
-            <ul className="flex flex-wrap items-center gap-x-5 gap-y-4 max-w-[17rem] 2xl:max-w-md 2xl:gap-x-7">
+            <ul className="flex flex-wrap items-center gap-x-3 gap-y-3 max-w-[17rem] lg:max-w-none lg:flex-nowrap lg:gap-x-2.5 2xl:gap-x-5">
               {sponsors.map((s) => (
-                <li key={s.name} className="relative h-10 w-[4.5rem] 2xl:h-12 2xl:w-24 opacity-85 transition-opacity hover:opacity-100">
+                <li key={s.name} className="relative h-8 w-14 lg:h-6 lg:w-10 2xl:h-8 2xl:w-14 opacity-85 transition-opacity hover:opacity-100">
                   <Image src={s.src} alt={s.name} fill sizes="80px" className="object-contain" />
                 </li>
               ))}

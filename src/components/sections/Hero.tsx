@@ -8,6 +8,15 @@ import { fechaDelPartido } from '@/components/match/MiProximoPartido'
 // Home a media pantalla: video de la cancha bajo una capa navy (misma identidad que la app),
 // título con brillo (idea de react-bits/ShinyText, en CSS) y cuenta regresiva a la próxima fecha.
 export default function Hero() {
+  // Video vertical (720x1280) en celular y horizontal en pantallas grandes; null hasta saber el ancho.
+  const [movil, setMovil] = useState<boolean | null>(null)
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 767px)')
+    const f = () => setMovil(mq.matches)
+    f(); mq.addEventListener('change', f)
+    return () => mq.removeEventListener('change', f)
+  }, [])
+
   const { categoria } = useCategoria()
 
   // Cuenta regresiva a la próxima fecha de la categoría elegida (solo si la fecha es futura).
@@ -20,12 +29,15 @@ export default function Hero() {
 
   return (
     <section id="hero" className="relative h-[50svh] min-h-[460px] xl:min-h-[520px] 2xl:min-h-[680px] overflow-hidden flex flex-col text-white" style={{ backgroundColor: '#062f36' }}>
-      <video
-        className="absolute inset-0 h-full w-full object-cover"
-        src="/video/home.mp4"
-        poster="/images/home-poster.jpg"
-        autoPlay muted loop playsInline preload="metadata"
-      />
+      {movil !== null && (
+        <video
+          key={movil ? 'm' : 'd'}
+          className="absolute inset-0 h-full w-full object-cover"
+          src={movil ? '/video/home-mobile.mp4' : '/video/home.mp4'}
+          poster={movil ? '/images/home-poster-mobile.jpg' : '/images/home-poster.jpg'}
+          autoPlay muted loop playsInline preload="metadata"
+        />
+      )}
       <div className="absolute inset-0 bg-[#062f36]/80" />
       <div className="absolute inset-x-0 bottom-0 h-1/2" style={{ background: 'linear-gradient(180deg, transparent, rgba(6,47,54,0.95))' }} />
 
