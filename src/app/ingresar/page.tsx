@@ -107,7 +107,6 @@ function Foto({ className }: { className: string }) {
 export default function IngresarPage() {
   return (
     <main className="min-h-screen bg-white lg:grid lg:grid-cols-2" style={VARS_PANEL}>
-      <Foto className="h-[28vh] min-h-[200px] lg:hidden" />
       <section className="flex items-center justify-center px-6 py-10 lg:min-h-screen lg:py-16">
         <div className="w-full max-w-md 2xl:max-w-lg">
           <Link href="/" className="mb-8 flex items-center gap-3">
