@@ -1,16 +1,15 @@
 'use client'
 
 import { useState } from 'react'
-import Image from 'next/image'
-import { Trophy } from 'lucide-react'
 import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
 import PageHeader from '@/components/ui/PageHeader'
 import CategoryTabs from '@/components/ui/CategoryTabs'
+import Podio from '@/components/campeones/Podio'
 import { campeonesData, categoriasCampeones } from '@/lib/campeones-data'
 
 const COPA_COLOR: Record<string, string> = {
-  Oro: '#f2a01f',
+  Oro: '#f3a21c',
   Plata: '#9ca3af',
   Bronce: '#c2703d',
 }
@@ -22,7 +21,8 @@ export default function CampeonesPage() {
   // sitio), así que sincronizarla mostraría categorías inconsistentes en
   // /posiciones, /fixture o /equipos.
   const [cat, setCat] = useState<(typeof categoriasCampeones)[number] | 'Todas'>('Todas')
-  const items = cat === 'Todas' ? campeonesData : campeonesData.filter((c) => c.categoria === cat)
+  const [copa, setCopa] = useState<'Todas' | 'Oro' | 'Plata' | 'Bronce'>('Todas')
+  const items = campeonesData.filter((c) => (cat === 'Todas' || c.categoria === cat) && (copa === 'Todas' || c.copa === copa))
 
   return (
     <>
@@ -44,24 +44,23 @@ export default function CampeonesPage() {
               onChange={(c) => setCat(c as (typeof categoriasCampeones)[number] | 'Todas')}
             />
 
-            {/* Grid de copas */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {items.map((item) => (
-                <div key={`${item.categoria}-${item.copa}`} className="card overflow-hidden !p-0">
-                  <div className="relative aspect-[4/5]">
-                    <Image src={item.img} alt={`${item.categoria} — Copa ${item.copa}`} fill className="object-cover" />
-                  </div>
-                  <div className="p-5">
-                    <p className="text-xs font-bold uppercase tracking-widest mb-2 flex items-center gap-1.5" style={{ color: COPA_COLOR[item.copa] }}>
-                      <Trophy size={13} /> {item.categoria} · Copa {item.copa}
-                    </p>
-                    <p className="font-bold" style={{ color: 'var(--demo-heading)' }}>🏆 {item.campeon}</p>
-                    <p className="text-sm" style={{ color: 'var(--demo-muted)' }}>
-                      2° {item.subcampeon}{item.tercero ? ` · 3° ${item.tercero}` : ''}
-                    </p>
-                  </div>
-                </div>
+            <div className="flex flex-wrap justify-center gap-2 mb-8" role="group" aria-label="Filtrar por copa">
+              {(['Todas', 'Oro', 'Plata', 'Bronce'] as const).map((c) => (
+                <button key={c} type="button" onClick={() => setCopa(c)} aria-pressed={copa === c}
+                  className="px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider border transition-colors"
+                  style={copa === c
+                    ? { background: c === 'Todas' ? '#04707c' : COPA_COLOR[c], color: '#fff', borderColor: 'transparent' }
+                    : { color: 'var(--demo-muted)', borderColor: 'var(--demo-border)' }}>
+                  {c === 'Todas' ? 'Todas las copas' : c}
+                </button>
               ))}
+            </div>
+
+            <div className="flex flex-col gap-8">
+              {items.map((item) => <Podio key={`${item.categoria}-${item.copa}`} item={item} />)}
+              {items.length === 0 && (
+                <p className="text-center py-10" style={{ color: 'var(--demo-muted)' }}>No hay copas para esta combinación.</p>
+              )}
             </div>
           </div>
         </section>
