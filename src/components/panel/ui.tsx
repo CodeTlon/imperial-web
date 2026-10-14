@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import Marca from '@/components/layout/Marca'
 import { navegarConCortina } from '@/lib/navegar'
 import { Icono } from '@/components/panel/icono'
+import DemoGuiada from '@/components/panel/DemoGuiada'
 import {
   AlertTriangle, CalendarDays, ChevronDown, ChevronLeft, ChevronRight, CircleHelp, ClipboardList, Inbox, LogOut, RotateCcw, Shield, Gavel, Goal, Home, Image as ImagenIcon, LayoutDashboard, Search, ShieldAlert,
   Table2, Trophy, User, Users, X, type LucideIcon,
@@ -54,15 +55,16 @@ const ROLES: Record<Rol, string> = { organizacion: 'Organización', delegado: 'D
 const CLAVE_DEMO_CERRADA = 'ti-demo-franja-cerrada'
 
 // Estructura común de los paneles: barra con marca, rol y usuario; navegación lateral en desktop y pestañas en celular.
-export function PanelShell({ rol, titulo, tabs, tab, setTab, contadores, onComoFunciona, children }: {
+export function PanelShell({ rol, titulo, tabs, tab, setTab, contadores, children }: {
   rol: Rol; titulo: string; tabs: string[]; tab: string; setTab: (t: string) => void
-  contadores?: Record<string, number>; onComoFunciona?: () => void; children: ReactNode
+  contadores?: Record<string, number>; children: ReactNode
 }) {
   const { sesion, listo, salir, reiniciar } = useDemo()
   const router = useRouter()
   // Mientras se cierra la sesión, la cortina de carga ya cubre todo: la guarda no debe navegar por su cuenta.
   const cerrando = useRef(false)
   const [menu, setMenu] = useState(false)
+  const [guia, setGuia] = useState(false)
   const [demoOculta, setDemoOculta] = useState(true)
   const refMenu = useRef<HTMLDivElement>(null)
   useEffect(() => {
@@ -93,7 +95,7 @@ export function PanelShell({ rol, titulo, tabs, tab, setTab, contadores, onComoF
             <Link href="/" aria-label="Ir al sitio de Torneo Imperial" className="shrink-0"><Marca tamano="sm" color="#fff" /></Link>
           </div>
           <div className="flex items-center gap-2">
-            {onComoFunciona && <Boton variante="fantasma" icono={CircleHelp} onClick={onComoFunciona}><span className="hidden sm:inline">Cómo funciona</span><span className="sm:hidden sr-only">Cómo funciona</span></Boton>}
+            <Boton variante="fantasma" icono={CircleHelp} onClick={() => setGuia(true)}><span className="hidden sm:inline">Demo guiada</span><span className="sm:hidden sr-only">Demo guiada</span></Boton>
             <div className="relative" ref={refMenu}>
               <button
                 type="button"
@@ -157,6 +159,7 @@ export function PanelShell({ rol, titulo, tabs, tab, setTab, contadores, onComoF
           {children}
         </main>
       </div>
+      {guia && <DemoGuiada rol={rol} onCerrar={() => setGuia(false)} />}
     </div>
   )
 }

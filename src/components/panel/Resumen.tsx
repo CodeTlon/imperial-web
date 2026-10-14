@@ -6,11 +6,10 @@ import { fixturePorCategoria, type Categoria } from '@/lib/torneo-data'
 import { CATEGORIAS, estadoPlantel, goleadoresCategoria, puntos, tablaCategoria } from '@/components/panel/datos'
 import { BarrasH, BarrasV, Dona, Kpi, Linea } from '@/components/panel/graficos'
 import { C, COLOR_ESTADO, Encabezado, K, Selector, Tabla, Tarjeta } from '@/components/panel/ui'
-import { ComoFunciona } from '@/components/panel/ComoFunciona'
 
 type Mov = { clave: string; tipo: string; texto: string; detalle: string }
 
-export default function Resumen({ irA, ayuda, setAyuda }: { irA: (t: string) => void; ayuda: boolean; setAyuda: (v: boolean) => void }) {
+export default function Resumen({ irA }: { irA: (t: string) => void }) {
   const { datos } = useDemo()
   const [cat, setCat] = useState('+30')
 
@@ -59,7 +58,10 @@ export default function Resumen({ irA, ayuda, setAyuda }: { irA: (t: string) => 
   return (
     <div className="space-y-6">
       <Encabezado titulo="Resumen" descripcion="Lo que necesita tu atención hoy y cómo viene el torneo." />
-      <ComoFunciona abierto={ayuda} onCambiar={setAyuda} />
+      <div className="flex flex-wrap items-end gap-x-4 gap-y-2">
+        <div className="w-48"><Selector label="Categoría" className="!bg-white shadow-sm" value={cat} onChange={(e) => setCat(e.target.value)} opciones={CATEGORIAS.map((c) => ({ valor: c, texto: c }))} /></div>
+        <p className="pb-3 text-xs text-[color:var(--p-suave)]">Cambia los gráficos de goles por fecha y goleadores.</p>
+      </div>
       <div className="grid gap-4 grid-cols-2 xl:grid-cols-4">
         <Kpi titulo="Resultados cargados" valor={datos.resultados.length} color={C.profundo} onClick={() => irA('Resultados')} detalle="Desde este panel" />
       </div>
@@ -68,10 +70,6 @@ export default function Resumen({ irA, ayuda, setAyuda }: { irA: (t: string) => 
         <Tarjeta titulo="Goles por categoría"><BarrasV datos={golesPorCat} /></Tarjeta>
         <Tarjeta titulo="Sanciones por estado"><Dona datos={estadosSanc} centro="sanciones" /></Tarjeta>
         <Tarjeta titulo="Documentación de jugadores" className="lg:col-span-2 xl:col-span-1"><Dona datos={docDona} centro="jugadores" /></Tarjeta>
-      </div>
-
-      <div className="flex flex-wrap items-center gap-3">
-        <div className="w-44"><Selector label="Categoría del detalle" value={cat} onChange={(e) => setCat(e.target.value)} opciones={CATEGORIAS.map((c) => ({ valor: c, texto: c }))} /></div>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2 xl:grid-cols-3">

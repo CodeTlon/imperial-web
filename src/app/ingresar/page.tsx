@@ -8,6 +8,8 @@ import { CUENTAS, useDemo } from '@/lib/demo-store'
 import Marca from '@/components/layout/Marca'
 import { Eye, EyeOff, Info, Loader2 } from 'lucide-react'
 import { NAVY, VARS_PANEL } from '@/components/panel/ui'
+import DemoGuiada from '@/components/panel/DemoGuiada'
+import type { Rol } from '@/lib/demo-store'
 
 function Formulario() {
   const { ingresar } = useDemo()
@@ -19,6 +21,7 @@ function Formulario() {
   const [ver, setVer] = useState(false)
   const [cargando, setCargando] = useState(false)
   const [cuentas, setCuentas] = useState(false)
+  const [guia, setGuia] = useState<{ rol: Rol; destino: string } | null>(null)
 
   function enviar(e: React.FormEvent) {
     e.preventDefault()
@@ -28,8 +31,9 @@ function Formulario() {
       setCargando(false)
       return setError('Email o contraseña incorrectos.')
     }
-    const rol = CUENTAS.find((c) => c.email === email.trim().toLowerCase())?.rol
-    router.replace(desde ?? (rol === 'organizacion' ? '/panel' : rol === 'jugador' ? '/jugador' : '/delegado'))
+    const rol = CUENTAS.find((c) => c.email === email.trim().toLowerCase())!.rol
+    // Antes de entrar al panel se muestra la demo guiada de ese rol.
+    setGuia({ rol, destino: desde ?? (rol === 'organizacion' ? '/panel' : rol === 'jugador' ? '/jugador' : '/delegado') })
   }
 
   const usar = (c: (typeof CUENTAS)[number]) => { setEmail(c.email); setClave(c.clave); setError('') }
@@ -79,6 +83,7 @@ function Formulario() {
       >
         {cargando ? <><Loader2 size={20} className="animate-spin" aria-hidden />Ingresando…</> : 'Iniciar sesión'}
       </button>
+      {guia && <DemoGuiada rol={guia.rol} final="Entrar al panel" onCerrar={() => router.replace(guia.destino)} />}
     </form>
   )
 }

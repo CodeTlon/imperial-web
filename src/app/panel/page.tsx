@@ -1,6 +1,5 @@
 'use client'
 
-import { useState } from 'react'
 import Contenido from '@/components/panel/Contenido'
 import DescargosOrg from '@/components/panel/DescargosOrg'
 import Goleadores from '@/components/panel/Goleadores'
@@ -15,17 +14,15 @@ const TABS = ['Resumen', 'Descargos', 'Sanciones', 'Equipos', 'Resultados', 'Gol
 
 export default function PanelPage() {
   const [tab, setTab] = usePestanaUrl(TABS, 'Resumen')
-  const [ayuda, setAyuda] = useState(false)
   const { datos } = useDemo()
   const contadores = {
     Descargos: datos.sanciones.filter((s) => s.estado === 'En revisión').length,
     Sanciones: datos.sanciones.length,
     Equipos: datos.plantel.filter((j) => j.estadoDoc !== 'Aprobado').length,
   }
-  const comoFunciona = () => { setTab('Resumen'); setAyuda(true); setTimeout(() => document.getElementById('como-funciona')?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 50) }
   return (
-    <PanelShell rol="organizacion" titulo="Panel de administración" tabs={TABS} tab={tab} setTab={setTab} contadores={contadores} onComoFunciona={comoFunciona}>
-      {tab === 'Resumen' && <Resumen irA={setTab} ayuda={ayuda} setAyuda={setAyuda} />}
+    <PanelShell rol="organizacion" titulo="Panel de administración" tabs={TABS} tab={tab} setTab={setTab} contadores={contadores}>
+      {tab === 'Resumen' && <Resumen irA={setTab} />}
       {tab === 'Descargos' && <DescargosOrg />}
       {tab === 'Sanciones' && <Sanciones />}
       {tab === 'Equipos' && <Equipos />}
