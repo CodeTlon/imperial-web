@@ -5,11 +5,12 @@ import { articulosDe, useDemo } from '@/lib/demo-store'
 import { fixturePorCategoria, type Categoria } from '@/lib/torneo-data'
 import { CATEGORIAS, estadoPlantel, goleadoresCategoria, puntos, tablaCategoria } from '@/components/panel/datos'
 import { BarrasH, BarrasV, Dona, Kpi, Linea } from '@/components/panel/graficos'
-import { C, COLOR_ESTADO, K, Selector, Tabla, Tarjeta } from '@/components/panel/ui'
+import { C, COLOR_ESTADO, Encabezado, K, Selector, Tabla, Tarjeta } from '@/components/panel/ui'
+import { ComoFunciona } from '@/components/panel/ComoFunciona'
 
 type Mov = { clave: string; tipo: string; texto: string; detalle: string }
 
-export default function Resumen({ irA }: { irA: (t: string) => void }) {
+export default function Resumen({ irA, ayuda, setAyuda }: { irA: (t: string) => void; ayuda: boolean; setAyuda: (v: boolean) => void }) {
   const { datos } = useDemo()
   const [cat, setCat] = useState('+30')
 
@@ -60,10 +61,12 @@ export default function Resumen({ irA }: { irA: (t: string) => void }) {
 
   return (
     <div className="space-y-6">
+      <Encabezado titulo="Resumen" descripcion="Lo que necesita tu atención hoy y cómo viene el torneo." />
+      <ComoFunciona abierto={ayuda} onCambiar={setAyuda} />
       <div className="grid gap-4 grid-cols-2 xl:grid-cols-4">
         <Kpi titulo="Descargos en revisión" valor={enRevision} color={C.oro} onClick={() => irA('Descargos')} detalle="Esperan tu resolución" />
         <Kpi titulo="Sanciones firmes" valor={firmes} color={C.rojo} onClick={() => irA('Sanciones')} detalle={`${datos.sanciones.length} cargadas en total`} />
-        <Kpi titulo="Documentación pendiente" valor={docPend} color={C.teal} onClick={() => irA('Jugadores')} detalle={`${doc.aprobados} de ${datos.plantel.length} aprobados`} />
+        <Kpi titulo="Documentación sin aprobar" valor={docPend} color={C.teal} onClick={() => irA('Equipos')} detalle={`${doc.aprobados} de ${datos.plantel.length} jugadores aprobados · Ir a Equipos`} />
         <Kpi titulo="Resultados cargados" valor={datos.resultados.length} color={C.profundo} onClick={() => irA('Resultados')} detalle="Desde este panel" />
       </div>
 

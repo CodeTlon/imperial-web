@@ -4,22 +4,31 @@ import { useState } from 'react'
 import Contenido from '@/components/panel/Contenido'
 import DescargosOrg from '@/components/panel/DescargosOrg'
 import Goleadores from '@/components/panel/Goleadores'
-import Jugadores from '@/components/panel/Jugadores'
+import Equipos from '@/components/panel/Jugadores'
 import Resultados from '@/components/panel/Resultados'
 import Resumen from '@/components/panel/Resumen'
 import Sanciones from '@/components/panel/Sanciones'
-import { PanelShell } from '@/components/panel/ui'
+import { PanelShell, usePestanaUrl } from '@/components/panel/ui'
+import { useDemo } from '@/lib/demo-store'
 
-const TABS = ['Resumen', 'Descargos', 'Sanciones', 'Jugadores', 'Resultados', 'Goleadores', 'Contenido']
+const TABS = ['Resumen', 'Descargos', 'Sanciones', 'Equipos', 'Resultados', 'Goleadores', 'Contenido']
 
 export default function PanelPage() {
-  const [tab, setTab] = useState('Resumen')
+  const [tab, setTab] = usePestanaUrl(TABS, 'Resumen')
+  const [ayuda, setAyuda] = useState(false)
+  const { datos } = useDemo()
+  const contadores = {
+    Descargos: datos.sanciones.filter((s) => s.estado === 'En revisión').length,
+    Sanciones: datos.sanciones.length,
+    Equipos: datos.plantel.filter((j) => j.estadoDoc !== 'Aprobado').length,
+  }
+  const comoFunciona = () => { setTab('Resumen'); setAyuda(true); setTimeout(() => document.getElementById('como-funciona')?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 50) }
   return (
-    <PanelShell rol="organizacion" titulo="Panel de administración" tabs={TABS} tab={tab} setTab={setTab}>
-      {tab === 'Resumen' && <Resumen irA={setTab} />}
+    <PanelShell rol="organizacion" titulo="Panel de administración" tabs={TABS} tab={tab} setTab={setTab} contadores={contadores} onComoFunciona={comoFunciona}>
+      {tab === 'Resumen' && <Resumen irA={setTab} ayuda={ayuda} setAyuda={setAyuda} />}
       {tab === 'Descargos' && <DescargosOrg />}
       {tab === 'Sanciones' && <Sanciones />}
-      {tab === 'Jugadores' && <Jugadores />}
+      {tab === 'Equipos' && <Equipos />}
       {tab === 'Resultados' && <Resultados />}
       {tab === 'Goleadores' && <Goleadores />}
       {tab === 'Contenido' && <Contenido />}

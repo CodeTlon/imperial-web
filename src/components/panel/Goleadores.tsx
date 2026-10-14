@@ -4,13 +4,14 @@ import { Pencil, Trash2 } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { useDemo, type Gol } from '@/lib/demo-store'
 import { CATEGORIAS, equiposDe, goleadoresCategoria, jugadoresDe } from '@/components/panel/datos'
-import { BarraFiltros, Boton, Buscador, Campo, Combo, Filtro, K, Paginador, Selector, Tabla, Tarjeta, normalizar, usePaginas } from '@/components/panel/ui'
+import { BarraFiltros, Boton, Buscador, Campo, Combo, Filtro, K, Paginador, Selector, Tabla, Tarjeta, normalizar, usePaginas, Encabezado, useConfirmar } from '@/components/panel/ui'
 import { BarrasH } from '@/components/panel/graficos'
 
 type Form = { categoria: string; equipo: string; jugador: string; goles: string }
 const vacio = (categoria = '+30'): Form => ({ categoria, equipo: '', jugador: '', goles: '' })
 
 export default function Goleadores() {
+  const { pedir, dialogo } = useConfirmar()
   const { datos, cargarGoles, editarGol, quitarGol } = useDemo()
   const [f, setF] = useState<Form>(vacio())
   const [editando, setEditando] = useState<string | null>(null)
@@ -44,12 +45,14 @@ export default function Goleadores() {
   }
   const acciones = (g: Gol) => (
     <span className="inline-flex gap-1.5">
-      <Boton variante="suave" className="!px-3" onClick={() => editar(g)} aria-label={`Editar goles de ${g.jugador}`}><Pencil size={15} /></Boton>
-      <Boton variante="peligro" className="!px-3" onClick={() => { if (window.confirm(`¿Borrar los goles de ${g.jugador}?`)) quitarGol(g.id) }} aria-label={`Borrar goles de ${g.jugador}`}><Trash2 size={15} /></Boton>
+      <Boton variante="suave" icono={Pencil} onClick={() => editar(g)} aria-label={`Editar goles de ${g.jugador}`}>Editar</Boton>
+      <Boton variante="peligro" icono={Trash2} onClick={() => pedir({ titulo: `¿Borrar los goles de ${g.jugador}?`, texto: 'No se puede deshacer.', etiqueta: 'Borrar' }, () => quitarGol(g.id))} aria-label={`Borrar goles de ${g.jugador}`}>Borrar</Boton>
     </span>
   )
 
   return (
+    <div className="space-y-6">
+      <Encabezado titulo="Goleadores" descripcion="Sumá los goles por jugador. Alimentan la tabla de goleadores del sitio." />
     <div className="grid gap-6 2xl:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
       <div className="space-y-6 self-start min-w-0">
         <Tarjeta titulo={editando ? 'Editar goles' : 'Cargar goles'}>
@@ -94,6 +97,8 @@ export default function Goleadores() {
         />
         <Paginador {...pag} />
       </Tarjeta>
+    </div>
+      {dialogo}
     </div>
   )
 }

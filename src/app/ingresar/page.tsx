@@ -5,8 +5,10 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { CUENTAS, useDemo } from '@/lib/demo-store'
+import Marca from '@/components/layout/Marca'
+import { PasosLista } from '@/components/panel/ComoFunciona'
 import { Eye, EyeOff, Loader2 } from 'lucide-react'
-import { Boton, NAVY } from '@/components/panel/ui'
+import { NAVY, VARS_PANEL } from '@/components/panel/ui'
 
 function Formulario() {
   const { ingresar } = useDemo()
@@ -46,15 +48,14 @@ function Formulario() {
         </span>
       </label>
       {error && <p role="alert" className="text-sm text-[#dc2626]">{error}</p>}
-      <Boton type="submit" disabled={cargando} className="w-full py-3.5">{cargando ? <span className="inline-flex items-center justify-center gap-2"><Loader2 size={18} className="animate-spin" />Ingresando…</span> : 'Ingresar'}</Boton>
-      <div className="rounded-xl bg-[#eef6f7] p-4 text-xs text-[#5b7479] space-y-1">
-        <p className="font-bold text-[#062f36]">Cuentas de la demo (contraseña imperial123)</p>
-        {CUENTAS.map((c) => (
-          <button key={c.email} type="button" onClick={() => { setEmail(c.email); setClave('imperial123'); setError('') }} className="block underline">
-            {c.email} · {c.rol === 'organizacion' ? 'Organización' : c.rol === 'jugador' ? 'Jugador' : 'Delegado'}
-          </button>
-        ))}
-      </div>
+      <button
+        type="submit"
+        disabled={cargando}
+        className="inline-flex w-full items-center justify-center gap-2 rounded-xl px-4 py-3.5 text-base font-bold text-white transition hover:brightness-90 disabled:opacity-70"
+        style={{ background: '#0494a4' }}
+      >
+        {cargando ? <><Loader2 size={20} className="animate-spin" aria-hidden />Ingresando…</> : 'Iniciar sesión'}
+      </button>
     </form>
   )
 }
@@ -77,17 +78,20 @@ function Foto({ className }: { className: string }) {
 
 export default function IngresarPage() {
   return (
-    <main className="min-h-screen bg-white lg:grid lg:grid-cols-2">
+    <main className="min-h-screen bg-white lg:grid lg:grid-cols-2" style={VARS_PANEL}>
       <Foto className="h-[28vh] min-h-[200px] lg:hidden" />
       <section className="flex items-center justify-center px-6 py-10 lg:min-h-screen lg:py-16">
         <div className="w-full max-w-md 2xl:max-w-lg">
           <Link href="/" className="mb-8 flex items-center gap-3">
-            <Image src="/images/logo-mark.png" alt="" width={180} height={320} className="h-12 w-auto object-contain" />
-            <span className="font-heading text-2xl" style={{ color: NAVY }}>TORNEO IMPERIAL</span>
+            <Marca tamano="lg" color={NAVY} />
           </Link>
           <h1 className="font-heading text-3xl" style={{ color: NAVY }}>Ingresar</h1>
           <p className="mb-6 mt-1 text-sm text-[#5b7479]">Acceso para jugadores, delegados y organización.</p>
           <Suspense><Formulario /></Suspense>
+          <details className="mt-6 rounded-xl bg-[#eef6f7] p-4 text-sm text-[#5b7479]">
+            <summary className="cursor-pointer font-bold text-[#062f36]">Cómo funciona una sanción</summary>
+            <div className="mt-3 text-[#062f36]"><PasosLista /></div>
+          </details>
           <p className="mt-8 text-center text-xs text-[#5b7479]">
             <Link href="/" className="underline">Volver al sitio</Link> · Desarrollado por CodeTlon
           </p>

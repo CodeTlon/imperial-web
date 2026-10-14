@@ -5,12 +5,13 @@ import { useMemo, useState } from 'react'
 import { useDemo, type Resultado } from '@/lib/demo-store'
 import { fixturePorCategoria, type Categoria } from '@/lib/torneo-data'
 import { CATEGORIAS, equiposDe } from '@/components/panel/datos'
-import { BarraFiltros, Boton, Buscador, Campo, Combo, Filtro, K, Paginador, Selector, Tabla, Tarjeta, normalizar, usePaginas } from '@/components/panel/ui'
+import { BarraFiltros, Boton, Buscador, Campo, Combo, Filtro, K, Paginador, Selector, Tabla, Tarjeta, normalizar, usePaginas, Encabezado, useConfirmar } from '@/components/panel/ui'
 
 type Form = { categoria: string; fecha: string; local: string; visitante: string; golesLocal: string; golesVisitante: string }
 const vacio = (categoria = '+30'): Form => ({ categoria, fecha: '', local: '', visitante: '', golesLocal: '', golesVisitante: '' })
 
 export default function Resultados() {
+  const { pedir, dialogo } = useConfirmar()
   const { datos, cargarResultado, editarResultado, quitarResultado } = useDemo()
   const [f, setF] = useState<Form>(vacio())
   const [editando, setEditando] = useState<string | null>(null)
@@ -54,12 +55,14 @@ export default function Resultados() {
   }
   const acciones = (r: Resultado) => (
     <span className="inline-flex gap-1.5">
-      <Boton variante="suave" className="!px-3" onClick={() => editar(r)} aria-label="Editar resultado"><Pencil size={15} /></Boton>
-      <Boton variante="peligro" className="!px-3" onClick={() => { if (window.confirm('¿Borrar este resultado?')) quitarResultado(r.id) }} aria-label="Borrar resultado"><Trash2 size={15} /></Boton>
+      <Boton variante="suave" icono={Pencil} onClick={() => editar(r)} aria-label="Editar resultado">Editar</Boton>
+      <Boton variante="peligro" icono={Trash2} onClick={() => pedir({ titulo: '¿Borrar este resultado?', texto: 'No se puede deshacer.', etiqueta: 'Borrar' }, () => quitarResultado(r.id))} aria-label="Borrar resultado">Borrar</Boton>
     </span>
   )
 
   return (
+    <div className="space-y-6">
+      <Encabezado titulo="Resultados" descripcion="Cargá los resultados de cada fecha. Se reflejan en las posiciones y el fixture del sitio." />
     <div className="grid gap-6 2xl:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
       <Tarjeta titulo={editando ? 'Editar resultado' : 'Cargar resultado'} className="self-start">
         <form className="space-y-4" onSubmit={guardar}>
@@ -123,6 +126,8 @@ export default function Resultados() {
         />
         <Paginador {...pag} />
       </Tarjeta>
+    </div>
+      {dialogo}
     </div>
   )
 }
