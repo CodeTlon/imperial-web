@@ -69,9 +69,8 @@ export type ContenidoSitio = {
   contacto?: { email: string; address: string; whatsapp: string; instagram: string }
   portada?: { descripcion: string }
   cta?: { title: string; subtitle: string }
-  // Inscripción: tarjeta "Cómo funciona" y preguntas frecuentes.
+  // Inscripción: tarjeta "Cómo funciona".
   requisitos?: string[]
-  faq?: { question: string; answer: string }[]
 }
 
 type Datos = { sanciones: Sancion[]; plantel: JugadorPlantel[]; resultados: Resultado[]; goleadores: Gol[]; fotoFechaUrl: string; contenido: ContenidoSitio }

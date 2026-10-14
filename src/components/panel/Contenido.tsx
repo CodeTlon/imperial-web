@@ -1,11 +1,11 @@
 'use client'
 
-import { ArrowDown, ArrowUp, Check, Plus, RotateCcw, Trash2 } from 'lucide-react'
+import { Check, RotateCcw } from 'lucide-react'
 import { useState, type ReactNode } from 'react'
 import { useDemo, type ContenidoSitio } from '@/lib/demo-store'
 import { demoConfig } from '@/lib/demo-config'
-import { PORTADA_BASE, PREGUNTAS_BASE, REQUISITOS_BASE, useSitio } from '@/lib/useSitio'
-import { AreaTexto, Boton, Campo, Encabezado, K, Tarjeta, useConfirmar } from '@/components/panel/ui'
+import { PORTADA_BASE, REQUISITOS_BASE, useSitio } from '@/lib/useSitio'
+import { AreaTexto, Boton, Campo, Encabezado, K, Tarjeta } from '@/components/panel/ui'
 
 // Contenido original del sitio (sin cambios del panel), para "Volver al texto original".
 const ORIGINAL = demoConfig.content
@@ -93,36 +93,6 @@ function Requisitos() {
   )
 }
 
-function Preguntas() {
-  const { guardarContenido, restablecerContenido } = useDemo()
-  const { preguntas } = useSitio()
-  const { pedir, dialogo } = useConfirmar()
-  const [f, setF] = useState(preguntas.map((x) => ({ ...x })))
-  const mover = (i: number, d: number) => { const n = i + d; if (n < 0 || n >= f.length) return; const c = [...f];[c[i], c[n]] = [c[n], c[i]]; setF(c) }
-  return (
-    <Bloque clave="faq" titulo="Preguntas frecuentes de inscripción" descripcion="Se muestran al final de la página de inscripción, en este orden.">
-      <ol className="space-y-4">
-        {f.map((x, i) => (
-          <li key={i} className="rounded-xl border border-[color:var(--p-borde)] p-3 space-y-3">
-            <Campo label={`Pregunta ${i + 1}`} value={x.question} onChange={(e) => setF(f.map((y, n) => (n === i ? { ...y, question: e.target.value } : y)))} />
-            <AreaTexto label="Respuesta" rows={3} value={x.answer} onChange={(e) => setF(f.map((y, n) => (n === i ? { ...y, answer: e.target.value } : y)))} />
-            <div className="flex flex-wrap gap-2">
-              <Boton variante="suave" icono={ArrowUp} disabled={i === 0} onClick={() => mover(i, -1)} aria-label={`Subir la pregunta ${i + 1}`}>Subir</Boton>
-              <Boton variante="suave" icono={ArrowDown} disabled={i === f.length - 1} onClick={() => mover(i, 1)} aria-label={`Bajar la pregunta ${i + 1}`}>Bajar</Boton>
-              <Boton variante="peligro" icono={Trash2} onClick={() => pedir({ titulo: '¿Borrar esta pregunta?', texto: x.question || 'Pregunta sin título', etiqueta: 'Borrar' }, () => setF(f.filter((_, n) => n !== i)))} aria-label={`Borrar la pregunta ${i + 1}`}>Borrar</Boton>
-            </div>
-          </li>
-        ))}
-      </ol>
-      <Boton variante="suave" icono={Plus} onClick={() => setF([...f, { question: '', answer: '' }])}>Agregar pregunta</Boton>
-      <Pie clave="faq" valido={f.length > 0 && f.every((x) => x.question.trim() && x.answer.trim())}
-        onGuardar={() => guardarContenido('faq', f.map((x) => ({ question: x.question.trim(), answer: x.answer.trim() })))}
-        onRestablecer={() => { restablecerContenido('faq'); setF(PREGUNTAS_BASE.map((x) => ({ ...x }))) }} />
-      {dialogo}
-    </Bloque>
-  )
-}
-
 function FotoFecha() {
   const { datos, setFotoFecha } = useDemo()
   const [url, setUrl] = useState(datos.fotoFechaUrl)
@@ -145,11 +115,10 @@ export default function Contenido() {
         <div className="space-y-6 min-w-0">
           <Contacto />
           <Portada />
-          <Llamado />
-          <Requisitos />
         </div>
         <div className="space-y-6 min-w-0">
-          <Preguntas />
+          <Llamado />
+          <Requisitos />
           <FotoFecha />
         </div>
       </div>
