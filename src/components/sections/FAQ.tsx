@@ -2,10 +2,10 @@
 
 import { useState } from 'react'
 import { ChevronDown } from 'lucide-react'
-import { demoConfig } from '@/lib/demo-config'
+import { useSitio } from '@/lib/useSitio'
 
 export default function FAQ() {
-  const { content } = demoConfig
+  const { content } = useSitio()
   const [open, setOpen] = useState<number | null>(0)
 
   return (

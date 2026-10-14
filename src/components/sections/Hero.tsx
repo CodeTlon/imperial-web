@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { proximaFechaDe } from '@/lib/torneo-data'
+import { useSitio } from '@/lib/useSitio'
 import { useCategoria } from '@/lib/category-context'
 import { fechaDelPartido } from '@/components/match/MiProximoPartido'
 
@@ -18,6 +19,7 @@ export default function Hero() {
   }, [])
 
   const { categoria } = useCategoria()
+  const { portada } = useSitio()
 
   // Cuenta regresiva a la próxima fecha de la categoría elegida (solo si la fecha es futura).
   const [ahora, setAhora] = useState<number | null>(null)
@@ -52,7 +54,7 @@ export default function Hero() {
           <span className="hero-in block hero-shine" style={{ ['--d' as string]: '240ms' }}>Imperial</span>
         </h1>
         <p className="hero-in mt-1 max-w-xl sm:max-w-2xl 2xl:max-w-4xl text-base sm:text-lg xl:text-xl 2xl:text-3xl text-white/85" style={{ ['--d' as string]: '380ms' }}>
-          Fixture, posiciones, goleadores y sanciones de las seis categorías, siempre al día.
+          {portada.descripcion}
         </p>
       </div>
 

@@ -4,7 +4,7 @@ import { useState, type ChangeEvent, type FormEvent } from 'react'
 import Image from 'next/image'
 import { MapPin, Phone, Mail, Clock, Check } from 'lucide-react'
 import { WhatsAppIcon } from '@/components/icons/BrandIcons'
-import { demoConfig } from '@/lib/demo-config'
+import { useSitio } from '@/lib/useSitio'
 import { waLink } from '@/lib/utils'
 
 const inputStyle = {
@@ -17,7 +17,7 @@ const inputStyle = {
 const empty = { nombre: '', telefono: '', email: '', servicio: '', mensaje: '' }
 
 export default function Contact() {
-  const { business } = demoConfig
+  const { business } = useSitio()
   const [form, setForm] = useState(empty)
   const [error, setError] = useState('')
   const [sent, setSent] = useState(false)

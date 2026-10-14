@@ -6,7 +6,7 @@ import PageHeader from '@/components/ui/PageHeader'
 import { CheckCircle2, ShieldCheck, Users, CalendarCheck, ClipboardList, MessageCircle, Wallet, CreditCard, MapPin, ChevronDown } from 'lucide-react'
 import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
-import { demoConfig } from '@/lib/demo-config'
+import { useSitio } from '@/lib/useSitio'
 import { categorias } from '@/lib/torneo-data'
 import { waLink } from '@/lib/utils'
 
@@ -25,12 +25,7 @@ function armarMensaje(datos: Record<string, string>) {
   ].filter(Boolean).join('\n')
 }
 
-const requisitos = [
-  { icon: CheckCircle2, text: 'Seña como parte de la inscripción' },
-  { icon: Users, text: 'Lista de buena fe: hasta 25 jugadores' },
-  { icon: CalendarCheck, text: 'Se completa antes de la segunda fecha' },
-  { icon: ShieldCheck, text: 'Árbitro y veedor en cada partido' },
-]
+const ICONOS_REQUISITOS = [CheckCircle2, Users, CalendarCheck, ShieldCheck]
 
 const pasos = [
   { icon: ClipboardList, titulo: 'Completá el formulario', texto: 'Equipo, categoría, delegado y un WhatsApp de contacto. Tarda un minuto.' },
@@ -45,17 +40,8 @@ const necesitas = [
   'Elegir la categoría en la que querés jugar',
 ]
 
-const preguntas = [
-  { q: '¿Cuántos jugadores puede tener mi equipo?', a: 'La lista de buena fe es de hasta 25 jugadores por equipo.' },
-  { q: '¿Hasta cuándo puedo completar la lista?', a: 'Se completa antes de la segunda fecha del torneo.' },
-  { q: '¿Cómo cargo a los jugadores?', a: 'Una vez inscripto, el delegado ingresa a su panel y carga a cada jugador con su DNI (frente y dorso) y su foto. La organización revisa la documentación.' },
-  { q: '¿Quién dirige los partidos?', a: 'Cada partido cuenta con árbitro y veedor.' },
-  { q: '¿Cómo se paga la seña?', a: 'La seña es parte de la inscripción. Cuando te contactemos por WhatsApp te indicamos cómo abonarla.' },
-  { q: '¿Dónde se juega?', a: 'En el predio de Colectora Variante Juárez Celman 500, Córdoba.' },
-]
-
 export default function InscripcionPage() {
-  const { business } = demoConfig
+  const { business, requisitos, preguntas } = useSitio()
   const [enviado, setEnviado] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
 
@@ -100,12 +86,12 @@ export default function InscripcionPage() {
                 <div className="card lg:flex-1">
                   <h2 className="font-heading text-2xl mb-5" style={{ color: 'var(--demo-heading)' }}>Cómo funciona</h2>
                   <ul className="space-y-3">
-                    {requisitos.map(({ icon: Icon, text }) => (
+                    {requisitos.map((text, i) => { const Icon = ICONOS_REQUISITOS[i % ICONOS_REQUISITOS.length]; return (
                       <li key={text} className="flex items-center gap-3 text-sm" style={{ color: 'var(--demo-text)' }}>
                         <Icon size={18} style={{ color: 'var(--demo-accent)' }} className="flex-shrink-0" />
                         {text}
                       </li>
-                    ))}
+                    ) })}
                   </ul>
                 </div>
           <div className="card lg:flex-1">
@@ -199,12 +185,12 @@ export default function InscripcionPage() {
           <h2 className="section-title text-center mb-8">Preguntas frecuentes</h2>
           <div className="space-y-3">
             {preguntas.map((f) => (
-              <details key={f.q} className="faq card group !p-0 overflow-hidden">
+              <details key={f.question} className="faq card group !p-0 overflow-hidden">
                 <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 font-semibold" style={{ color: 'var(--demo-heading)' }}>
-                  {f.q}
+                  {f.question}
                   <ChevronDown size={18} className="flex-shrink-0 transition-transform duration-300 group-open:rotate-180" style={{ color: 'var(--demo-accent)' }} />
                 </summary>
-                <p className="px-5 pb-5 text-sm leading-relaxed" style={{ color: 'var(--demo-muted)' }}>{f.a}</p>
+                <p className="px-5 pb-5 text-sm leading-relaxed" style={{ color: 'var(--demo-muted)' }}>{f.answer}</p>
               </details>
             ))}
           </div>

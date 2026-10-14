@@ -1,11 +1,13 @@
-import { demoConfig } from '@/lib/demo-config'
+'use client'
+
+import { useSitio } from '@/lib/useSitio'
 import CountUp from '@/components/ui/CountUp'
 
 // A diferencia de la v1 (franja de stats de ancho completo, en flujo normal),
 // acá el bloque "flota" superpuesto sobre el borde inferior del Hero — patrón
 // de tarjeta elevada que se ve en sitios de torneos/eventos premium.
 export default function Stats() {
-  const { content } = demoConfig
+  const { content } = useSitio()
 
   return (
     <section id="stats" className="relative z-20 -mt-14 md:-mt-16 px-4">

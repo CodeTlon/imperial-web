@@ -1,6 +1,8 @@
+'use client'
+
 import Image from 'next/image'
 import { CheckCircle2 } from 'lucide-react'
-import { demoConfig } from '@/lib/demo-config'
+import { useSitio } from '@/lib/useSitio'
 
 // Defaults editables vía content.about en demo-config.ts (por negocio).
 const DEFAULTS = {
@@ -15,7 +17,7 @@ const DEFAULTS = {
 }
 
 export default function About() {
-  const { business, images, content } = demoConfig
+  const { business, images, content } = useSitio()
   const about = { ...DEFAULTS, ...(content as { about?: Partial<typeof DEFAULTS> }).about }
 
   return (

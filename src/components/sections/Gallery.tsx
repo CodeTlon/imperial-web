@@ -1,8 +1,10 @@
+'use client'
+
 import Image from 'next/image'
-import { demoConfig } from '@/lib/demo-config'
+import { useSitio } from '@/lib/useSitio'
 
 export default function Gallery() {
-  const { images, business } = demoConfig
+  const { images, business } = useSitio()
 
   return (
     <section id="gallery" className="section-pad" style={{ backgroundColor: 'var(--demo-surface)' }}>

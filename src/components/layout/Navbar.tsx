@@ -5,7 +5,7 @@ import Marca from './Marca'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Menu, X } from 'lucide-react'
-import { demoConfig } from '@/lib/demo-config'
+import { useSitio } from '@/lib/useSitio'
 
 // Sobre las páginas con mini hero oscuro arranca transparente y pasa a sólido al scrollear.
 export default function Navbar() {
@@ -14,7 +14,7 @@ export default function Navbar() {
   const ruta = usePathname()
   const activo = (href: string) => (href === '/' ? ruta === '/' : ruta === href || ruta.startsWith(href + '/'))
   const sobreHero = !['/ingresar', '/panel', '/delegado', '/jugador'].some((r) => ruta.startsWith(r))
-  const { business, cta, sitemap } = demoConfig
+  const { business, cta, sitemap } = useSitio()
   const links = [...sitemap, { label: 'Ingresar', href: '/ingresar' }]
   const solido = !sobreHero || scrolled || open
 

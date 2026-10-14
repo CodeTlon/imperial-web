@@ -1,9 +1,11 @@
+'use client'
+
 import Link from 'next/link'
 import Marca from './Marca'
 import { MapPin, Phone, Mail } from 'lucide-react'
 import { InstagramIcon, FacebookIcon } from '@/components/icons/BrandIcons'
 import Image from 'next/image'
-import { demoConfig } from '@/lib/demo-config'
+import { useSitio } from '@/lib/useSitio'
 
 const sponsors = [
   { name: 'Gatorade', src: '/images/sponsors/gatorade-t.png' },
@@ -14,7 +16,7 @@ const sponsors = [
 ]
 
 export default function Footer() {
-  const { business, sitemap } = demoConfig
+  const { business, sitemap } = useSitio()
 
   return (
     <footer style={{ backgroundColor: 'var(--demo-structural)', color: 'var(--demo-on-structural)' }}>

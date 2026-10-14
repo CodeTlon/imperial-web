@@ -64,13 +64,24 @@ export const CUENTAS: (Sesion & { clave: string })[] = [
   { email: 'jugador@imperial.com', nombre: 'Cristian Agustín Salussolia', rol: 'jugador', equipo: 'Ankara +30', clave: 'imperial123' },
 ]
 
-type Datos = { sanciones: Sancion[]; plantel: JugadorPlantel[]; resultados: Resultado[]; goleadores: Gol[]; fotoFechaUrl: string }
+// Textos del sitio que la organización puede cambiar desde el panel (Contenido). Lo que no se toca queda como en demo-config.ts.
+export type ContenidoSitio = {
+  contacto?: { email: string; address: string; whatsapp: string; instagram: string }
+  portada?: { descripcion: string }
+  cta?: { title: string; subtitle: string }
+  // Inscripción: tarjeta "Cómo funciona" y preguntas frecuentes.
+  requisitos?: string[]
+  faq?: { question: string; answer: string }[]
+}
+
+type Datos = { sanciones: Sancion[]; plantel: JugadorPlantel[]; resultados: Resultado[]; goleadores: Gol[]; fotoFechaUrl: string; contenido: ContenidoSitio }
 
 const INICIAL: Datos = {
   sanciones: SANCIONES_APP,
   plantel: PLANTEL_APP,
   resultados: [],
   goleadores: [],
+  contenido: {},
   fotoFechaUrl: 'https://drive.google.com/drive/folders/1UijkT6B73qCudx_L0uSlaxrv83ILYRQA',
 }
 
@@ -104,6 +115,8 @@ type Ctx = {
   cargarResultado: (r: Omit<Resultado, 'id'>) => void
   cargarGoles: (g: Omit<Gol, 'id'>) => void
   setFotoFecha: (url: string) => void
+  guardarContenido: <K extends keyof ContenidoSitio>(clave: K, valor: ContenidoSitio[K]) => void
+  restablecerContenido: (clave: keyof ContenidoSitio) => void
 }
 
 const StoreCtx = createContext<Ctx | null>(null)
@@ -186,6 +199,8 @@ export function DemoProvider({ children }: { children: ReactNode }) {
     cargarResultado: (r) => guardar((d) => ({ ...d, resultados: [{ ...r, id: nuevoId('r') }, ...d.resultados] })),
     cargarGoles: (g) => guardar((d) => ({ ...d, goleadores: [{ ...g, id: nuevoId('g') }, ...d.goleadores] })),
     setFotoFecha: (url) => guardar((d) => ({ ...d, fotoFechaUrl: url })),
+    guardarContenido: (clave, valor) => guardar((d) => ({ ...d, contenido: { ...d.contenido, [clave]: valor } })),
+    restablecerContenido: (clave) => guardar((d) => { const { [clave]: _quitar, ...resto } = d.contenido; return { ...d, contenido: resto } }),
   }
 
   return <StoreCtx.Provider value={value}>{children}</StoreCtx.Provider>

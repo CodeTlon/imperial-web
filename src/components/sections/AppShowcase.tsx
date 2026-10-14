@@ -1,6 +1,8 @@
+'use client'
+
 import { ListOrdered, Target, ShieldAlert, BookOpen, Trophy, Smartphone } from 'lucide-react'
 import { WhatsAppIcon } from '@/components/icons/BrandIcons'
-import { demoConfig } from '@/lib/demo-config'
+import { useSitio } from '@/lib/useSitio'
 import { waLink } from '@/lib/utils'
 
 // Mismo patrón que el grid de "accesos rápidos" de la app mobile
@@ -20,7 +22,7 @@ const roles = ['Jugador', 'Delegado', 'Organización', 'Hincha']
 const APP_LINK = 'torneoimperial://'
 
 export default function AppShowcase() {
-  const { business } = demoConfig
+  const { business } = useSitio()
 
   return (
     <section

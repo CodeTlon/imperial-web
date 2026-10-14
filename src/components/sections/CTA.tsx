@@ -1,10 +1,12 @@
+'use client'
+
 import { ArrowRight } from 'lucide-react'
 import { WhatsAppIcon } from '@/components/icons/BrandIcons'
-import { demoConfig } from '@/lib/demo-config'
+import { useSitio } from '@/lib/useSitio'
 import { waLink } from '@/lib/utils'
 
 export default function CTA() {
-  const { business, content, cta } = demoConfig
+  const { business, content, cta } = useSitio()
   const copy = (content as { cta?: { title?: string; subtitle?: string } }).cta ?? {}
   const title = copy.title ?? '¿Listo para empezar?'
   const subtitle = copy.subtitle ?? `Escribinos hoy y coordinamos lo que necesites. Te esperamos en ${business.address}.`
