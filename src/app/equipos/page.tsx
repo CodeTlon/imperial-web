@@ -33,10 +33,9 @@ export default function EquiposPage() {
       <main className="min-h-screen" style={{ backgroundColor: 'var(--demo-bg)' }}>
       <PageHeader
         backgroundImage="/images/gallery-3.jpg"
-        eyebrow="La competencia"
         title="Equipos"
         subtitle="Todos los equipos inscriptos en Torneo Imperial, por categoría."
-        pills={[{ label: 'Torneo', value: 'Clausura 2026' }, { label: 'Categoría', value: cat }]}
+        cta={false}
       />
 
         <section className="section-pad">

@@ -32,10 +32,9 @@ export default function FixturePage() {
       <main className="min-h-screen" style={{ backgroundColor: 'var(--demo-bg)' }}>
       <PageHeader
         backgroundImage="/images/gallery-1.jpg"
-        eyebrow="Resultados y tablas"
         title="Fixture"
         subtitle="Elegí una categoría y una fecha para ver el fixture."
-        pills={[{ label: 'Torneo', value: 'Clausura 2026' }, { label: 'Categoría', value: cat }]}
+        cta={false}
       />
 
         <section className="section-pad">
