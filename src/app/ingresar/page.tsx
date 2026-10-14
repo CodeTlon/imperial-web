@@ -6,7 +6,7 @@ import Image from 'next/image'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { CUENTAS, useDemo } from '@/lib/demo-store'
 import Marca from '@/components/layout/Marca'
-import { Eye, EyeOff, Loader2 } from 'lucide-react'
+import { Eye, EyeOff, Info, Loader2 } from 'lucide-react'
 import { NAVY, VARS_PANEL } from '@/components/panel/ui'
 
 function Formulario() {
@@ -18,6 +18,7 @@ function Formulario() {
   const [error, setError] = useState('')
   const [ver, setVer] = useState(false)
   const [cargando, setCargando] = useState(false)
+  const [cuentas, setCuentas] = useState(false)
 
   function enviar(e: React.FormEvent) {
     e.preventDefault()
@@ -31,8 +32,31 @@ function Formulario() {
     router.replace(desde ?? (rol === 'organizacion' ? '/panel' : rol === 'jugador' ? '/jugador' : '/delegado'))
   }
 
+  const usar = (c: (typeof CUENTAS)[number]) => { setEmail(c.email); setClave(c.clave); setError('') }
+  const ROL: Record<string, string> = { organizacion: 'Organización', delegado: 'Delegado', jugador: 'Jugador' }
+
   return (
     <form onSubmit={enviar} className="space-y-4">
+      <div className="rounded-xl border border-[#d9e8ea]">
+        <button type="button" onClick={() => setCuentas(!cuentas)} aria-expanded={cuentas} aria-controls="cuentas-demo" className="flex w-full items-center gap-2 px-4 py-3 text-left text-sm font-semibold text-[#062f36]">
+          <Info size={18} className="text-[#0494a4]" aria-hidden />
+          Cuentas de prueba
+          <span className="ml-auto text-xs font-normal text-[#5b7479]">{cuentas ? 'Ocultar' : 'Ver'}</span>
+        </button>
+        {cuentas && (
+          <ul id="cuentas-demo" className="space-y-2 border-t border-[#d9e8ea] p-3">
+            {CUENTAS.map((c) => (
+              <li key={c.email}>
+                <button type="button" onClick={() => usar(c)} className="w-full rounded-lg bg-[#eef6f7] px-3 py-2.5 text-left transition hover:bg-[#dff0f2] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#0494a4]">
+                  <span className="block text-sm font-bold text-[#062f36]">{ROL[c.rol]}</span>
+                  <span className="block text-xs text-[#5b7479]">{c.email} · contraseña {c.clave}</span>
+                </button>
+              </li>
+            ))}
+            <li className="px-1 text-xs text-[#5b7479]">Tocá una cuenta para cargar los datos en el formulario.</li>
+          </ul>
+        )}
+      </div>
       <label className="block">
         <span className="mb-1.5 block text-sm font-semibold text-[#062f36]">Email</span>
         <input type="email" required value={email} onChange={(e) => { setEmail(e.target.value); setError('') }} autoComplete="username" placeholder="delegado@imperial.com" className="w-full rounded-xl border border-[#d9e8ea] bg-[#eef6f7] px-4 py-3 text-base outline-none focus:border-[#0494a4] focus:ring-2 focus:ring-[#0494a4]/30" />
