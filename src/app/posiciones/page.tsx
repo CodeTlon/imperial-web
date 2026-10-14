@@ -61,9 +61,7 @@ export default function PosicionesPage() {
 
             {sancionados.length > 0 && (
               <div className="card overflow-x-auto">
-                <h3 className="font-bold text-lg mb-5 flex items-center gap-2" style={{ color: 'var(--demo-heading)' }}>
-                  <ShieldAlert size={20} style={{ color: 'var(--demo-accent)' }} /> Jugadores suspendidos — {cat}
-                </h3>
+                <p className="eyebrow !mb-4 flex items-center gap-2"><ShieldAlert size={16} aria-hidden /> Jugadores suspendidos · {cat}</p>
                 <ul className="sm:hidden space-y-3">
                   {sancionados.map((s) => (
                     <li key={`${s.jugador}-${s.equipo}`} className="p-3 text-sm" style={{ backgroundColor: 'var(--demo-surface-alt)', borderRadius: 'var(--demo-radius)' }}>
