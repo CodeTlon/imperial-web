@@ -9,7 +9,7 @@ import { ArchivosSancion, HiloMensajes } from '@/components/panel/Adjuntos'
 import { ChipsArticulos } from '@/components/panel/Sanciones'
 import { BarrasH, Kpi, Semaforo } from '@/components/panel/graficos'
 import {
-  AreaTexto, BarraFiltros, Boton, Buscador, C, Campo, Etiqueta, Filtro, K, Paginador, PanelShell, SubirFoto, Tabla, Tarjeta, normalizar, usePaginas,
+  AreaTexto, BarraFiltros, Boton, Buscador, C, Campo, Etiqueta, Filtro, K, Paginador, PanelShell, SubirFoto, Tabla, Tarjeta, normalizar, usePaginas, usePestanaUrl,
 } from '@/components/panel/ui'
 
 const POSICIONES = ['Arquero', 'Defensor', 'Mediocampista', 'Delantero']
@@ -18,7 +18,7 @@ const VACIO: FormJ = { nombre: '', dni: '', posicion: 'Mediocampista' }
 const TABS = ['Inicio', 'Fixture y posiciones', 'Descargos', 'Plantel']
 
 export default function DelegadoPage() {
-  const [tab, setTab] = useState('Inicio')
+  const [tab, setTab] = usePestanaUrl(TABS, 'Inicio')
   return (
     <PanelShell rol="delegado" titulo="Panel del delegado" tabs={TABS} tab={tab} setTab={setTab}>
       {tab === 'Inicio' && <Inicio irA={setTab} />}

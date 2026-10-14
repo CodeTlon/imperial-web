@@ -1,17 +1,17 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { admiteDescargo, useDemo } from '@/lib/demo-store'
 import { categoriaDeEquipo, goleadoresCategoria, mismo } from '@/components/panel/datos'
 import { TablaPosiciones, TarjetaProximoPartido, partidosDe, resultadoPara, useFixture } from '@/components/panel/Compartidos'
 import { ChipsArticulos } from '@/components/panel/Sanciones'
 import { BarrasH, BarrasV, Dona, Kpi } from '@/components/panel/graficos'
-import { C, COLOR_ESTADO, Etiqueta, K, PanelShell, Tarjeta } from '@/components/panel/ui'
+import { C, COLOR_ESTADO, Etiqueta, K, PanelShell, Tarjeta, usePestanaUrl } from '@/components/panel/ui'
 
 const TABS = ['Inicio', 'Mis sanciones', 'Posiciones']
 
 export default function JugadorPage() {
-  const [tab, setTab] = useState('Inicio')
+  const [tab, setTab] = usePestanaUrl(TABS, 'Inicio')
   return (
     <PanelShell rol="jugador" titulo="Mi panel de jugador" tabs={TABS} tab={tab} setTab={setTab}>
       {tab === 'Inicio' && <Inicio irA={setTab} />}
