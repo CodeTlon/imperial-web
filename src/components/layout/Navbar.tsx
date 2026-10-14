@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react'
 import Marca from './Marca'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Menu, X } from 'lucide-react'
 import { useSitio } from '@/lib/useSitio'
 
 // Sobre las páginas con mini hero oscuro arranca transparente y pasa a sólido al scrollear.
@@ -24,6 +23,17 @@ export default function Navbar() {
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
+
+  // El menú móvil se cierra con Esc, al cambiar de página y si la pantalla pasa a escritorio.
+  useEffect(() => { setOpen(false) }, [ruta])
+  useEffect(() => {
+    if (!open) return
+    const tecla = (e: KeyboardEvent) => { if (e.key === 'Escape') setOpen(false) }
+    const ancho = () => { if (window.innerWidth >= 768) setOpen(false) }
+    document.addEventListener('keydown', tecla)
+    window.addEventListener('resize', ancho)
+    return () => { document.removeEventListener('keydown', tecla); window.removeEventListener('resize', ancho) }
+  }, [open])
 
   return (
     <header
@@ -60,36 +70,47 @@ export default function Navbar() {
             </Link>
           </nav>
 
-          <button className="md:hidden p-2" onClick={() => setOpen(!open)} style={{ color: 'var(--demo-on-structural)' }} aria-label="Menú">
-            {open ? <X size={24} /> : <Menu size={24} />}
+          <button
+            className="md:hidden relative h-11 w-11 -mr-2 flex items-center justify-center active:scale-90 transition-transform duration-150"
+            onClick={() => setOpen(!open)}
+            style={{ color: 'var(--demo-on-structural)' }}
+            aria-label={open ? 'Cerrar menú' : 'Abrir menú'}
+            aria-expanded={open}
+            aria-controls="menu-movil"
+          >
+            <span className="hamburguesa" data-open={open} aria-hidden><i /><i /><i /></span>
           </button>
         </div>
       </div>
 
-      {open && (
-        <div className="md:hidden border-t px-4 py-4 flex flex-col gap-3" style={{ backgroundColor: 'var(--demo-structural)', borderColor: 'var(--demo-border)' }}>
-          {links.map((l) => (
-            <Link
+      {/* Fondo que atenúa la página y cierra el menú al tocarlo */}
+      <div className="menu-fondo md:hidden" data-open={open} onClick={() => setOpen(false)} aria-hidden />
+      <div id="menu-movil" className="menu-movil md:hidden" data-open={open}>
+        <div className="border-t" style={{ backgroundColor: 'var(--demo-structural)', borderColor: 'var(--demo-border)' }}>
+          <div className="px-4 py-4 flex flex-col gap-1">
+            {links.map((l, i) => (
+              <Link
                 key={l.href}
                 href={l.href}
                 aria-current={activo(l.href) ? 'page' : undefined}
-                className={`text-sm py-2 pl-3 border-l-2 ${activo(l.href) ? 'font-bold border-[var(--demo-accent)]' : 'font-medium border-transparent opacity-80'}`}
-                style={{ color: 'var(--demo-on-structural)' }}
+                className={`menu-item text-base py-3 pl-3 border-l-2 active:bg-white/10 transition-colors ${activo(l.href) ? 'font-bold border-[var(--demo-accent)]' : 'font-medium border-transparent opacity-90'}`}
+                style={{ color: 'var(--demo-on-structural)', ['--i' as string]: i } as React.CSSProperties}
                 onClick={() => setOpen(false)}
               >
-              {l.label}
+                {l.label}
+              </Link>
+            ))}
+            <Link
+              href="/inscripcion"
+              className="menu-item mt-3 px-5 py-3.5 text-sm font-bold text-center active:scale-[0.98]"
+              style={{ backgroundColor: 'var(--demo-accent)', color: 'var(--demo-on-accent)', borderRadius: '0.5rem', ['--i' as string]: links.length } as React.CSSProperties}
+              onClick={() => setOpen(false)}
+            >
+              {cta.label}
             </Link>
-          ))}
-          <Link
-            href="/inscripcion"
-            className="mt-2 px-5 py-3 text-sm font-bold text-center"
-            style={{ backgroundColor: 'var(--demo-accent)', color: 'var(--demo-on-accent)', borderRadius: '0.5rem' }}
-            onClick={() => setOpen(false)}
-          >
-            {cta.label}
-          </Link>
+          </div>
         </div>
-      )}
+      </div>
     </header>
   )
 }
