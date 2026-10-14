@@ -3,15 +3,15 @@
 import { Suspense, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import { CUENTAS, useDemo } from '@/lib/demo-store'
+import { navegarConCortina } from '@/lib/navegar'
 import Marca from '@/components/layout/Marca'
 import { Eye, EyeOff, Info, Loader2 } from 'lucide-react'
 import { NAVY, VARS_PANEL } from '@/components/panel/ui'
 
 function Formulario() {
   const { ingresar } = useDemo()
-  const router = useRouter()
   const desde = useSearchParams().get('desde')
   const [email, setEmail] = useState('')
   const [clave, setClave] = useState('')
@@ -29,7 +29,8 @@ function Formulario() {
       return setError('Email o contraseña incorrectos.')
     }
     const rol = CUENTAS.find((c) => c.email === email.trim().toLowerCase())!.rol
-    router.replace(desde ?? (rol === 'organizacion' ? '/panel' : rol === 'jugador' ? '/jugador' : '/delegado'))
+    // La pantalla de carga cubre primero y recién después se cambia de página: no se ve el panel antes.
+    navegarConCortina(desde ?? (rol === 'organizacion' ? '/panel' : rol === 'jugador' ? '/jugador' : '/delegado'))
   }
 
   const usar = (c: (typeof CUENTAS)[number]) => { setEmail(c.email); setClave(c.clave); setError('') }
