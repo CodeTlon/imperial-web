@@ -3,7 +3,7 @@
 import { useState, type FormEvent } from 'react'
 import Image from 'next/image'
 import PageHeader from '@/components/ui/PageHeader'
-import { CheckCircle2, ShieldCheck, Users, CalendarCheck, ClipboardList, MessageCircle, Wallet, CreditCard, MapPin, ChevronDown } from 'lucide-react'
+import { CheckCircle2, ShieldCheck, Users, CalendarCheck, ClipboardList, MessageCircle, Wallet, CreditCard, MapPin } from 'lucide-react'
 import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
 import { useSitio } from '@/lib/useSitio'
@@ -41,7 +41,7 @@ const necesitas = [
 ]
 
 export default function InscripcionPage() {
-  const { business, requisitos, preguntas } = useSitio()
+  const { business, requisitos } = useSitio()
   const [enviado, setEnviado] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
 
@@ -180,22 +180,6 @@ export default function InscripcionPage() {
         </section>
 
 
-      <section className="section-pad" style={{ backgroundColor: 'var(--demo-surface)' }}>
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="section-title text-center mb-8">Preguntas frecuentes</h2>
-          <div className="space-y-3">
-            {preguntas.map((f) => (
-              <details key={f.question} className="faq card group !p-0 overflow-hidden">
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 font-semibold" style={{ color: 'var(--demo-heading)' }}>
-                  {f.question}
-                  <ChevronDown size={18} className="flex-shrink-0 transition-transform duration-300 group-open:rotate-180" style={{ color: 'var(--demo-accent)' }} />
-                </summary>
-                <p className="px-5 pb-5 text-sm leading-relaxed" style={{ color: 'var(--demo-muted)' }}>{f.answer}</p>
-              </details>
-            ))}
-          </div>
-        </div>
-      </section>
       </main>
       <Footer />
     </>
