@@ -37,4 +37,5 @@ Estos archivos son iguales en `imperial-app` y hay que mantenerlos juntos:
 
 ## Changelog
 
+- **2026-10-14 (video):** nuevo video de portada para desktop (1080p, 1 min, sin audio, 11 MB) con su póster; el de móvil no cambia.
 - **2026-10-14:** repo separado de `CodeTlon/demos`. Paleta del escudo unificada con la app, escudos para los 100 equipos, sanciones y planteles de demo en todas las categorías, reglamento reordenado, páginas de sanciones, carta y cómo llegar rehechas, descargos en tabla y detalle, validaciones en todos los formularios y menú lateral en los paneles.
