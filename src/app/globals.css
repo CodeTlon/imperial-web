@@ -90,6 +90,8 @@
     color: var(--demo-text);
   }
   .input:focus { border-color: var(--demo-accent); }
+  .input[aria-invalid='true'] { border-color: #dc2626; }
+  .input[aria-invalid='true']:focus { box-shadow: 0 0 0 2px rgba(220,38,38,.2); }
   .input::placeholder { color: var(--demo-muted); }
   /* Un textarea en forma de píldora (radio 9999px) se ve roto en varias
      líneas — usa el radio "grande" de cards en vez del de botones/inputs. */

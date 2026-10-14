@@ -317,35 +317,41 @@ const conError = (error?: string) => (error ? ' !border-[#dc2626] focus:!border-
 export function Campo({ label, className = '', error, ...p }: InputHTMLAttributes<HTMLInputElement> & { label: string; error?: string }) {
   const id = useId()
   return (
-    <label className="block min-w-0">
-      <span className={K.etiqueta}>{label}</span>
-      <input {...p} aria-invalid={!!error || undefined} aria-describedby={error ? id : undefined} className={`${K.campo}${conError(error)} ${className}`} />
+    <div className="min-w-0">
+      <label className="block">
+        <span className={K.etiqueta}>{label}</span>
+        <input {...p} aria-invalid={!!error || undefined} aria-describedby={error ? id : undefined} className={`${K.campo}${conError(error)} ${className}`} />
+      </label>
       <MensajeError id={id}>{error}</MensajeError>
-    </label>
+    </div>
   )
 }
 
 export function AreaTexto({ label, className = '', error, ...p }: TextareaHTMLAttributes<HTMLTextAreaElement> & { label?: string; error?: string }) {
   const id = useId()
   return (
-    <label className="block min-w-0">
-      {label && <span className={K.etiqueta}>{label}</span>}
-      <textarea {...p} aria-invalid={!!error || undefined} aria-describedby={error ? id : undefined} className={`${K.campo}${conError(error)} ${className}`} />
+    <div className="min-w-0">
+      <label className="block">
+        {label && <span className={K.etiqueta}>{label}</span>}
+        <textarea {...p} aria-invalid={!!error || undefined} aria-describedby={error ? id : undefined} className={`${K.campo}${conError(error)} ${className}`} />
+      </label>
       <MensajeError id={id}>{error}</MensajeError>
-    </label>
+    </div>
   )
 }
 
 export function Selector({ label, opciones, className = '', error, ...p }: SelectHTMLAttributes<HTMLSelectElement> & { label: string; opciones: { valor: string; texto: string }[]; error?: string }) {
   const id = useId()
   return (
-    <label className="block min-w-0">
-      <span className={K.etiqueta}>{label}</span>
-      <select {...p} aria-invalid={!!error || undefined} aria-describedby={error ? id : undefined} className={`${K.campo}${conError(error)} ${className}`}>
-        {opciones.map((o) => <option key={o.valor} value={o.valor}>{o.texto}</option>)}
-      </select>
+    <div className="min-w-0">
+      <label className="block">
+        <span className={K.etiqueta}>{label}</span>
+        <select {...p} aria-invalid={!!error || undefined} aria-describedby={error ? id : undefined} className={`${K.campo}${conError(error)} ${className}`}>
+          {opciones.map((o) => <option key={o.valor} value={o.valor}>{o.texto}</option>)}
+        </select>
+      </label>
       <MensajeError id={id}>{error}</MensajeError>
-    </label>
+    </div>
   )
 }
 
@@ -520,11 +526,15 @@ export function Paginador({ pagina, total, ir }: { pagina: number; total: number
 }
 
 // Carga de imagen guardada como data URL (demo, queda en el navegador).
-export function SubirFoto({ label, valor, onChange, ayuda = 'Tocar para elegir una imagen (JPG o PNG)' }: { label: string; valor?: string; onChange: (v: string) => void; ayuda?: string }) {
+const MAX_FOTO = 8 * 1024 * 1024
+
+export function SubirFoto({ label, valor, onChange, ayuda = 'Tocar para elegir una imagen (JPG o PNG)', error }: { label: string; valor?: string; onChange: (v: string) => void; ayuda?: string; error?: string }) {
+  const [problema, setProblema] = useState('')
+  const mostrado = problema || error
   return (
     <div>
       <span className={K.etiqueta}>{label}</span>
-      <label className={`flex items-center justify-center rounded-xl border-2 border-dashed ${K.borde} bg-[var(--p-fondo)] h-32 cursor-pointer overflow-hidden hover:border-[color:var(--p-teal)]`}>
+      <label className={`flex items-center justify-center rounded-xl border-2 border-dashed ${mostrado ? 'border-[#dc2626]' : K.borde} bg-[var(--p-fondo)] h-32 cursor-pointer overflow-hidden hover:border-[color:var(--p-teal)]`}>
         {valor ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img src={valor} alt={label} className="h-full w-full object-cover" />
@@ -533,15 +543,22 @@ export function SubirFoto({ label, valor, onChange, ayuda = 'Tocar para elegir u
         )}
         <input
           type="file"
-          accept="image/*"
+          accept="image/jpeg,image/png,image/webp"
           className="sr-only"
+          aria-invalid={!!mostrado || undefined}
           onChange={(e) => {
             const f = e.target.files?.[0]
+            e.target.value = ''
             if (!f) return
+            if (!/^image\/(jpeg|png|webp)$/.test(f.type)) return setProblema('Elegí una imagen JPG, PNG o WebP.')
+            if (f.size > MAX_FOTO) return setProblema('La imagen pesa más de 8 MB. Elegí una más liviana.')
+            setProblema('')
             const r = new FileReader()
+            r.onerror = () => setProblema('No se pudo leer el archivo. Probá con otro.')
             r.onload = () => {
               // Se reduce para no llenar el almacenamiento del navegador.
               const img = new Image()
+              img.onerror = () => setProblema('La imagen está dañada o no se puede abrir.')
               img.onload = () => {
                 const k = Math.min(1, 640 / Math.max(img.width, img.height))
                 const c = document.createElement('canvas')
@@ -556,6 +573,7 @@ export function SubirFoto({ label, valor, onChange, ayuda = 'Tocar para elegir u
           }}
         />
       </label>
+      <MensajeError>{mostrado}</MensajeError>
     </div>
   )
 }

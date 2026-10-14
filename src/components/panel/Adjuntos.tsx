@@ -138,6 +138,8 @@ export function ArchivosSancion({ mensajes }: { mensajes: Mensaje[] }) {
 // ---------- Hilo completo: mensajes + redactor ----------
 type Pendiente = { key: string; nombre: string; tamano: number; clase: ReturnType<typeof claseDe>; preview?: string; estado: 'guardando' | 'listo'; adj?: Adjunto }
 
+const MAX_MENSAJE = 1000
+
 export function HiloMensajes({ s, quien, placeholder, variante = 'lista' }: { s: Sancion; quien: 'organizacion' | 'delegado'; placeholder: string; variante?: 'lista' | 'chat' }) {
   const chat = variante === 'chat'
   const logRef = useRef<HTMLDivElement>(null)
@@ -205,10 +207,11 @@ export function HiloMensajes({ s, quien, placeholder, variante = 'lista' }: { s:
 
   const ocupado = pend.some((p) => p.estado === 'guardando')
   const hayAdj = pend.some((p) => p.adj)
-  const puede = !ocupado && (texto.trim() || hayAdj)
+  const puede = !ocupado && (texto.trim() || hayAdj) && texto.length <= MAX_MENSAJE
 
   function enviar() {
-    if (!puede) return
+    if (texto.length > MAX_MENSAJE) return setAviso([`El mensaje es muy largo: máximo ${MAX_MENSAJE} caracteres (tenés ${texto.length}).`])
+    if (!puede) return setAviso(['Escribí un mensaje o adjuntá un archivo para enviar.'])
     const adjs = pend.flatMap((p) => (p.adj ? [p.adj] : []))
     adjs.forEach((a) => enviado.current.add(a.id))
     pend.forEach((p) => p.preview && URL.revokeObjectURL(p.preview))
@@ -282,13 +285,13 @@ export function HiloMensajes({ s, quien, placeholder, variante = 'lista' }: { s:
           </Boton>
           <input
             value={texto}
-            onChange={(e) => setTexto(e.target.value)}
+            onChange={(e) => { setTexto(e.target.value); if (aviso.length) setAviso([]) }}
             onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); enviar() } }}
             placeholder={placeholder}
             aria-label="Escribir mensaje"
             className={`${K.campo} flex-1 !py-2.5`}
           />
-          <Boton variante="suave" disabled={!puede} onClick={enviar} aria-label="Enviar mensaje" className="shrink-0">
+          <Boton variante="suave" disabled={ocupado} onClick={enviar} aria-label="Enviar mensaje" className="shrink-0">
             {ocupado ? <Loader2 size={16} className="animate-spin" /> : <><span className="hidden sm:inline">Enviar</span><Send size={16} className="sm:hidden" /></>}
           </Boton>
         </div>

@@ -9,7 +9,7 @@ import { ArchivosSancion, HiloMensajes } from '@/components/panel/Adjuntos'
 import { ChipsArticulos } from '@/components/panel/Sanciones'
 import { BarrasH, Kpi, Semaforo } from '@/components/panel/graficos'
 import {
-  AreaTexto, BarraFiltros, Boton, Buscador, C, Campo, Etiqueta, Filtro, K, Paginador, PanelShell, SubirFoto, Tabla, Tarjeta, normalizar, usePaginas, usePestanaUrl,
+  AreaTexto, BarraFiltros, Boton, Buscador, C, Campo, Etiqueta, Filtro, K, MensajeError, Paginador, PanelShell, SubirFoto, Tabla, Tarjeta, normalizar, usePaginas, usePestanaUrl,
 } from '@/components/panel/ui'
 
 const POSICIONES = ['Arquero', 'Defensor', 'Mediocampista', 'Delantero']
@@ -140,6 +140,15 @@ function Descargos() {
   const propias = base.filter((s) => (!estado || s.estado === estado) && (!q || normalizar(`${s.jugador} ${s.partido} ${s.motivo}`).includes(normalizar(q))))
   const pag = usePaginas(propias, 4)
   const [texto, setTexto] = useState<Record<string, string>>({})
+  const [intentoD, setIntentoD] = useState<Record<string, boolean>>({})
+  // Un descargo necesita explicar lo ocurrido: entre 30 y 1500 caracteres.
+  const errorDescargo = (t: string) => {
+    const n = t.trim().length
+    if (n === 0) return 'Escribí el descargo del equipo.'
+    if (n < 30) return `Explicá lo ocurrido con más detalle (mínimo 30 caracteres, tenés ${n}).`
+    if (n > 1500) return `El descargo es muy largo: máximo 1500 caracteres (tenés ${n}).`
+    return undefined
+  }
   return (
     <Tarjeta titulo={`Sanciones de ${sesion?.equipo}`}>
       <BarraFiltros>
@@ -168,9 +177,16 @@ function Descargos() {
                     value={texto[s.id] ?? ''}
                     onChange={(e) => setTexto({ ...texto, [s.id]: e.target.value })}
                     rows={3}
+                    aria-label={`Descargo por la sanción de ${s.jugador}`}
+                    error={intentoD[s.id] ? errorDescargo(texto[s.id] ?? '') : undefined}
                     placeholder={s.descargo ? 'Actualizá el descargo del equipo' : 'Escribí el descargo del equipo. Ej: El contacto fue accidental, el jugador disputaba la pelota.'}
                   />
-                  <Boton disabled={!(texto[s.id] ?? '').trim()} onClick={() => { enviarDescargo(s.id, texto[s.id].trim()); setTexto({ ...texto, [s.id]: '' }) }}>
+                  <p className={`text-right text-xs ${K.suave}`}>{(texto[s.id] ?? '').trim().length}/1500</p>
+                  <Boton onClick={() => {
+                    setIntentoD({ ...intentoD, [s.id]: true })
+                    if (errorDescargo(texto[s.id] ?? '')) return
+                    enviarDescargo(s.id, texto[s.id].trim()); setTexto({ ...texto, [s.id]: '' }); setIntentoD({ ...intentoD, [s.id]: false })
+                  }}>
                     {s.descargo ? 'Actualizar descargo' : 'Enviar descargo'}
                   </Boton>
                 </div>
@@ -200,10 +216,32 @@ function Plantel() {
   }, [propios, q, estado])
   const pag = usePaginas(lista, 8)
   const lleno = propios.length >= TOPE_PLANTEL && !form.id
-  const valido = form.nombre.trim() && form.dni.trim() && form.foto && form.dniFrente && form.dniDorso && !lleno
+  const [intento, setIntento] = useState(false)
+  const errores = useMemo(() => {
+    const e: Record<string, string> = {}
+    const nombre = form.nombre.trim().replace(/\s+/g, ' ')
+    if (!nombre) e.nombre = 'Ingresá el nombre y apellido.'
+    else if (!/^[\p{L}][\p{L}\s'.-]*$/u.test(nombre)) e.nombre = 'El nombre solo puede tener letras y espacios.'
+    else if (nombre.split(' ').length < 2 || nombre.length < 5) e.nombre = 'Ingresá nombre y apellido (por ejemplo: Juan Pérez).'
+    const digitos = form.dni.replace(/[.\s]/g, '')
+    if (!form.dni.trim()) e.dni = 'Ingresá el DNI.'
+    else if (!/^\d+$/.test(digitos)) e.dni = 'El DNI solo lleva números (con o sin puntos).'
+    else if (digitos.length < 7 || digitos.length > 8) e.dni = 'El DNI tiene 7 u 8 números.'
+    else {
+      const otro = datos.plantel.find((j) => j.id !== form.id && j.dni.replace(/[.\s]/g, '') === digitos)
+      if (otro) e.dni = otro.equipo === sesion?.equipo ? `Ya cargaste este DNI (${otro.nombre}).` : `Este DNI ya está cargado en ${otro.equipo}.`
+    }
+    if (!form.foto) e.foto = 'Falta la foto del jugador.'
+    if (!form.dniFrente) e.dniFrente = 'Falta el frente del DNI.'
+    if (!form.dniDorso) e.dniDorso = 'Falta el dorso del DNI.'
+    if (lleno) e.plantel = `El plantel está completo (${TOPE_PLANTEL} jugadores). Quitá a alguien para sumar otro.`
+    return e
+  }, [form, datos.plantel, sesion?.equipo, lleno])
+  const err = (k: string) => (intento ? errores[k] : undefined)
   const doc = estadoPlantel(propios)
 
   function editar(j: JugadorPlantel) {
+    setIntento(false)
     setForm({ id: j.id, nombre: j.nombre, dni: j.dni, posicion: j.posicion, foto: j.foto, dniFrente: j.dniFrente, dniDorso: j.dniDorso })
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
@@ -229,15 +267,21 @@ function Plantel() {
         <Tarjeta titulo={form.id ? 'Editar jugador' : 'Agregar jugador'}>
           <form
             className="space-y-4"
+            noValidate
             onSubmit={(e) => {
               e.preventDefault()
-              if (!valido || !sesion?.equipo) return
-              guardarJugador({ ...form, equipo: sesion.equipo, nombre: form.nombre.trim(), dni: form.dni.trim() })
+              setIntento(true)
+              if (Object.keys(errores).length || !sesion?.equipo) {
+                requestAnimationFrame(() => document.querySelector<HTMLElement>('form [aria-invalid="true"]')?.focus())
+                return
+              }
+              guardarJugador({ ...form, equipo: sesion.equipo, nombre: form.nombre.trim().replace(/\s+/g, ' '), dni: form.dni.trim() })
+              setIntento(false)
               setForm(VACIO)
             }}
           >
-            <Campo label="Nombre y apellido" value={form.nombre} onChange={(e) => setForm({ ...form, nombre: e.target.value })} placeholder="Ej: Juan Pérez" />
-            <Campo label="DNI" inputMode="numeric" value={form.dni} onChange={(e) => setForm({ ...form, dni: e.target.value })} placeholder="Ej: 32.456.789" />
+            <Campo label="Nombre y apellido" value={form.nombre} onChange={(e) => setForm({ ...form, nombre: e.target.value })} placeholder="Ej: Juan Pérez" error={err('nombre')} />
+            <Campo label="DNI" inputMode="numeric" value={form.dni} onChange={(e) => setForm({ ...form, dni: e.target.value })} placeholder="Ej: 32.456.789" error={err('dni')} />
             <div>
               <span className={K.etiqueta}>Posición</span>
               <div className="flex flex-wrap gap-2">
@@ -247,17 +291,17 @@ function Plantel() {
                 ))}
               </div>
             </div>
-            <SubirFoto label="Foto del jugador" valor={form.foto} onChange={(v) => setForm({ ...form, foto: v })} ayuda="Foto carnet o de frente (JPG o PNG)" />
+            <SubirFoto label="Foto del jugador" valor={form.foto} onChange={(v) => setForm({ ...form, foto: v })} ayuda="Foto carnet o de frente (JPG o PNG)" error={err('foto')} />
             <div className="grid grid-cols-2 gap-3">
-              <SubirFoto label="DNI frente" valor={form.dniFrente} onChange={(v) => setForm({ ...form, dniFrente: v })} ayuda="Foto del frente del DNI" />
-              <SubirFoto label="DNI dorso" valor={form.dniDorso} onChange={(v) => setForm({ ...form, dniDorso: v })} ayuda="Foto del dorso del DNI" />
+              <SubirFoto label="DNI frente" valor={form.dniFrente} onChange={(v) => setForm({ ...form, dniFrente: v })} ayuda="Foto del frente del DNI" error={err('dniFrente')} />
+              <SubirFoto label="DNI dorso" valor={form.dniDorso} onChange={(v) => setForm({ ...form, dniDorso: v })} ayuda="Foto del dorso del DNI" error={err('dniDorso')} />
             </div>
             <div className="flex flex-wrap gap-2">
-              <Boton type="submit" disabled={!valido}>{form.id ? 'Guardar cambios' : 'Agregar al plantel'}</Boton>
-              {form.id && <Boton type="button" variante="suave" onClick={() => setForm(VACIO)}>Cancelar</Boton>}
+              <Boton type="submit">{form.id ? 'Guardar cambios' : 'Agregar al plantel'}</Boton>
+              {form.id && <Boton type="button" variante="suave" onClick={() => { setIntento(false); setForm(VACIO) }}>Cancelar</Boton>}
             </div>
-            {lleno && <p className="text-xs text-[#dc2626]">El plantel está completo ({TOPE_PLANTEL} jugadores). Quitá a alguien para sumar otro.</p>}
-            {!valido && !lleno && <p className={`text-xs ${K.suave}`}>Completá nombre, DNI y las tres fotos.{form.id ? ' Si solo cambiás nombre o posición, la documentación no vuelve a revisión.' : ''}</p>}
+            {intento && Object.keys(errores).length > 0 && <MensajeError>{errores.plantel ?? `Revisá los ${Object.keys(errores).length} campo(s) marcados en rojo para poder guardar.`}</MensajeError>}
+            {!intento && <p className={`text-xs ${K.suave}`}>Cargá nombre, DNI y las tres fotos.{form.id ? ' Si solo cambiás nombre o posición, la documentación no vuelve a revisión.' : ''}</p>}
           </form>
         </Tarjeta>
         <Tarjeta titulo={`Plantel ${propios.length}/${TOPE_PLANTEL}`}>

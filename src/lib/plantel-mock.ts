@@ -52,4 +52,8 @@ function generar(): JugadorPlantel[] {
   return sal
 }
 
-export const PLANTEL_DEMO: JugadorPlantel[] = [...PLANTEL_APP, ...generar()]
+// Ankara +30 (el equipo del delegado de prueba) viene con 26 jugadores, por encima del tope de 25: se deja en 24
+// para que se pueda probar agregar y editar jugadores.
+const PLANTEL_BASE = [...PLANTEL_APP.filter((j) => j.equipo !== 'Ankara +30'), ...PLANTEL_APP.filter((j) => j.equipo === 'Ankara +30').slice(0, 24)]
+
+export const PLANTEL_DEMO: JugadorPlantel[] = [...PLANTEL_BASE, ...generar()]

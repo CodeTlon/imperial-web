@@ -7,7 +7,7 @@ import { ARTICULOS, fechasSugeridas, tipoDeArticulo } from '@/lib/sugerir-articu
 import { ArticulosSelector } from '@/components/panel/ArticulosSelector'
 import { CATEGORIAS, categoriaDeEquipo, equiposDe, hoyCorto, jugadoresDe, partidosDeEquipo } from '@/components/panel/datos'
 import {
-  AreaTexto, BarraFiltros, Boton, Buscador, Campo, Chip, Combo, Encabezado, Etiqueta, Filtro, K, Lateral, Paginador, Selector, Tabla, Tarjeta, Vacio, useConfirmar, usePaginas,
+  AreaTexto, BarraFiltros, Boton, Buscador, Campo, Chip, Combo, Encabezado, Etiqueta, Filtro, K, Lateral, MensajeError, Paginador, Selector, Tabla, Tarjeta, Vacio, useConfirmar, usePaginas,
 } from '@/components/panel/ui'
 import { normalizar } from '@/components/panel/ui'
 
@@ -34,6 +34,7 @@ export default function Sanciones() {
   const [f, setF] = useState<Form>(vacio())
   const [editando, setEditando] = useState<string | null>(null)
   const [abierto, setAbierto] = useState(false)
+  const [intento, setIntento] = useState(false)
   const { pedir, dialogo } = useConfirmar()
   const [q, setQ] = useState('')
   const [estado, setEstado] = useState('')
@@ -45,7 +46,32 @@ export default function Sanciones() {
   const partidos = useMemo(() => partidosDeEquipo(f.equipo, f.categoria).map((p) => p.etiqueta), [f.equipo, f.categoria])
   const sug = fechasSugeridas(f.articulos)
   const fechasNum = Number(f.fechasSuspension)
-  const valido = f.equipo.trim() && f.jugador.trim() && f.motivo.trim() && f.articulos.length > 0 && fechasNum >= 1
+  // ── Validación: un mensaje por campo con problema ──
+  const errores = useMemo(() => {
+    const e: Record<string, string> = {}
+    const equipo = equipos.find((x) => normalizar(x) === normalizar(f.equipo))
+    if (!f.equipo.trim()) e.equipo = 'Elegí el equipo del jugador.'
+    else if (!equipo) e.equipo = `Ese equipo no está en ${f.categoria}. Elegilo de la lista.`
+    if (!f.jugador.trim()) e.jugador = 'Elegí o escribí el jugador sancionado.'
+    else if (f.jugador.trim().length < 3) e.jugador = 'El nombre del jugador es muy corto.'
+    else if (equipo && jugadores.length > 0 && !jugadores.some((j) => normalizar(j) === normalizar(f.jugador))) e.jugador = `No figura en el plantel de ${equipo}. Elegilo de la lista o cargalo primero en Equipos.`
+    if (!f.partido.trim()) e.partido = 'Indicá el partido en el que fue expulsado.'
+    const m = f.fecha.trim().match(/^(\d{1,2})\/(\d{1,2})$/)
+    if (!f.fecha.trim()) e.fecha = 'Ingresá la fecha del partido.'
+    else if (!m || Number(m[1]) < 1 || Number(m[1]) > 31 || Number(m[2]) < 1 || Number(m[2]) > 12) e.fecha = 'Usá el formato día/mes. Ej: 10/10.'
+    if (!f.motivo.trim()) e.motivo = 'Escribí el informe de expulsión.'
+    else if (f.motivo.trim().length < 20) e.motivo = `Describí lo ocurrido con más detalle (mínimo 20 caracteres, tenés ${f.motivo.trim().length}).`
+    if (f.articulos.length === 0) e.articulos = 'Elegí al menos un artículo del reglamento.'
+    if (!f.fechasSuspension.trim()) e.fechasSuspension = 'Indicá cuántas fechas de suspensión.'
+    else if (!/^\d+$/.test(f.fechasSuspension.trim()) || fechasNum < 1) e.fechasSuspension = 'Tiene que ser un número entero desde 1.'
+    else if (fechasNum > 30) e.fechasSuspension = 'El máximo es 30 fechas.'
+    if (!e.jugador && !e.partido && !e.fecha) {
+      const rep = datos.sanciones.find((x) => x.id !== editando && normalizar(x.jugador) === normalizar(f.jugador) && normalizar(x.partido) === normalizar(f.partido) && x.fecha === f.fecha.trim())
+      if (rep) e.jugador = 'Ya hay una sanción de este jugador por ese mismo partido. Editala en vez de cargar otra.'
+    }
+    return e
+  }, [f, equipos, jugadores, datos.sanciones, editando, fechasNum])
+  const err = (k: string) => (intento ? errores[k] : undefined)
 
   const lista = useMemo(() => {
     const nq = normalizar(q)
@@ -77,12 +103,17 @@ export default function Sanciones() {
       categoria: categoriaDeEquipo(s.equipo) ?? '+30', equipo: s.equipo, jugador: s.jugador, partido: s.partido, fecha: s.fecha,
       tipo: s.tipo, motivo: s.motivo, articulos: articulosDe(s), fechasSuspension: String(s.fechasSuspension),
     })
+    setIntento(false)
     setAbierto(true)
   }
 
   function guardar(e: React.FormEvent) {
     e.preventDefault()
-    if (!valido) return
+    setIntento(true)
+    if (Object.keys(errores).length) {
+      requestAnimationFrame(() => document.querySelector<HTMLElement>('form [aria-invalid="true"]')?.focus())
+      return
+    }
     const base = {
       jugador: f.jugador.trim(), equipo: f.equipo.trim(), partido: f.partido.trim() || 'Partido sin indicar', fecha: f.fecha.trim() || hoyCorto(),
       tipo: f.tipo, articulo: f.articulos.join(', '), articulos: f.articulos, fechasSuspension: fechasNum, motivo: f.motivo.trim(),
@@ -90,12 +121,13 @@ export default function Sanciones() {
     if (editando) editarSancion(editando, base)
     else crearSancion(base)
     setEditando(null)
+    setIntento(false)
     setF(vacio(f.categoria))
     setAbierto(false)
   }
 
-  function nueva() { setEditando(null); setF(vacio(f.categoria)); setAbierto(true) }
-  function cerrar() { setAbierto(false); setEditando(null) }
+  function nueva() { setEditando(null); setIntento(false); setF(vacio(f.categoria)); setAbierto(true) }
+  function cerrar() { setAbierto(false); setEditando(null); setIntento(false) }
 
   return (
     <div className="space-y-6">
@@ -146,36 +178,40 @@ export default function Sanciones() {
       </Tarjeta>
 
       <Lateral abierto={abierto} titulo={editando ? 'Editar sanción' : 'Nueva sanción'} onCerrar={cerrar}>
-        <form className="space-y-4" onSubmit={guardar}>
+        <form className="space-y-4" onSubmit={guardar} noValidate>
           <div className="grid gap-4 sm:grid-cols-2">
             <Selector label="Categoría" value={f.categoria} onChange={(e) => setF({ ...f, categoria: e.target.value, equipo: '', jugador: '', partido: '' })} opciones={CATEGORIAS.map((c) => ({ valor: c, texto: c }))} />
-            <Combo label="Equipo" value={f.equipo} onChange={(equipo) => setF({ ...f, equipo, jugador: '', partido: '' })} opciones={equipos} placeholder="Ej: Ankara +30" />
+            <Combo label="Equipo" value={f.equipo} onChange={(equipo) => setF({ ...f, equipo, jugador: '', partido: '' })} opciones={equipos} placeholder="Ej: Ankara +30" error={err('equipo')} />
           </div>
-          <Combo label="Jugador" value={f.jugador} onChange={(jugador) => setF({ ...f, jugador })} opciones={jugadores} placeholder="Ej: Juan Pérez" ayuda={f.equipo ? undefined : 'Elegí primero el equipo para ver sus jugadores.'} />
+          <Combo label="Jugador" value={f.jugador} onChange={(jugador) => setF({ ...f, jugador })} opciones={jugadores} placeholder="Ej: Juan Pérez" ayuda={f.equipo ? undefined : 'Elegí primero el equipo para ver sus jugadores.'} error={err('jugador')} />
           <div className="grid gap-4 sm:grid-cols-2">
-            <Combo label="Partido" value={f.partido} onChange={(partido) => setF({ ...f, partido })} opciones={partidos} placeholder="Ej: vs. Los Ñoquis +30" />
-            <Campo label="Fecha del partido" value={f.fecha} onChange={(e) => setF({ ...f, fecha: e.target.value })} placeholder="Ej: 10/10" />
+            <Combo label="Partido" value={f.partido} onChange={(partido) => setF({ ...f, partido })} opciones={partidos} placeholder="Ej: vs. Los Ñoquis +30" error={err('partido')} />
+            <Campo label="Fecha del partido" value={f.fecha} onChange={(e) => setF({ ...f, fecha: e.target.value })} placeholder="Ej: 10/10" error={err('fecha')} />
           </div>
           <AreaTexto
             label="Informe de expulsión"
             rows={5}
+            error={err('motivo')}
             value={f.motivo}
             onChange={(e) => setF({ ...f, motivo: e.target.value })}
             placeholder="Describí lo ocurrido según el informe del árbitro. Ej: A los 35' del segundo tiempo el jugador golpeó a un rival sin la pelota y fue expulsado."
           />
-          <ArticulosSelector informe={f.motivo} value={f.articulos} onChange={cambiarArticulos} />
+          <div>
+            <ArticulosSelector informe={f.motivo} value={f.articulos} onChange={cambiarArticulos} />
+            <MensajeError>{err('articulos')}</MensajeError>
+          </div>
           <div className="grid gap-4 sm:grid-cols-2">
             <Selector label="Tipo de sanción" value={f.tipo} onChange={(e) => setF({ ...f, tipo: e.target.value })} opciones={TIPOS.map((t) => ({ valor: t, texto: t }))} />
-            <Campo label="Fechas de suspensión" type="number" min={1} max={30} inputMode="numeric" value={f.fechasSuspension} onChange={(e) => setF({ ...f, fechasSuspension: e.target.value })} placeholder={sug.fijas ? `Sugerido: ${sug.fijas}` : 'Ej: 3'} />
+            <Campo label="Fechas de suspensión" type="number" min={1} max={30} inputMode="numeric" value={f.fechasSuspension} onChange={(e) => setF({ ...f, fechasSuspension: e.target.value })} placeholder={sug.fijas ? `Sugerido: ${sug.fijas}` : 'Ej: 3'} error={err('fechasSuspension')} />
           </div>
           {(sug.fijas || sug.rango) && (
             <p className={`text-xs ${K.suave}`}>{sug.fijas ? `El reglamento fija ${sug.fijas} fecha de suspensión para este artículo (podés editarla).` : sug.rango}</p>
           )}
           <div className="flex flex-wrap gap-2">
-            <Boton type="submit" disabled={!valido}>{editando ? 'Guardar cambios' : 'Crear sanción'}</Boton>
+            <Boton type="submit">{editando ? 'Guardar cambios' : 'Crear sanción'}</Boton>
             <Boton variante="suave" onClick={cerrar}>Cancelar</Boton>
           </div>
-          {!valido && <p className={`text-xs ${K.suave}`}>Completá equipo, jugador, informe, al menos un artículo y las fechas.</p>}
+          {intento && Object.keys(errores).length > 0 && <MensajeError>Revisá los {Object.keys(errores).length} campo(s) marcados en rojo para poder guardar.</MensajeError>}
         </form>
       </Lateral>
       {dialogo}

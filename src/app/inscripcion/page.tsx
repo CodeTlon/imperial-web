@@ -43,25 +43,73 @@ const necesitas = [
 export default function InscripcionPage() {
   const { business, requisitos } = useSitio()
   const [enviado, setEnviado] = useState<string | null>(null)
-  const [error, setError] = useState<string | null>(null)
+  const [errores, setErrores] = useState<Record<string, string>>({})
+
+  // Reglas de cada campo: devuelven el mensaje de error o undefined si está bien.
+  const reglas: Record<string, (v: string) => string | undefined> = {
+    equipo: (v) => {
+      const t = v.trim()
+      if (!t) return 'Ingresá el nombre del equipo.'
+      if (t.length < 3) return 'El nombre del equipo es muy corto (mínimo 3 caracteres).'
+      if (t.length > 40) return 'El nombre del equipo es muy largo (máximo 40 caracteres).'
+      if (!/\p{L}/u.test(t)) return 'El nombre del equipo tiene que incluir letras.'
+    },
+    categoria: (v) => (categorias.includes(v as never) ? undefined : 'Elegí la categoría en la que querés jugar.'),
+    jugadores: (v) => {
+      if (!v.trim()) return undefined
+      if (!/^\d+$/.test(v.trim())) return 'Ingresá un número entero, sin signos ni decimales.'
+      if (Number(v) < 1 || Number(v) > 25) return 'La lista de buena fe es de 1 a 25 jugadores.'
+    },
+    delegado: (v) => {
+      const t = v.trim().replace(/\s+/g, ' ')
+      if (!t) return 'Ingresá el nombre del delegado.'
+      if (!/^[\p{L}][\p{L}\s'.-]*$/u.test(t)) return 'El nombre solo puede tener letras y espacios.'
+      if (t.split(' ').length < 2 || t.length < 5) return 'Ingresá nombre y apellido (por ejemplo: Juan Pérez).'
+      if (t.length > 60) return 'El nombre es muy largo (máximo 60 caracteres).'
+    },
+    telefono: (v) => {
+      const t = v.trim()
+      if (!t) return 'Ingresá un WhatsApp de contacto.'
+      if (!/^[+\d\s()-]+$/.test(t)) return 'El teléfono solo puede tener números, espacios, guiones y +.'
+      const d = t.replace(/\D/g, '')
+      if (d.length < 10) return 'Faltan números: incluí el código de área (ej. 351 123 4567).'
+      if (d.length > 13) return 'Sobran números: revisá el teléfono.'
+    },
+    mensaje: (v) => (v.length > 500 ? `El mensaje es muy largo: máximo 500 caracteres (tenés ${v.length}).` : undefined),
+  }
+  const validarCampo = (nombre: string, valor: string) => setErrores((e) => {
+    const m = reglas[nombre]?.(valor)
+    const { [nombre]: _quitar, ...resto } = e
+    return m ? { ...resto, [nombre]: m } : resto
+  })
+  // Atributos comunes de cada campo: estado inválido, vínculo con su mensaje y validación al salir del campo.
+  const campo = (nombre: string) => ({
+    id: nombre, name: nombre,
+    'aria-invalid': errores[nombre] ? (true as const) : undefined,
+    'aria-describedby': errores[nombre] ? `${nombre}-error` : undefined,
+    onBlur: (e: { target: { value: string } }) => validarCampo(nombre, e.target.value),
+    onChange: (e: { target: { value: string } }) => { if (errores[nombre]) validarCampo(nombre, e.target.value) },
+  })
+  const mensaje = (nombre: string) => errores[nombre] && (
+    <p id={`${nombre}-error`} role="alert" className="mt-1.5 text-xs font-semibold" style={{ color: '#dc2626' }}>{errores[nombre]}</p>
+  )
 
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
     const form = new FormData(e.currentTarget)
     const datos = Object.fromEntries(form.entries()) as Record<string, string>
-
-    // Validación mínima antes de abrir WhatsApp (el formulario no guarda nada en servidor).
-    const digitos = (datos.telefono ?? '').replace(/\D/g, '')
-    const jugadores = datos.jugadores ? Number(datos.jugadores) : null
-    if (digitos.length < 10 || digitos.length > 13) {
-      setError('Ingresá un WhatsApp válido, con código de área (ej. 351 123 4567).')
+    const nuevos: Record<string, string> = {}
+    for (const k of Object.keys(reglas)) {
+      const m = reglas[k](datos[k] ?? '')
+      if (m) nuevos[k] = m
+    }
+    setErrores(nuevos)
+    if (Object.keys(nuevos).length) {
+      // Lleva el foco al primer campo con problema.
+      const primero = Object.keys(reglas).find((k) => nuevos[k])
+      if (primero) requestAnimationFrame(() => document.getElementById(primero)?.focus())
       return
     }
-    if (jugadores !== null && (!Number.isInteger(jugadores) || jugadores < 1 || jugadores > 25)) {
-      setError('La lista de buena fe es de hasta 25 jugadores.')
-      return
-    }
-    setError(null)
     const link = waLink(business.whatsapp, armarMensaje(datos))
     setEnviado(link)
     window.open(link, '_blank', 'noopener,noreferrer')
@@ -131,38 +179,44 @@ export default function InscripcionPage() {
                     </a>
                   </div>
                 ) : (
-                  <form onSubmit={handleSubmit} noValidate={false} className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-              {error && (
+                  <form onSubmit={handleSubmit} noValidate className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              {Object.keys(errores).length > 0 && (
                 <p role="alert" className="sm:col-span-2 text-sm font-semibold" style={{ color: '#dc2626' }}>
-                  {error}
+                  Revisá los {Object.keys(errores).length} campo(s) marcados en rojo para poder enviar.
                 </p>
               )}
                     <div className="sm:col-span-2">
                       <label htmlFor="equipo" className="block text-sm font-semibold mb-2" style={{ color: 'var(--demo-heading)' }}>Nombre del equipo</label>
-                      <input id="equipo" name="equipo" required placeholder="Ej: Atlético Guiñazú" className="input" />
+                      <input {...campo('equipo')} required maxLength={60} placeholder="Ej: Atlético Guiñazú" className="input" />
+                      {mensaje('equipo')}
                     </div>
                     <div>
                       <label htmlFor="categoria" className="block text-sm font-semibold mb-2" style={{ color: 'var(--demo-heading)' }}>Categoría</label>
-                      <select id="categoria" name="categoria" required defaultValue="" className="input">
+                      <select {...campo('categoria')} required defaultValue="" className="input">
                         <option value="" disabled>Elegí una categoría</option>
                         {categorias.map((c) => <option key={c} value={c}>{c}</option>)}
                       </select>
+                      {mensaje('categoria')}
                     </div>
                     <div>
                       <label htmlFor="jugadores" className="block text-sm font-semibold mb-2" style={{ color: 'var(--demo-heading)' }}>Jugadores aprox.</label>
-                      <input id="jugadores" name="jugadores" type="number" min={1} max={25} placeholder="Hasta 25" className="input" />
+                      <input {...campo('jugadores')} type="number" min={1} max={25} inputMode="numeric" placeholder="Hasta 25" className="input" />
+                      {mensaje('jugadores')}
                     </div>
                     <div>
                       <label htmlFor="delegado" className="block text-sm font-semibold mb-2" style={{ color: 'var(--demo-heading)' }}>Nombre del delegado</label>
-                      <input id="delegado" name="delegado" required placeholder="Quién representa al equipo" className="input" />
+                      <input {...campo('delegado')} required maxLength={80} placeholder="Quién representa al equipo" className="input" />
+                      {mensaje('delegado')}
                     </div>
                     <div>
                       <label htmlFor="telefono" className="block text-sm font-semibold mb-2" style={{ color: 'var(--demo-heading)' }}>WhatsApp de contacto</label>
-                      <input id="telefono" name="telefono" type="tel" required placeholder="351 000 0000" className="input" />
+                      <input {...campo('telefono')} type="tel" required inputMode="tel" autoComplete="tel" placeholder="351 000 0000" className="input" />
+                      {mensaje('telefono')}
                     </div>
                     <div className="sm:col-span-2">
                       <label htmlFor="mensaje" className="block text-sm font-semibold mb-2" style={{ color: 'var(--demo-heading)' }}>Mensaje (opcional)</label>
-                      <textarea id="mensaje" name="mensaje" rows={3} placeholder="Contanos algo más de tu equipo" className="input resize-none" />
+                      <textarea {...campo('mensaje')} rows={3} placeholder="Contanos algo más de tu equipo" className="input resize-none" />
+                      {mensaje('mensaje')}
                     </div>
                     <div className="sm:col-span-2">
                       <button type="submit" className="btn-primary w-full">
