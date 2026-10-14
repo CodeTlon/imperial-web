@@ -1,6 +1,7 @@
 'use client'
 
 import { Pencil, Trash2 } from 'lucide-react'
+import { Equipo, Escudo } from '@/components/ui/Escudo'
 import { useMemo, useState } from 'react'
 import { useDemo, type Gol } from '@/lib/demo-store'
 import { CATEGORIAS, equiposDe, goleadoresCategoria, jugadoresDe } from '@/components/panel/datos'
@@ -73,7 +74,7 @@ export default function Goleadores() {
   return (
     <div className="space-y-6">
       <Encabezado titulo="Goleadores" descripcion="Sumá los goles por jugador. Alimentan la tabla de goleadores del sitio." />
-    <div className="grid gap-6 2xl:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
+    <div className="grid gap-6 xl:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
       <div className="space-y-6 self-start min-w-0">
         <Tarjeta titulo={editando ? 'Editar goles' : 'Cargar goles'}>
           <form className="space-y-4" onSubmit={guardar} noValidate>
@@ -103,14 +104,14 @@ export default function Goleadores() {
           vacio="Todavía no cargaste goles."
           columnas={[
             { titulo: 'Jugador', celda: (g) => <span className="font-bold">{g.jugador}</span> },
-            { titulo: 'Equipo', celda: (g) => g.equipo },
+            { titulo: 'Equipo', celda: (g) => <Equipo equipo={g.equipo} size={22} /> },
             { titulo: 'Categoría', celda: (g) => g.categoria },
             { titulo: 'Goles', celda: (g) => <span className="font-heading text-lg">{g.goles}</span> },
             { titulo: '', className: 'text-right', celda: acciones },
           ]}
           tarjeta={(g) => (
             <div className="flex items-center justify-between gap-3">
-              <div className="min-w-0"><p className="font-bold truncate">{g.jugador}</p><p className={`text-xs ${K.suave}`}>{g.equipo} · {g.categoria}</p></div>
+              <div className="min-w-0"><p className="font-bold truncate">{g.jugador}</p><p className={`flex items-center gap-1.5 text-xs ${K.suave}`}><Equipo equipo={g.equipo} size={16} /><span>· {g.categoria}</span></p></div>
               <span className="font-heading text-xl">{g.goles}</span>
               {acciones(g)}
             </div>

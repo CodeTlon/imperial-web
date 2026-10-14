@@ -1,6 +1,7 @@
 'use client'
 
 import { useMemo, useState } from 'react'
+import { Equipo, Escudo } from '@/components/ui/Escudo'
 import { articulosDe, useDemo } from '@/lib/demo-store'
 import { fixturePorCategoria, type Categoria } from '@/lib/torneo-data'
 import { CATEGORIAS, estadoPlantel, goleadoresCategoria, puntos, tablaCategoria } from '@/components/panel/datos'
@@ -92,14 +93,14 @@ export default function Resumen({ irA }: { irA: (t: string) => void }) {
             clave={(e) => e.nombre}
             columnas={[
               { titulo: '#', celda: (e) => tabla.indexOf(e) + 1 },
-              { titulo: 'Equipo', celda: (e) => <span className="font-bold">{e.nombre}</span> },
+              { titulo: 'Equipo', celda: (e) => <Equipo equipo={e.nombre} size={22} negrita /> },
               { titulo: 'PJ', celda: (e) => e.pj },
               { titulo: 'DG', celda: (e) => e.gf - e.gc },
               { titulo: 'Pts', celda: (e) => <span className="font-heading text-lg">{puntos(e)}</span> },
             ]}
             tarjeta={(e) => (
               <div className="flex items-center justify-between gap-3">
-                <span className="min-w-0 truncate"><span className="font-heading mr-2">{tabla.indexOf(e) + 1}</span><span className="font-bold">{e.nombre}</span></span>
+                <span className="flex min-w-0 items-center gap-2"><span className="font-heading w-5 shrink-0">{tabla.indexOf(e) + 1}</span><Equipo equipo={e.nombre} size={22} negrita /></span>
                 <span className={`text-xs ${K.suave} whitespace-nowrap`}>PJ {e.pj} · DG {e.gf - e.gc} · <b className="font-heading text-base text-[color:var(--p-navy)]">{puntos(e)}</b> pts</span>
               </div>
             )}

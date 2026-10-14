@@ -1,6 +1,7 @@
 'use client'
 
 import { ShieldAlert } from 'lucide-react'
+import { Equipo } from '@/components/ui/Escudo'
 import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
 import PageHeader from '@/components/ui/PageHeader'
@@ -68,7 +69,7 @@ export default function PosicionesPage() {
                       <div className="flex items-start justify-between gap-3">
                         <div className="min-w-0">
                           <p className="font-semibold" style={{ color: 'var(--demo-heading)' }}>{s.jugador}</p>
-                          <p className="text-xs" style={{ color: 'var(--demo-muted)' }}>{s.equipo}</p>
+                          <p className="mt-0.5 text-xs" style={{ color: 'var(--demo-muted)' }}><Equipo equipo={s.equipo} size={18} /></p>
                         </div>
                         <span className="text-xs font-bold whitespace-nowrap" style={{ color: 'var(--demo-accent)' }}>{s.porCumplir} por cumplir</span>
                       </div>
@@ -88,7 +89,7 @@ export default function PosicionesPage() {
                     {sancionados.map((s) => (
                       <tr key={`${s.jugador}-${s.equipo}`} className="border-b last:border-0 align-top" style={{ borderColor: 'var(--demo-border)' }}>
                         <td className="py-2 px-1.5 font-medium" style={{ color: 'var(--demo-heading)' }}>{s.jugador}</td>
-                        <td className="py-2 px-1.5" style={{ color: 'var(--demo-text)' }}>{s.equipo}</td>
+                        <td className="py-2 px-1.5" style={{ color: 'var(--demo-text)' }}><Equipo equipo={s.equipo} size={20} /></td>
                         <td className="py-2 px-1.5 whitespace-nowrap" style={{ color: 'var(--demo-text)' }}>{s.sancion} {s.sancion === 1 ? 'fecha' : 'fechas'}</td>
                         <td className="py-2 px-1.5 font-bold" style={{ color: 'var(--demo-accent)' }}>{s.porCumplir}</td>
                         <td className="py-2 px-1.5" style={{ color: 'var(--demo-muted)' }}>{s.motivo}</td>

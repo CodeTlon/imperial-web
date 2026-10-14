@@ -5,7 +5,8 @@ import { fechasTxt } from '@/lib/utils'
 import { useMemo, useState } from 'react'
 import { admiteDescargo, TOPE_PLANTEL, useDemo, type JugadorPlantel } from '@/lib/demo-store'
 import { categoriaDeEquipo, estadoPlantel, mismo } from '@/components/panel/datos'
-import { TablaPosiciones, TarjetaProximoPartido, partidosDe, resultadoPara, useFixture } from '@/components/panel/Compartidos'
+import { ListaResultados, ResultadoChip, TablaPosiciones, TarjetaProximoPartido, partidosDe, resultadoPara, useFixture } from '@/components/panel/Compartidos'
+import { Equipo } from '@/components/ui/Escudo'
 import DescargosDelegado from '@/components/panel/DescargosDelegado'
 import { ChipsArticulos } from '@/components/panel/Sanciones'
 import { BarrasH, Kpi, Semaforo } from '@/components/panel/graficos'
@@ -56,18 +57,32 @@ function Inicio({ irA }: { irA: (t: string) => void }) {
           <p className={`text-xs mt-1.5 ${K.suave}`}>{plantel.length} de {TOPE_PLANTEL} lugares ocupados</p>
         </Tarjeta>
         <Tarjeta titulo="Jugadores por posición"><BarrasH datos={porPos} /></Tarjeta>
-        <Tarjeta titulo="Descargos abiertos" className="lg:col-span-2">
+        <Tarjeta titulo="Descargos abiertos">
           {abiertos.length === 0 && <p className={`text-sm ${K.suave}`}>No tenés sanciones pendientes de descargo.</p>}
           <ul className="divide-y divide-[color:var(--p-borde)]">
             {abiertos.map((s) => (
-              <li key={s.id} className="py-3 flex flex-wrap items-center justify-between gap-3">
+              <li key={s.id} className="py-3 flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
                 <div className="min-w-0"><p className="font-bold">{s.jugador}</p><p className={`text-xs ${K.suave}`}>{s.partido} · {s.fecha} · {fechasTxt(s.fechasSuspension)}</p></div>
                 <ChipsArticulos s={s} />
                 <Boton variante="oro" onClick={() => irA('Descargos')}>Presentar descargo</Boton>
               </li>
             ))}
           </ul>
+          {enRevision.length > 0 && (
+            <>
+              <h3 className={`mt-5 mb-1 text-xs font-bold uppercase tracking-wide ${K.suave}`}>En revisión por la organización</h3>
+              <ul className="divide-y divide-[color:var(--p-borde)]">
+                {enRevision.map((s) => (
+                  <li key={s.id} className="flex items-center justify-between gap-3 py-2.5">
+                    <div className="min-w-0"><p className="truncate text-sm font-bold">{s.jugador}</p><p className={`text-xs ${K.suave}`}>{s.partido} · {s.fecha} · {fechasTxt(s.fechasSuspension)}</p></div>
+                    <Etiqueta texto="En revisión" />
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
         </Tarjeta>
+        <Tarjeta titulo="Últimos resultados"><ListaResultados equipo={equipo} /></Tarjeta>
       </div>
     </div>
   )
@@ -83,20 +98,32 @@ function FixturePosiciones() {
   const jugados = mios.filter((x) => x.p.golesLocal !== undefined).reverse()
   const pagJ = usePaginas(jugados, 6)
   const fila = (x: (typeof mios)[number]) => ({ ...x, id: `${x.fecha.numero}-${x.p.local}-${x.p.visitante}` })
+  const cruce = (local: string, visitante: string, centro: React.ReactNode) => (
+    <span className="flex flex-wrap items-center gap-x-2.5 gap-y-1 font-semibold">
+      <Equipo equipo={local} size={22} negrita={mismo(local, equipo)} />
+      {centro}
+      <Equipo equipo={visitante} size={22} negrita={mismo(visitante, equipo)} />
+    </span>
+  )
   return (
-    <div className="grid gap-6 xl:grid-cols-2">
-      <div className="space-y-6 min-w-0">
+    <div className="space-y-6">
+      <div className="grid gap-6 xl:grid-cols-2 items-start">
         <Tarjeta titulo="Próximos partidos">
           <Tabla
             filas={pag.items.map(fila)}
             clave={(x) => x.id}
             vacio="No hay partidos próximos."
             columnas={[
-              { titulo: 'Fecha', celda: (x) => <>Fecha {x.fecha.numero}<span className={`block text-xs ${K.suave}`}>{x.fecha.fechaLabel.toLowerCase()}</span></> },
-              { titulo: 'Partido', celda: (x) => <span className="font-semibold">{x.p.local} vs {x.p.visitante}</span> },
-              { titulo: 'Hora', celda: (x) => `${x.p.hora}${x.p.cancha ? ` · ${x.p.cancha}` : ''}` },
+              { titulo: 'Fecha', celda: (x) => <span className="whitespace-nowrap">Fecha {x.fecha.numero}<span className={`block text-xs ${K.suave}`}>{x.fecha.fechaLabel.toLowerCase()}</span></span> },
+              { titulo: 'Partido', celda: (x) => cruce(x.p.local, x.p.visitante, <span className={`text-xs ${K.suave}`}>vs</span>) },
+              { titulo: 'Hora', celda: (x) => <span className="whitespace-nowrap">{x.p.hora}<span className={`block text-xs ${K.suave}`}>{x.p.cancha}</span></span> },
             ]}
-            tarjeta={(x) => (<><p className={`text-xs ${K.suave}`}>Fecha {x.fecha.numero} · {x.fecha.fechaLabel.toLowerCase()}</p><p className="font-semibold">{x.p.local} vs {x.p.visitante}</p><p className="text-sm">{x.p.hora}{x.p.cancha ? ` · ${x.p.cancha}` : ''}</p></>)}
+            tarjeta={(x) => (
+              <div className="space-y-1.5">
+                <p className={`text-xs ${K.suave}`}>Fecha {x.fecha.numero} · {x.fecha.fechaLabel.toLowerCase()} · {x.p.hora}{x.p.cancha ? ` · ${x.p.cancha}` : ''}</p>
+                {cruce(x.p.local, x.p.visitante, <span className={`text-xs ${K.suave}`}>vs</span>)}
+              </div>
+            )}
           />
           <Paginador {...pag} />
         </Tarjeta>
@@ -107,30 +134,24 @@ function FixturePosiciones() {
             vacio="Todavía no hay partidos jugados."
             columnas={[
               { titulo: 'Fecha', celda: (x) => x.fecha.numero },
-              { titulo: 'Partido', celda: (x) => <span className="font-semibold">{x.p.local} <span className="font-heading text-base mx-1">{x.p.golesLocal} - {x.p.golesVisitante}</span> {x.p.visitante}</span> },
-              { titulo: '', celda: (x) => <Resul r={resultadoPara(x.p, equipo)} /> },
+              { titulo: 'Partido', celda: (x) => cruce(x.p.local, x.p.visitante, <span className="font-heading text-lg">{x.p.golesLocal} - {x.p.golesVisitante}</span>) },
+              { titulo: '', className: 'text-right', celda: (x) => <ResultadoChip r={resultadoPara(x.p, equipo)} /> },
             ]}
             tarjeta={(x) => (
-              <div className="flex items-center justify-between gap-2 text-sm">
-                <span className="min-w-0"><span className={`block text-xs ${K.suave}`}>Fecha {x.fecha.numero}</span><span className="font-semibold">{x.p.local} {x.p.golesLocal} - {x.p.golesVisitante} {x.p.visitante}</span></span>
-                <Resul r={resultadoPara(x.p, equipo)} />
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between gap-2"><span className={`text-xs ${K.suave}`}>Fecha {x.fecha.numero}</span><ResultadoChip r={resultadoPara(x.p, equipo)} /></div>
+                {cruce(x.p.local, x.p.visitante, <span className="font-heading text-lg">{x.p.golesLocal} - {x.p.golesVisitante}</span>)}
               </div>
             )}
           />
           <Paginador {...pagJ} />
         </Tarjeta>
       </div>
-      <Tarjeta titulo={`Posiciones ${cat ?? ''}`} className="self-start">
+      <Tarjeta titulo={`Posiciones ${cat ?? ''}`}>
         {cat ? <TablaPosiciones categoria={cat} resaltar={equipo} /> : <p className={`text-sm ${K.suave}`}>No se encontró la categoría de tu equipo.</p>}
       </Tarjeta>
     </div>
   )
-}
-
-function Resul({ r }: { r: 'G' | 'E' | 'P' | null }) {
-  if (!r) return null
-  const c = { G: ['Ganó', 'bg-[#16a34a]/10 text-[#16a34a]'], E: ['Empató', 'bg-[#f3a21c]/30 text-[#8a5a00]'], P: ['Perdió', 'bg-[#dc2626]/10 text-[#dc2626]'] }[r]
-  return <span className={`rounded-full px-3 py-1 text-xs font-bold ${c[1]}`}>{c[0]}</span>
 }
 
 function Plantel() {
@@ -191,7 +212,7 @@ function Plantel() {
   )
 
   return (
-    <div className="grid gap-6 2xl:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
+    <div className="grid gap-6 xl:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
       <div className="space-y-6 self-start min-w-0">
         <Tarjeta titulo={form.id ? 'Editar jugador' : 'Agregar jugador'}>
           <form
@@ -233,12 +254,13 @@ function Plantel() {
             {!intento && <p className={`text-xs ${K.suave}`}>Cargá nombre, DNI y las tres fotos.{form.id ? ' Si solo cambiás nombre o posición, la documentación no vuelve a revisión.' : ''}</p>}
           </form>
         </Tarjeta>
+      </div>
+      <div className="space-y-6 self-start min-w-0">
         <Tarjeta titulo={`Plantel ${propios.length}/${TOPE_PLANTEL}`}>
           <div className="h-2 rounded-full bg-[var(--p-fondo)] overflow-hidden mb-4"><div className="h-full rounded-full" style={{ width: `${Math.min(100, (propios.length / TOPE_PLANTEL) * 100)}%`, background: C.teal }} /></div>
           <Semaforo aprobados={doc.aprobados} pendientes={doc.pendientes} observados={doc.observados} />
         </Tarjeta>
-      </div>
-      <Tarjeta titulo={`Jugadores de ${sesion?.equipo} (${lista.length})`} className="self-start">
+        <Tarjeta titulo={`Jugadores de ${sesion?.equipo} (${lista.length})`}>
         <BarraFiltros>
           <Buscador value={q} onChange={setQ} placeholder="Buscar por nombre, DNI o posición" />
           <Filtro label="Documentación" value={estado} onChange={setEstado} opciones={['Aprobado', 'Pendiente', 'Observado']} />
@@ -261,6 +283,7 @@ function Plantel() {
         />
         <Paginador {...pag} />
       </Tarjeta>
+      </div>
     </div>
   )
 }

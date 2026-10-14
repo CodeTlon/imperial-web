@@ -195,12 +195,15 @@ export function usePestanaUrl(tabs: string[], inicial: string): [string, (t: str
 }
 
 // Título, descripción y acción principal de cada sección.
-export function Encabezado({ titulo, descripcion, accion }: { titulo: string; descripcion: string; accion?: ReactNode }) {
+export function Encabezado({ titulo, descripcion, accion, icono }: { titulo: string; descripcion: string; accion?: ReactNode; icono?: ReactNode }) {
   return (
     <div className="flex flex-wrap items-end justify-between gap-3">
-      <div className="min-w-0">
-        <h1 className="font-heading text-2xl sm:text-3xl text-[color:var(--p-navy)]">{titulo}</h1>
-        <p className={`text-sm mt-1 max-w-2xl ${K.suave}`}>{descripcion}</p>
+      <div className="flex min-w-0 items-center gap-4">
+        {icono}
+        <div className="min-w-0">
+          <h1 className="font-heading text-2xl sm:text-3xl text-[color:var(--p-navy)]">{titulo}</h1>
+          <p className={`text-sm mt-1 max-w-2xl ${K.suave}`}>{descripcion}</p>
+        </div>
       </div>
       {accion}
     </div>
@@ -437,8 +440,10 @@ export function BarraFiltros({ children }: { children: ReactNode }) {
 export type Columna<T> = { titulo: string; celda: (r: T) => ReactNode; className?: string }
 
 // Tabla en pantallas medianas y grandes; en celular cada fila pasa a una tarjeta (`tarjeta`).
-export function Tabla<T>({ filas, columnas, clave, tarjeta, vacio = 'Sin resultados.' }: {
+export function Tabla<T>({ filas, columnas, clave, tarjeta, vacio = 'Sin resultados.', denso = false, claseFila }: {
   filas: T[]; columnas: Columna<T>[]; clave: (r: T) => string; tarjeta: (r: T) => ReactNode; vacio?: string
+  // denso: filas más bajas y centradas (tablas largas, como las posiciones). claseFila: estilo extra por fila (ej. resaltar al propio equipo).
+  denso?: boolean; claseFila?: (r: T) => string
 }) {
   if (filas.length === 0) return <Vacio>{vacio}</Vacio>
   return (
@@ -452,8 +457,8 @@ export function Tabla<T>({ filas, columnas, clave, tarjeta, vacio = 'Sin resulta
           </thead>
           <tbody>
             {filas.map((r) => (
-              <tr key={clave(r)} className={`border-b last:border-0 ${K.borde} hover:bg-[var(--p-fondo)]/60 align-top`}>
-                {columnas.map((c) => <td key={c.titulo} className={`py-3 px-3 ${c.className ?? ''}`}>{c.celda(r)}</td>)}
+              <tr key={clave(r)} className={`border-b last:border-0 ${K.borde} hover:bg-[var(--p-fondo)]/60 ${denso ? 'align-middle' : 'align-top'} ${claseFila?.(r) ?? ''}`}>
+                {columnas.map((c) => <td key={c.titulo} className={`${denso ? 'py-2' : 'py-3'} px-3 ${c.className ?? ''}`}>{c.celda(r)}</td>)}
               </tr>
             ))}
           </tbody>

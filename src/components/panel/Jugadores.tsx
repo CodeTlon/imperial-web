@@ -66,6 +66,7 @@ export default function Equipos() {
     return (
       <div className="space-y-6">
         <Encabezado
+          icono={<Escudo nombre={actual.nombre} size={56} />}
           titulo={actual.nombre}
           descripcion={`${actual.categoria ? `Categoría ${actual.categoria} · ` : ''}${actual.jugadores.length} de ${TOPE_PLANTEL} jugadores. Revisá la documentación de cada uno.`}
           accion={<Boton variante="suave" icono={ArrowLeft} onClick={() => { setElegido(null); setQJ(''); setEstado('') }}>Volver a equipos</Boton>}

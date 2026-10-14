@@ -1,6 +1,7 @@
 'use client'
 
 import { Check, Pencil, Plus, Trash2, X } from 'lucide-react'
+import { Equipo, Escudo } from '@/components/ui/Escudo'
 import { useMemo, useState } from 'react'
 import { useDemo, type GolDePartido, type Resultado } from '@/lib/demo-store'
 import { fixturePorCategoria, type Categoria } from '@/lib/torneo-data'
@@ -138,7 +139,7 @@ export default function Resultados() {
   return (
     <div className="space-y-6">
       <Encabezado titulo="Resultados" descripcion="Cargá los resultados de cada fecha. Se reflejan en las posiciones y el fixture del sitio." />
-    <div className="grid gap-6 2xl:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
+    <div className="grid gap-6 xl:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
       <Tarjeta titulo={editando ? 'Editar resultado' : 'Cargar resultado'} className="self-start">
         <form className="space-y-4" onSubmit={guardar} noValidate>
           <div className="grid gap-4 sm:grid-cols-2">
@@ -213,16 +214,16 @@ export default function Resultados() {
           columnas={[
             { titulo: 'Categoría', celda: (r) => r.categoria },
             { titulo: 'Fecha', celda: (r) => r.fecha },
-            { titulo: 'Partido', celda: (r) => <span className="font-semibold">{r.local} <span className="font-heading text-base mx-1">{r.golesLocal} - {r.golesVisitante}</span> {r.visitante}</span> },
+            { titulo: 'Partido', celda: (r) => <span className="flex flex-wrap items-center gap-x-3 gap-y-1 font-semibold"><Equipo equipo={r.local} size={22} /><span className="font-heading text-lg">{r.golesLocal} - {r.golesVisitante}</span><Equipo equipo={r.visitante} size={22} /></span> },
             { titulo: '', className: 'text-right', celda: acciones },
           ]}
           tarjeta={(r) => (
             <div className="space-y-2">
               <p className={`text-xs ${K.suave}`}>{r.categoria} · Fecha {r.fecha}</p>
               <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 text-sm">
-                <span className="text-right font-semibold">{r.local}</span>
+                <span className="flex items-center justify-end gap-2 text-right font-semibold"><span className="min-w-0 truncate">{r.local}</span><Escudo equipo={r.local} size={22} /></span>
                 <span className="font-heading text-lg whitespace-nowrap">{r.golesLocal} - {r.golesVisitante}</span>
-                <span className="font-semibold">{r.visitante}</span>
+                <span className="flex items-center gap-2 font-semibold"><Escudo equipo={r.visitante} size={22} /><span className="min-w-0 truncate">{r.visitante}</span></span>
               </div>
               <div className="text-right">{acciones(r)}</div>
             </div>

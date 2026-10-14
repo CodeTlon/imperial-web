@@ -1,6 +1,7 @@
 'use client'
 
 import { ArrowLeft, Eye, FilePenLine, Gavel, Send } from 'lucide-react'
+import { Equipo, Escudo } from '@/components/ui/Escudo'
 import { fechasTxt } from '@/lib/utils'
 import { useMemo, useState } from 'react'
 import { admiteDescargo, useDemo, type Sancion } from '@/lib/demo-store'
@@ -54,7 +55,7 @@ export default function DescargosDelegado() {
         <button type="button" onClick={() => abrirSancion(null)} className="inline-flex items-center gap-2 rounded-xl py-1.5 pr-2 text-sm font-bold text-[color:var(--p-navy)] hover:text-[color:var(--p-teal)]">
           <ArrowLeft size={18} aria-hidden />Volver a descargos
         </button>
-        <Encabezado titulo={s.jugador} descripcion={`${s.equipo} · ${s.partido} · ${s.fecha}`} accion={<Etiqueta texto={s.cumplida && s.estado === 'Firme' ? 'Cumplida' : s.estado} />} />
+        <Encabezado icono={<Escudo equipo={s.equipo} size={56} />} titulo={s.jugador} descripcion={`${s.equipo} · ${s.partido} · ${s.fecha}`} accion={<Etiqueta texto={s.cumplida && s.estado === 'Firme' ? 'Cumplida' : s.estado} />} />
         <div className={`rounded-2xl border ${K.borde} bg-white px-5 py-4 sm:px-7`}><LineaDeTiempo s={s} /></div>
         <div className="grid grid-cols-[minmax(0,1fr)] gap-6 xl:grid-cols-2 items-start">
           <article className={`space-y-5 rounded-2xl border ${K.borde} bg-white p-5 sm:p-7 min-w-0`}>

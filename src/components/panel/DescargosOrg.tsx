@@ -1,6 +1,7 @@
 'use client'
 
 import { ArrowLeft, Check, CheckCheck, Eye, Gavel, RotateCcw, X } from 'lucide-react'
+import { Equipo, Escudo } from '@/components/ui/Escudo'
 import { fechasTxt } from '@/lib/utils'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useDemo, type Sancion } from '@/lib/demo-store'
@@ -108,7 +109,7 @@ export default function DescargosOrg() {
         <button type="button" onClick={() => abrir(null)} className="inline-flex items-center gap-2 rounded-xl py-1.5 pr-2 text-sm font-bold text-[color:var(--p-navy)] hover:text-[color:var(--p-teal)]">
           <ArrowLeft size={18} aria-hidden />Volver a descargos
         </button>
-        <Encabezado titulo={s.jugador} descripcion={`${s.equipo} · ${s.partido} · ${s.fecha}`} accion={<Etiqueta texto={s.cumplida ? 'Cumplida' : s.estado} />} />
+        <Encabezado icono={<Escudo equipo={s.equipo} size={56} />} titulo={s.jugador} descripcion={`${s.equipo} · ${s.partido} · ${s.fecha}`} accion={<Etiqueta texto={s.cumplida ? 'Cumplida' : s.estado} />} />
         <div className={`rounded-2xl border ${K.borde} bg-white px-5 py-4 sm:px-7`}><LineaDeTiempo s={s} /></div>
         <div className="grid grid-cols-[minmax(0,1fr)] gap-6 xl:grid-cols-2 items-start">
           <article className={`space-y-5 rounded-2xl border ${K.borde} bg-white p-5 sm:p-7 min-w-0`}>
@@ -189,7 +190,7 @@ export default function DescargosOrg() {
             clave={(x) => x.id}
             columnas={[
               { titulo: 'Jugador', celda: (x) => <button type="button" onClick={() => abrir(x.id)} className="text-left font-bold text-[color:var(--p-navy)] hover:text-[color:var(--p-teal)] hover:underline">{x.jugador}</button> },
-              { titulo: 'Equipo', celda: (x) => x.equipo },
+              { titulo: 'Equipo', celda: (x) => <Equipo equipo={x.equipo} size={22} /> },
               { titulo: 'Partido', celda: (x) => <>{x.partido}<span className={`block text-xs ${K.suave}`}>{x.fecha}</span></> },
               { titulo: 'Suspensión', celda: (x) => `${fechasTxt(x.fechasSuspension)}` },
               { titulo: 'Estado', celda: (x) => <Etiqueta texto={x.cumplida ? 'Cumplida' : x.estado} /> },
@@ -200,7 +201,7 @@ export default function DescargosOrg() {
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
                     <p className="font-bold text-[color:var(--p-navy)]">{x.jugador}</p>
-                    <p className={`text-sm ${K.suave}`}>{x.equipo} · {x.fecha}</p>
+                    <p className={`flex flex-wrap items-center gap-x-1.5 text-sm ${K.suave}`}><Equipo equipo={x.equipo} size={18} /><span>· {x.fecha}</span></p>
                   </div>
                   <Etiqueta texto={x.cumplida ? 'Cumplida' : x.estado} />
                 </div>

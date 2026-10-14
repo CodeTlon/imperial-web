@@ -1,6 +1,7 @@
 'use client'
 
 import Image from 'next/image'
+import { Equipo } from '@/components/ui/Escudo'
 import Link from 'next/link'
 import { useMemo, useState } from 'react'
 import { Search } from 'lucide-react'
@@ -141,7 +142,7 @@ export default function SancionesVista() {
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0">
                       <p className="font-bold" style={{ color: 'var(--demo-heading)' }}>{s.jugador}</p>
-                      <p className="text-sm" style={{ color: 'var(--demo-muted)' }}>{s.equipo}</p>
+                      <p className="mt-0.5 text-sm" style={{ color: 'var(--demo-muted)' }}><Equipo equipo={s.equipo} size={18} /></p>
                     </div>
                     <p className="shrink-0 font-bold" style={{ color: '#b91c1c' }}>{fechasTxt(s.sancion)}</p>
                   </div>

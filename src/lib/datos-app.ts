@@ -39,7 +39,7 @@ export const SANCIONES_APP: Sancion[] = [
     "fecha": "13/07",
     "tipo": "Roja directa",
     "articulo": "Art. 39",
-    "fechasSuspension": 1,
+    "fechasSuspension": 8,
     "motivo": "Juego brusco grave + agresión al árbitro — 8 fechas de suspensión, 4 por cumplir (Art. 39 y Art. 34 A).",
     "estado": "Firme",
     "mensajes": []
@@ -52,7 +52,7 @@ export const SANCIONES_APP: Sancion[] = [
     "fecha": "06/07",
     "tipo": "Roja directa",
     "articulo": "Art. 39",
-    "fechasSuspension": 1,
+    "fechasSuspension": 4,
     "motivo": "Juego brusco — 4 fechas de suspensión, todas por cumplir (Art. 39).",
     "estado": "En revisión",
     "descargo": "El jugador disputaba el balón limpiamente; el contacto fue accidental y no hubo intención de lesionar al rival.",
@@ -82,7 +82,7 @@ export const SANCIONES_APP: Sancion[] = [
     "fecha": "13/07",
     "tipo": "Roja directa",
     "articulo": "Art. 39",
-    "fechasSuspension": 1,
+    "fechasSuspension": 5,
     "motivo": "Agresión a un jugador rival — 5 fechas de suspensión, 4 por cumplir (Art. 39 C).",
     "estado": "Descargo aceptado",
     "descargo": "Hubo una reacción tras una entrada previa no sancionada por el árbitro; se solicita reducción de la pena.",
@@ -96,7 +96,7 @@ export const SANCIONES_APP: Sancion[] = [
     "fecha": "29/06",
     "tipo": "Roja directa",
     "articulo": "Art. 42",
-    "fechasSuspension": 1,
+    "fechasSuspension": 10,
     "motivo": "Conducta antideportiva grave — 10 fechas de suspensión, todas por cumplir (Art. 42 D.1).",
     "estado": "Firme",
     "mensajes": []
@@ -109,7 +109,7 @@ export const SANCIONES_APP: Sancion[] = [
     "fecha": "22/06",
     "tipo": "Roja directa",
     "articulo": "Art. 34",
-    "fechasSuspension": 1,
+    "fechasSuspension": 6,
     "motivo": "Agresión física al árbitro — 6 fechas de suspensión, todas por cumplir (Art. 34 A).",
     "estado": "Firme",
     "mensajes": []
@@ -122,7 +122,7 @@ export const SANCIONES_APP: Sancion[] = [
     "fecha": "15/06",
     "tipo": "Roja directa",
     "articulo": "Art. 34",
-    "fechasSuspension": 1,
+    "fechasSuspension": 3,
     "motivo": "Agravio u ofensa al árbitro — 3 fechas de suspensión, todas por cumplir (Art. 34 B).",
     "estado": "Firme",
     "mensajes": []
@@ -135,7 +135,7 @@ export const SANCIONES_APP: Sancion[] = [
     "fecha": "13/07",
     "tipo": "Roja directa",
     "articulo": "Art. 39",
-    "fechasSuspension": 1,
+    "fechasSuspension": 5,
     "motivo": "Agresión a un jugador rival — 5 fechas de suspensión, todas por cumplir (Art. 39 C).",
     "estado": "Firme",
     "mensajes": []
@@ -148,7 +148,7 @@ export const SANCIONES_APP: Sancion[] = [
     "fecha": "06/07",
     "tipo": "Roja directa",
     "articulo": "Art. 39",
-    "fechasSuspension": 1,
+    "fechasSuspension": 3,
     "motivo": "Juego brusco — 3 fechas de suspensión, 2 por cumplir (Art. 39).",
     "estado": "Firme",
     "mensajes": []
@@ -161,7 +161,7 @@ export const SANCIONES_APP: Sancion[] = [
     "fecha": "13/07",
     "tipo": "Roja directa",
     "articulo": "Art. 39",
-    "fechasSuspension": 1,
+    "fechasSuspension": 2,
     "motivo": "Juego brusco — 2 fechas de suspensión, todas por cumplir (Art. 39).",
     "estado": "Firme",
     "mensajes": []
@@ -174,7 +174,7 @@ export const SANCIONES_APP: Sancion[] = [
     "fecha": "06/07",
     "tipo": "Roja directa",
     "articulo": "Art. 39",
-    "fechasSuspension": 1,
+    "fechasSuspension": 2,
     "motivo": "Juego brusco — 2 fechas de suspensión, 1 por cumplir (Art. 39).",
     "estado": "Firme",
     "mensajes": []

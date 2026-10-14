@@ -1,6 +1,7 @@
 'use client'
 
 import { Gavel, Pencil, Plus, Trash2 } from 'lucide-react'
+import { Equipo, Escudo } from '@/components/ui/Escudo'
 import { fechasTxt } from '@/lib/utils'
 import { useMemo, useState } from 'react'
 import { articulosDe, useDemo, type Sancion } from '@/lib/demo-store'
@@ -152,7 +153,7 @@ export default function Sanciones() {
           clave={(s) => s.id}
           vacio="No hay sanciones con esos filtros."
           columnas={[
-            { titulo: 'Jugador', celda: (s) => <><p className="font-bold">{s.jugador}</p><p className={`text-sm ${K.suave}`}>{s.equipo}</p></> },
+            { titulo: 'Jugador', celda: (s) => <><p className="font-bold">{s.jugador}</p><p className={`text-sm ${K.suave}`}><Equipo equipo={s.equipo} size={18} /></p></> },
             { titulo: 'Partido', celda: (s) => <><p>{s.partido}</p><p className={`text-sm ${K.suave}`}>{s.fecha}</p></> },
             { titulo: 'Artículos', celda: (s) => <ChipsArticulos s={s} max={2} /> },
             { titulo: 'Fechas', celda: (s) => <span className="font-heading text-lg">{s.fechasSuspension}</span> },
@@ -162,7 +163,7 @@ export default function Sanciones() {
           tarjeta={(s) => (
             <div className="space-y-2">
               <div className="flex items-start justify-between gap-2">
-                <div className="min-w-0"><p className="font-bold">{s.jugador}</p><p className={`text-sm ${K.suave}`}>{s.equipo} · {s.partido} · {s.fecha}</p></div>
+                <div className="min-w-0"><p className="font-bold">{s.jugador}</p><p className={`flex flex-wrap items-center gap-x-1.5 text-sm ${K.suave}`}><Equipo equipo={s.equipo} size={18} /><span>· {s.partido} · {s.fecha}</span></p></div>
                 <Etiqueta texto={s.cumplida && s.estado === 'Firme' ? 'Cumplida' : s.estado} />
               </div>
               <ChipsArticulos s={s} max={3} />
