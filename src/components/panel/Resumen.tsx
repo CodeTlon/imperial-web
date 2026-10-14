@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react'
 import { articulosDe, useDemo } from '@/lib/demo-store'
 import { fixturePorCategoria, type Categoria } from '@/lib/torneo-data'
 import { CATEGORIAS, estadoPlantel, goleadoresCategoria, puntos, tablaCategoria } from '@/components/panel/datos'
-import { BarrasH, BarrasV, Dona, Kpi, Linea } from '@/components/panel/graficos'
+import { BarrasH, BarrasV, Dona, Linea } from '@/components/panel/graficos'
 import { C, COLOR_ESTADO, Encabezado, K, Selector, Tabla, Tarjeta } from '@/components/panel/ui'
 
 type Mov = { clave: string; tipo: string; texto: string; detalle: string }
@@ -57,14 +57,19 @@ export default function Resumen({ irA }: { irA: (t: string) => void }) {
 
   return (
     <div className="space-y-6">
-      <Encabezado titulo="Resumen" descripcion="Lo que necesita tu atención hoy y cómo viene el torneo." />
-      <div className="flex flex-wrap items-end gap-x-4 gap-y-2">
-        <div className="w-48"><Selector label="Categoría" className="!bg-white shadow-sm" value={cat} onChange={(e) => setCat(e.target.value)} opciones={CATEGORIAS.map((c) => ({ valor: c, texto: c }))} /></div>
-        <p className="pb-3 text-xs text-[color:var(--p-suave)]">Cambia los gráficos de goles por fecha y goleadores.</p>
-      </div>
-      <div className="grid gap-4 grid-cols-2 xl:grid-cols-4">
-        <Kpi titulo="Resultados cargados" valor={datos.resultados.length} color={C.profundo} onClick={() => irA('Resultados')} detalle="Desde este panel" />
-      </div>
+      <Encabezado
+        titulo="Resumen"
+        descripcion="Lo que necesita tu atención hoy y cómo viene el torneo."
+        accion={
+          <div className="flex flex-wrap items-end gap-3">
+            <button type="button" onClick={() => irA('Resultados')} className={`flex items-center gap-3 rounded-xl border ${K.borde} bg-white px-4 py-2 text-left transition hover:border-[color:var(--p-teal)]`}>
+              <span className="font-heading text-3xl leading-none text-[color:var(--p-navy)]">{datos.resultados.length}</span>
+              <span className="text-xs font-semibold leading-tight text-[color:var(--p-navy)]">Resultados<br />cargados</span>
+            </button>
+            <div className="w-44"><Selector label="Categoría" className="!bg-white shadow-sm" value={cat} onChange={(e) => setCat(e.target.value)} opciones={CATEGORIAS.map((c) => ({ valor: c, texto: c }))} /></div>
+          </div>
+        }
+      />
 
       <div className="grid gap-6 lg:grid-cols-2 xl:grid-cols-3">
         <Tarjeta titulo="Goles por categoría"><BarrasV datos={golesPorCat} /></Tarjeta>

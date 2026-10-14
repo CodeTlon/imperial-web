@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation'
 import Marca from '@/components/layout/Marca'
 import { navegarConCortina } from '@/lib/navegar'
 import { Icono } from '@/components/panel/icono'
-import DemoGuiada from '@/components/panel/DemoGuiada'
 import {
   AlertTriangle, CalendarDays, ChevronDown, ChevronLeft, ChevronRight, CircleHelp, ClipboardList, Inbox, LogOut, RotateCcw, Shield, Gavel, Goal, Home, Image as ImagenIcon, LayoutDashboard, Search, ShieldAlert,
   Table2, Trophy, User, Users, X, type LucideIcon,
@@ -63,103 +62,112 @@ export function PanelShell({ rol, titulo, tabs, tab, setTab, contadores, childre
   const router = useRouter()
   // Mientras se cierra la sesión, la cortina de carga ya cubre todo: la guarda no debe navegar por su cuenta.
   const cerrando = useRef(false)
-  const [menu, setMenu] = useState(false)
-  const [guia, setGuia] = useState(false)
+  const [abierto, setAbierto] = useState(false)
   const [demoOculta, setDemoOculta] = useState(true)
-  const refMenu = useRef<HTMLDivElement>(null)
   useEffect(() => {
     if (listo && sesion?.rol !== rol && !cerrando.current) router.replace('/ingresar')
   }, [listo, sesion, rol, router])
   useEffect(() => {
     try { setDemoOculta(localStorage.getItem(CLAVE_DEMO_CERRADA) === '1') } catch { setDemoOculta(false) }
   }, [])
+  // El menú lateral del celular se cierra con Esc y si la pantalla pasa a escritorio.
   useEffect(() => {
-    if (!menu) return
-    const fuera = (e: MouseEvent) => { if (!refMenu.current?.contains(e.target as Node)) setMenu(false) }
-    const tecla = (e: KeyboardEvent) => { if (e.key === 'Escape') setMenu(false) }
-    document.addEventListener('mousedown', fuera)
+    if (!abierto) return
+    const tecla = (e: KeyboardEvent) => { if (e.key === 'Escape') setAbierto(false) }
+    const ancho = () => { if (window.innerWidth >= 1024) setAbierto(false) }
     document.addEventListener('keydown', tecla)
-    return () => { document.removeEventListener('mousedown', fuera); document.removeEventListener('keydown', tecla) }
-  }, [menu])
+    window.addEventListener('resize', ancho)
+    return () => { document.removeEventListener('keydown', tecla); window.removeEventListener('resize', ancho) }
+  }, [abierto])
   if (!listo || sesion?.rol !== rol) return <div className="min-h-screen" style={{ background: C.navy }} />
   const cerrarSesion = () => {
     cerrando.current = true
-    setMenu(false)
+    setAbierto(false)
     navegarConCortina('/ingresar', () => salir())
   }
+  const lateral = (
+    <MenuLateral
+      titulo={titulo} tabs={tabs} tab={tab} contadores={contadores}
+      nombre={sesion.nombre} detalle={`${ROLES[rol]}${sesion.equipo ? ` · ${sesion.equipo}` : ''}`}
+      onTab={(t) => { setAbierto(false); setTab(t) }}
+      onReiniciar={() => { setAbierto(false); reiniciar() }}
+      onSalir={cerrarSesion}
+    />
+  )
   return (
-    <div className="min-h-screen bg-[var(--p-fondo)] text-[color:var(--p-texto)]" style={VARS_PANEL}>
-      <header className="text-white" style={{ background: `linear-gradient(135deg, ${C.navy}, ${C.profundo})` }}>
-        <div className="mx-auto max-w-[1800px] 2xl:max-w-[2200px] px-4 sm:px-6 lg:px-8 py-3 flex items-center gap-3 justify-between">
-          <div className="flex items-center gap-3 min-w-0">
-            <Link href="/" aria-label="Ir al sitio de Torneo Imperial" className="shrink-0"><Marca tamano="sm" color="#fff" /></Link>
-          </div>
-          <div className="flex items-center gap-2">
-            <Boton variante="fantasma" icono={CircleHelp} onClick={() => setGuia(true)}><span className="hidden sm:inline">Demo guiada</span><span className="sm:hidden sr-only">Demo guiada</span></Boton>
-            <div className="relative" ref={refMenu}>
-              <button
-                type="button"
-                onClick={() => setMenu(!menu)}
-                aria-haspopup="menu"
-                aria-expanded={menu}
-                aria-label="Menú de usuario"
-                className="inline-flex items-center gap-2 rounded-xl border border-white/25 px-2.5 py-1.5 text-sm hover:bg-white/10"
-              >
-                <span className="h-7 w-7 rounded-full flex items-center justify-center text-xs font-bold" style={{ background: C.oro, color: C.navy }}>{sesion.nombre[0]}</span>
-                <span className="hidden md:block max-w-[14rem] truncate">{sesion.nombre}</span>
-                <Icono i={ChevronDown} />
-              </button>
-              {menu && (
-                <div role="menu" className="absolute right-0 z-40 mt-2 w-64 rounded-xl border border-[color:var(--p-borde)] bg-white text-[color:var(--p-texto)] shadow-xl p-2">
-                  <div className="px-3 py-2 border-b border-[color:var(--p-borde)] mb-1">
-                    <p className="font-bold text-sm truncate">{sesion.nombre}</p>
-                    <p className={`text-sm ${K.suave} truncate`}>{ROLES[rol]}{sesion.equipo ? ` · ${sesion.equipo}` : ''}</p>
-                  </div>
-                  <button role="menuitem" type="button" onClick={() => { setMenu(false); reiniciar() }} className="w-full inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm hover:bg-[var(--p-fondo)]"><Icono i={RotateCcw} />Reiniciar demo</button>
-                  <button role="menuitem" type="button" onClick={cerrarSesion} className="w-full inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-bold hover:bg-[var(--p-fondo)]"><Icono i={LogOut} />Salir</button>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
+    <div className="min-h-screen bg-[var(--p-fondo)] text-[color:var(--p-texto)] lg:grid lg:grid-cols-[264px_minmax(0,1fr)]" style={VARS_PANEL}>
+      {/* Escritorio: barra lateral fija a la izquierda, de punta a punta */}
+      <aside className="hidden lg:block sticky top-0 h-screen" style={{ background: `linear-gradient(180deg, ${C.navy}, #04434d)` }}>{lateral}</aside>
+
+      {/* Celular: barra superior mínima con el botón del menú */}
+      <header className="lg:hidden sticky top-0 z-30 flex h-14 items-center gap-2 px-3 text-white" style={{ background: C.navy }}>
+        <button type="button" onClick={() => setAbierto(!abierto)} aria-label={abierto ? 'Cerrar menú' : 'Abrir menú'} aria-expanded={abierto} aria-controls="menu-panel"
+          className="relative flex h-11 w-11 items-center justify-center rounded-xl active:scale-90 transition-transform duration-150 hover:bg-white/10">
+          <span className="hamburguesa" data-open={abierto} aria-hidden><i /><i /><i /></span>
+        </button>
+        <Link href="/" aria-label="Ir al sitio de Torneo Imperial"><Marca tamano="sm" color="#fff" /></Link>
+        <span className="ml-auto truncate text-sm font-semibold text-white/80">{tab}</span>
       </header>
-      <div className="mx-auto max-w-[1800px] 2xl:max-w-[2200px] px-4 sm:px-6 lg:px-8 lg:grid lg:grid-cols-[220px_minmax(0,1fr)] lg:gap-8">
-        <aside className="lg:py-6">
-          <nav
-            aria-label={`Secciones: ${titulo}`}
-            className="sticky top-0 z-20 -mx-4 sm:-mx-6 lg:mx-0 lg:top-4 flex lg:flex-col gap-2 overflow-x-auto lg:overflow-visible bg-[var(--p-fondo)]/95 backdrop-blur px-4 sm:px-6 lg:px-0 py-3 lg:py-0 border-b lg:border-0 border-[color:var(--p-borde)]"
-          >
-            {tabs.map((t) => {
-              const activa = tab === t
-              const n = contadores?.[t]
-              return (
-                <button
-                  key={t}
-                  onClick={() => setTab(t)}
-                  aria-current={activa ? 'page' : undefined}
-                  className={`shrink-0 inline-flex items-center gap-2 rounded-full lg:rounded-xl px-4 py-2.5 text-sm font-semibold whitespace-nowrap transition ${activa ? 'bg-[var(--p-navy)] text-white shadow' : 'bg-white text-[color:var(--p-suave)] border border-[color:var(--p-borde)] hover:text-[color:var(--p-navy)]'}`}
-                >
-                  <Icono i={ICONOS[t] ?? LayoutDashboard} className={activa ? 'text-[var(--p-oro)]' : ''} />
-                  {t}
-                  {n !== undefined && n > 0 && (
-                    <span className={`ml-auto min-w-[1.5rem] rounded-full px-1.5 py-0.5 text-center text-xs font-bold ${activa ? 'bg-white/20 text-white' : 'bg-[var(--p-oro)]/30 text-[#7a4d00]'}`}>{n}</span>
-                  )}
-                </button>
-              )
-            })}
-          </nav>
-        </aside>
-        <main className="min-w-0 py-6 space-y-6">
-          {!demoOculta && (
-            <p className={`inline-flex items-center gap-2 rounded-full bg-white border ${K.borde} pl-3 pr-1.5 py-1 text-xs ${K.suave}`}>
-              <span className="font-bold text-[color:var(--p-navy)]">Demo</span> los datos se guardan solo en este navegador
-              <button type="button" aria-label="Ocultar aviso de demo" onClick={() => { setDemoOculta(true); try { localStorage.setItem(CLAVE_DEMO_CERRADA, '1') } catch {} }} className="rounded-full p-1 hover:bg-[var(--p-fondo)]"><X size={12} aria-hidden /></button>
-            </p>
-          )}
-          {children}
-        </main>
+      <div className="panel-fondo lg:hidden" data-open={abierto} onClick={() => setAbierto(false)} aria-hidden />
+      <aside id="menu-panel" className="panel-cajon lg:hidden" data-open={abierto} style={{ background: `linear-gradient(180deg, ${C.navy}, #04434d)` }}>{lateral}</aside>
+
+      <main className="min-w-0 px-4 sm:px-6 lg:px-10 py-6 space-y-6 max-w-[1800px]">
+        {!demoOculta && (
+          <p className={`inline-flex items-center gap-2 rounded-full bg-white border ${K.borde} pl-3 pr-1.5 py-1 text-xs ${K.suave}`}>
+            <span className="font-bold text-[color:var(--p-navy)]">Demo</span> los datos se guardan solo en este navegador
+            <button type="button" aria-label="Ocultar aviso de demo" onClick={() => { setDemoOculta(true); try { localStorage.setItem(CLAVE_DEMO_CERRADA, '1') } catch {} }} className="rounded-full p-1 hover:bg-[var(--p-fondo)]"><X size={12} aria-hidden /></button>
+          </p>
+        )}
+        {children}
+      </main>
+    </div>
+  )
+}
+
+// Contenido de la barra lateral: marca arriba, secciones al medio y usuario con sus acciones abajo.
+function MenuLateral({ titulo, tabs, tab, contadores, nombre, detalle, onTab, onReiniciar, onSalir }: {
+  titulo: string; tabs: string[]; tab: string; contadores?: Record<string, number>; nombre: string; detalle: string
+  onTab: (t: string) => void; onReiniciar: () => void; onSalir: () => void
+}) {
+  return (
+    <div className="flex h-full flex-col text-white">
+      <div className="px-5 pt-6 pb-5">
+        <Link href="/" aria-label="Ir al sitio de Torneo Imperial" className="block"><Marca tamano="sm" color="#fff" /></Link>
+        <p className="mt-3 text-[11px] font-bold uppercase tracking-[0.18em] text-white/50">{titulo}</p>
       </div>
-      {guia && <DemoGuiada rol={rol} onCerrar={() => setGuia(false)} />}
+      <nav aria-label={`Secciones: ${titulo}`} className="flex-1 overflow-y-auto px-3 space-y-1">
+        {tabs.map((t) => {
+          const activa = tab === t
+          const n = contadores?.[t]
+          return (
+            <button
+              key={t}
+              type="button"
+              onClick={() => onTab(t)}
+              aria-current={activa ? 'page' : undefined}
+              className={`relative flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-semibold transition-colors ${activa ? 'bg-white/12 text-white' : 'text-white/70 hover:bg-white/8 hover:text-white'}`}
+            >
+              {activa && <span aria-hidden className="absolute inset-y-2 left-0 w-1 rounded-r-full" style={{ background: C.oro }} />}
+              <Icono i={ICONOS[t] ?? LayoutDashboard} t="md" className={activa ? 'text-[var(--p-oro)]' : ''} />
+              <span className="min-w-0 flex-1 truncate">{t}</span>
+              {n !== undefined && n > 0 && (
+                <span className={`min-w-[1.5rem] rounded-full px-1.5 py-0.5 text-center text-xs font-bold ${activa ? 'bg-[var(--p-oro)] text-[color:var(--p-navy)]' : 'bg-white/15 text-white'}`}>{n}</span>
+              )}
+            </button>
+          )
+        })}
+      </nav>
+      <div className="mt-4 border-t border-white/10 p-3">
+        <div className="flex items-center gap-3 px-2 py-2">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-bold" style={{ background: C.oro, color: C.navy }}>{nombre[0]}</span>
+          <span className="min-w-0">
+            <span className="block truncate text-sm font-bold">{nombre}</span>
+            <span className="block truncate text-xs text-white/60">{detalle}</span>
+          </span>
+        </div>
+        <button type="button" onClick={onReiniciar} className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-sm text-white/70 hover:bg-white/8 hover:text-white"><Icono i={RotateCcw} t="md" />Reiniciar demo</button>
+        <button type="button" onClick={onSalir} className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-sm font-bold text-white hover:bg-white/8"><Icono i={LogOut} t="md" />Salir</button>
+      </div>
     </div>
   )
 }
