@@ -61,8 +61,6 @@ export default function Equipos() {
     </span>
   )
 
-  const total = datos.plantel.length
-  const sinRevisar = datos.plantel.filter((j) => j.estadoDoc !== 'Aprobado').length
 
   if (actual) {
     return (
@@ -137,7 +135,7 @@ export default function Equipos() {
     <div className="space-y-6">
       <Encabezado
         titulo="Equipos"
-        descripcion={`${equipos.length} equipos, ${total} jugadores cargados${sinRevisar ? ` y ${sinRevisar} con documentación sin aprobar` : ''}. Entrá a un equipo para revisar a sus jugadores.`}
+        descripcion="Entrá a un equipo para revisar la documentación de sus jugadores."
       />
       <Tarjeta titulo={`Equipos (${listaEq.length})`}>
         <BarraFiltros>
