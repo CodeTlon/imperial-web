@@ -12,6 +12,7 @@ export default function Navbar() {
   const [open, setOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const ruta = usePathname()
+  const activo = (href: string) => (href === '/' ? ruta === '/' : ruta === href || ruta.startsWith(href + '/'))
   const sobreHero = !['/ingresar', '/panel', '/delegado', '/jugador'].some((r) => ruta.startsWith(r))
   const { business, cta, sitemap } = demoConfig
   const links = [...sitemap, { label: 'Ingresar', href: '/ingresar' }]
@@ -40,7 +41,13 @@ export default function Navbar() {
 
           <nav className="hidden md:flex items-center gap-5">
             {links.map((l) => (
-              <Link key={l.href} href={l.href} className="text-sm font-medium whitespace-nowrap transition-opacity hover:opacity-70" style={{ color: 'var(--demo-on-structural)' }}>
+              <Link
+              key={l.href}
+              href={l.href}
+              aria-current={activo(l.href) ? 'page' : undefined}
+              className={`relative py-1 text-sm whitespace-nowrap transition-opacity hover:opacity-100 ${activo(l.href) ? 'font-bold opacity-100' : 'font-medium opacity-80'} after:absolute after:inset-x-0 after:-bottom-0.5 after:h-0.5 after:rounded-full after:bg-[var(--demo-accent)] after:origin-left after:transition-transform after:duration-300 ${activo(l.href) ? 'after:scale-x-100' : 'after:scale-x-0'}`}
+              style={{ color: 'var(--demo-on-structural)' }}
+            >
                 {l.label}
               </Link>
             ))}
@@ -62,7 +69,14 @@ export default function Navbar() {
       {open && (
         <div className="md:hidden border-t px-4 py-4 flex flex-col gap-3" style={{ backgroundColor: 'var(--demo-structural)', borderColor: 'var(--demo-border)' }}>
           {links.map((l) => (
-            <Link key={l.href} href={l.href} className="text-sm font-medium py-2" style={{ color: 'var(--demo-on-structural)' }} onClick={() => setOpen(false)}>
+            <Link
+                key={l.href}
+                href={l.href}
+                aria-current={activo(l.href) ? 'page' : undefined}
+                className={`text-sm py-2 pl-3 border-l-2 ${activo(l.href) ? 'font-bold border-[var(--demo-accent)]' : 'font-medium border-transparent opacity-80'}`}
+                style={{ color: 'var(--demo-on-structural)' }}
+                onClick={() => setOpen(false)}
+              >
               {l.label}
             </Link>
           ))}
