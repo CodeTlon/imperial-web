@@ -10,6 +10,7 @@ import {
   Table2, Trophy, User, Users, X, type LucideIcon,
 } from 'lucide-react'
 import { useCallback, useEffect, useRef, useState, type ButtonHTMLAttributes, type CSSProperties, type InputHTMLAttributes, type ReactNode, type SelectHTMLAttributes, type TextareaHTMLAttributes } from 'react'
+import { createPortal } from 'react-dom'
 import { useDemo, type Rol } from '@/lib/demo-store'
 
 // Paleta de los paneles (teal del logo + dorado). Se publica como variables --p-* en la raíz del panel
@@ -210,7 +211,8 @@ export function Lateral({ abierto, titulo, onCerrar, children }: { abierto: bool
     return () => { document.removeEventListener('keydown', tecla); document.body.style.overflow = previo }
   }, [abierto, onCerrar])
   if (!abierto) return null
-  return (
+  // Portal a <body>: así `fixed` siempre cubre toda la pantalla (dentro del shell quedaba 24 px más abajo).
+  return createPortal(
     <div className="fixed inset-0 z-50 flex justify-end" style={VARS_PANEL}>
       <div className="absolute inset-0 bg-[#062f36]/50" onClick={onCerrar} aria-hidden />
       <aside role="dialog" aria-modal="true" aria-label={titulo} className="relative flex h-full w-full sm:max-w-xl flex-col bg-white shadow-2xl text-[color:var(--p-texto)]">
@@ -220,7 +222,8 @@ export function Lateral({ abierto, titulo, onCerrar, children }: { abierto: bool
         </div>
         <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-5">{children}</div>
       </aside>
-    </div>
+    </div>,
+    document.body,
   )
 }
 
