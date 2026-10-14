@@ -3,6 +3,7 @@
 import { borrarTodo, type Adjunto } from '@/lib/adjuntos-db'
 import { SANCIONES_APP } from '@/lib/datos-app'
 import { PLANTEL_DEMO } from '@/lib/plantel-mock'
+import { SANCIONES_MOCK } from '@/lib/sanciones-mock'
 import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from 'react'
 
 // Estado de la demo del sitio: login mockeado y datos de los paneles guardados en el navegador (localStorage).
@@ -79,7 +80,7 @@ export type ContenidoSitio = {
 type Datos = { sanciones: Sancion[]; plantel: JugadorPlantel[]; resultados: Resultado[]; goleadores: Gol[]; fotoFechaUrl: string; contenido: ContenidoSitio }
 
 const INICIAL: Datos = {
-  sanciones: SANCIONES_APP,
+  sanciones: [...SANCIONES_APP, ...SANCIONES_MOCK],
   plantel: PLANTEL_DEMO,
   resultados: [],
   goleadores: [],
@@ -87,7 +88,7 @@ const INICIAL: Datos = {
   fotoFechaUrl: 'https://drive.google.com/drive/folders/1UijkT6B73qCudx_L0uSlaxrv83ILYRQA',
 }
 
-const CLAVE_DATOS = 'ti-demo-datos-v3'
+const CLAVE_DATOS = 'ti-demo-datos-v4'
 const CLAVE_SESION = 'ti-demo-sesion'
 const hoy = () => new Date().toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit' })
 const nuevoId = (p: string) => `${p}${Date.now().toString(36)}${Math.random().toString(36).slice(2, 5)}`

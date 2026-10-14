@@ -6,6 +6,7 @@
 // Orden: +30 primero (única categoría con datos 100% reales —
 // escudos, goleadores, sancionados), después +35/+40/+45 ascendente, Libre y
 // Femenino al final (siguen con datos de demostración).
+import { SANCIONES_MOCK } from '@/lib/sanciones-mock'
 import { datosMock, fixtureMas30, type FechaFixture } from './categorias-mock'
 
 export const categorias = ['+30', '+35', '+40', '+45', 'Libre', 'Femenino'] as const
@@ -102,8 +103,9 @@ const posicionesBase: Record<Categoria, Equipo[]> = {
 }
 
 const MOCK = datosMock()
-const aEquipoSitio = (e: { nombre: string; zona: 'A' | 'B'; g: number; e: number; p: number; gf: number; gc: number }): Equipo => ({
-  nombre: e.nombre, zona: e.zona, pj: e.g + e.e + e.p, pg: e.g, pe: e.e, pp: e.p, gf: e.gf, gc: e.gc,
+// Los equipos que no son de +30 no tienen escudo oficial: llevan uno generado (public/images/escudos/<id>.png), el mismo que usa la app.
+const aEquipoSitio = (e: { id: string; nombre: string; zona: 'A' | 'B'; g: number; e: number; p: number; gf: number; gc: number }): Equipo => ({
+  nombre: e.nombre, zona: e.zona, pj: e.g + e.e + e.p, pg: e.g, pe: e.e, pp: e.p, gf: e.gf, gc: e.gc, escudo: `/images/escudos/${e.id}.png`,
 })
 
 export const posiciones: Record<Categoria, Equipo[]> = {
@@ -141,7 +143,7 @@ export const goleadores: Record<Categoria, { jugador: string; equipo: string; go
 
 // Jugadores suspendidos — real de torneoimperial.com.ar/mas-30. "Por cumplir" según
 // el Capítulo 6 del reglamento (ver /reglamento); vacío = sin sancionados en esa categoría.
-export const sanciones: Record<Categoria, { jugador: string; equipo: string; sancion: number; porCumplir: number; motivo: string }[]> = {
+const sancionesBase: Record<Categoria, { jugador: string; equipo: string; sancion: number; porCumplir: number; motivo: string }[]> = {
   'Libre': [],
   '+30': [
     { jugador: 'Cristian Agustín Salussolia', equipo: 'Ankara +30',       sancion: 8,  porCumplir: 4, motivo: 'Art 39 - Art 34 A' },
@@ -164,6 +166,17 @@ export const sanciones: Record<Categoria, { jugador: string; equipo: string; san
   '+45': [],
   'Femenino': [],
 }
+
+// Las demás categorías salen de las sanciones de demostración (sanciones-mock.ts): solo las que todavía tienen fechas por cumplir.
+export const sanciones: Record<Categoria, { jugador: string; equipo: string; sancion: number; porCumplir: number; motivo: string }[]> = Object.fromEntries(
+  (Object.keys(sancionesBase) as Categoria[]).map((cat) => [
+    cat,
+    cat === '+30'
+      ? sancionesBase[cat]
+      : SANCIONES_MOCK.filter((s) => s.categoria === cat && s.porCumplir > 0 && s.estado !== 'Descargo aceptado')
+          .map((s) => ({ jugador: s.jugador, equipo: s.equipo, sancion: s.fechasSuspension, porCumplir: s.porCumplir, motivo: (s.articulo ?? '').replace('Art. ', 'Art ') })),
+  ])
+) as Record<Categoria, { jugador: string; equipo: string; sancion: number; porCumplir: number; motivo: string }[]>
 
 // Fixture indexado por jornada — inspirado en la navegación "elegí una fecha"
 // de torneogolden.com.ar. Reemplaza a los antiguos `proximaFecha`/`ultimosResultados`:
