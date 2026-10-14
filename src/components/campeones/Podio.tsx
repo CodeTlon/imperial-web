@@ -66,7 +66,7 @@ export default function Podio({ item }: { item: CampeonEntry }) {
     { pos: 1, equipo: item.campeon, alto: 'h-24 sm:h-32' },
     ...(item.tercero ? [{ pos: 3 as const, equipo: item.tercero, alto: 'h-12 sm:h-14' }] : []),
   ]
-  const medalla: Record<number, string> = { 1: copa.color, 2: '#9aa3ad', 3: '#b86f3a' }
+  const medalla: Record<number, string> = { 1: '#f3a21c', 2: '#9aa3ad', 3: '#a9652f' }
 
   return (
     <section className="w-full rounded-2xl overflow-hidden border" style={{ borderColor: 'var(--demo-border)', background: 'var(--demo-surface)' }}>
@@ -101,7 +101,6 @@ export default function Podio({ item }: { item: CampeonEntry }) {
             return (
               <div key={p.pos} className="flex flex-col items-center min-w-0">
                 <div className="podio-eq flex flex-col items-center text-center w-full px-0.5 pb-3 min-w-0" style={{ animationDelay: `${0.25 + i * 0.12}s` }}>
-                  {campeon && <Trophy size={22} className="mb-1" style={{ color: copa.color }} aria-hidden />}
                   <div className="sm:hidden"><Escudo nombre={p.equipo} categoria={item.categoria} size={campeon ? 60 : 46} /></div>
                   <div className="hidden sm:block"><Escudo nombre={p.equipo} categoria={item.categoria} size={campeon ? 96 : 72} /></div>
                   <p className={`mt-2 w-full leading-tight line-clamp-2 break-words ${campeon ? 'text-[13px] sm:text-xl font-bold' : 'text-xs sm:text-base font-semibold'}`}
