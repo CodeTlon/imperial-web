@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { CalendarDays } from 'lucide-react'
 import MatchCard from '@/components/match/MatchCard'
 import ShareButton from '@/components/share/ShareButton'
 import Navbar from '@/components/layout/Navbar'
@@ -41,24 +40,16 @@ export default function FixturePage() {
         <section className="section-pad">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
 
-            <CategoryTabs options={categoriasConDatos} value={cat} onChange={(c) => setCat(c as Categoria)} />
-
-            {/* Selector de fecha (jornada) */}
+            {/* Un solo contenedor: fechas arriba, categorías abajo */}
             <div className="card mb-8">
-              <p className="font-bold mb-1" style={{ color: 'var(--demo-heading)' }}>Fechas</p>
-              <p className="text-xs mb-4" style={{ color: 'var(--demo-muted)' }}>Elegí una fecha para ver el fixture</p>
-              <CarruselFechas fechas={fechas} numero={numeroFecha} onChange={setNumeroFecha} />
+              <CarruselFechas fechas={fechas} numero={numeroFecha} onChange={setNumeroFecha} className="mb-2" />
+              <div className="[&>div]:!mb-0">
+                <CategoryTabs options={categoriasConDatos} value={cat} onChange={(c) => setCat(c as Categoria)} />
+              </div>
             </div>
 
             {fecha && (
               <div>
-                <div className="text-center mb-6">
-                  <h2 className="font-bold text-xl flex items-center justify-center gap-2" style={{ color: 'var(--demo-heading)' }}>
-                    <CalendarDays size={20} style={{ color: 'var(--demo-accent)' }} /> Fecha {fecha.numero}
-                  </h2>
-                  <p className="text-sm uppercase tracking-wide mt-1" style={{ color: 'var(--demo-muted)' }}>{fecha.fechaLabel}</p>
-                </div>
-
                 {(['A', 'B'] as const).map((zona) => {
                   const delaZona = fecha.partidos.filter((p) => p.zona === zona)
                   if (delaZona.length === 0) return null
