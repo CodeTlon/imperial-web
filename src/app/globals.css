@@ -213,5 +213,8 @@
 .fechas-carrusel{scrollbar-width:none;-webkit-overflow-scrolling:touch}
 .fechas-carrusel::-webkit-scrollbar{display:none}
 .fecha-pill{transition:transform .35s cubic-bezier(.22,1,.36,1),background-color .25s,box-shadow .35s,opacity .25s;opacity:.85}
-.fecha-pill[data-activa="true"]{transform:scale(1.1);opacity:1;box-shadow:0 8px 22px -8px color-mix(in srgb,var(--demo-accent) 70%,transparent)}
+.fecha-pill[data-activa="true"]{transform:scale(1.05);opacity:1;box-shadow:0 8px 22px -8px color-mix(in srgb,var(--demo-accent) 70%,transparent)}
 .fecha-pill:hover{transform:translateY(-2px)}
+.fecha-pill[data-activa="true"]:hover{transform:scale(1.05)}
+.fechas-carrusel.arrastrando{scroll-snap-type:none;cursor:grabbing;scroll-behavior:auto}
+.fechas-carrusel{overscroll-behavior-x:contain}

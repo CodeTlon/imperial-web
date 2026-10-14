@@ -7,6 +7,7 @@ import ShareButton from '@/components/share/ShareButton'
 import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
 import PageHeader from '@/components/ui/PageHeader'
+import CarruselFechas from '@/components/ui/CarruselFechas'
 import CategoryTabs from '@/components/ui/CategoryTabs'
 import { categoriasConDatos, fixturePorCategoria, proximaFechaDe, type Categoria } from '@/lib/torneo-data'
 import { useCategoria } from '@/lib/category-context'
@@ -46,22 +47,7 @@ export default function FixturePage() {
             <div className="card mb-8">
               <p className="font-bold mb-1" style={{ color: 'var(--demo-heading)' }}>Fechas</p>
               <p className="text-xs mb-4" style={{ color: 'var(--demo-muted)' }}>Elegí una fecha para ver el fixture</p>
-              <div className="flex flex-wrap gap-2">
-                {fechas.map((f) => (
-                  <button
-                    key={f.numero}
-                    onClick={() => setNumeroFecha(f.numero)}
-                    className="w-9 h-9 flex items-center justify-center text-sm font-bold transition-all rounded-full"
-                    style={{
-                      backgroundColor: numeroFecha === f.numero ? 'var(--demo-accent)' : 'var(--demo-surface-alt)',
-                      color: numeroFecha === f.numero ? 'var(--demo-on-accent)' : 'var(--demo-text)',
-                      border: `1px solid ${numeroFecha === f.numero ? 'var(--demo-accent)' : 'var(--demo-border)'}`,
-                    }}
-                  >
-                    {f.numero}
-                  </button>
-                ))}
-              </div>
+              <CarruselFechas fechas={fechas} numero={numeroFecha} onChange={setNumeroFecha} />
             </div>
 
             {fecha && (
