@@ -42,13 +42,13 @@ export default function PosicionesPage() {
               <div className={`grid grid-cols-1 gap-8 `}>
                 {zonas.length > 0 ? (
                   zonas.map((z) => (
-                    <div key={z} className="card overflow-x-auto">
+                    <div key={z} className="card card-tabla overflow-x-auto">
                       <p className="eyebrow !mb-4">Zona {z}</p>
                       <TablaPosiciones equipos={tabla.filter((e) => e.zona === z)} conAjustes={conAjustes} />
                     </div>
                   ))
                 ) : (
-                  <div className="card overflow-x-auto">
+                  <div className="card card-tabla overflow-x-auto">
                     <TablaPosiciones equipos={tabla} conAjustes={conAjustes} />
                   </div>
                 )}
@@ -60,7 +60,7 @@ export default function PosicionesPage() {
               <TarjetaGoleadores top={top} categoria={cat} />
 
             {sancionados.length > 0 && (
-              <div className="card overflow-x-auto">
+              <div className="card card-tabla overflow-x-auto">
                 <p className="eyebrow !mb-4 flex items-center gap-2"><ShieldAlert size={16} aria-hidden /> Jugadores suspendidos · {cat}</p>
                 <ul className="sm:hidden space-y-3">
                   {sancionados.map((s) => (

@@ -60,6 +60,10 @@
     border-radius: var(--demo-radius-lg);
   }
 
+  /* Cards con tablas: más aire que .card para que las columnas de las puntas no toquen las esquinas redondeadas. */
+  .card.card-tabla { padding: 1.75rem 1.5rem; }
+  @media (min-width: 640px) { .card.card-tabla { padding: 2rem 2.25rem; } }
+
   .btn-primary {
     @apply inline-flex items-center justify-center gap-2 px-6 py-3 font-semibold transition-all duration-200;
     background-color: var(--demo-accent);

@@ -57,7 +57,7 @@ type Goleador = (typeof goleadores)[Categoria][number]
 export function TarjetaGoleadores({ top, categoria }: { top: Goleador[]; categoria: string }) {
   const maximo = Math.max(1, ...top.map((g) => g.goles))
   return (
-    <div className="card overflow-x-auto">
+    <div className="card card-tabla overflow-x-auto">
       <p className="eyebrow !mb-4 flex items-center gap-2"><Trophy size={16} aria-hidden /> Goleadores · {categoria}</p>
       {top.length === 0 ? (
         <p className="py-6 text-center text-sm" style={{ color: 'var(--demo-muted)' }}>Todavía no hay goles cargados en esta categoría.</p>

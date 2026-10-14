@@ -68,7 +68,7 @@ export default function TorneoHome() {
         {/* Posiciones + goleadores: mismas tablas que /posiciones */}
         <div className="space-y-8 mt-16">
           {(zonas.length ? zonas : [null]).map((z) => (
-            <div key={z ?? 'u'} className="card overflow-x-auto">
+            <div key={z ?? 'u'} className="card card-tabla overflow-x-auto">
               {z && <p className="eyebrow !mb-4">Zona {z}</p>}
               <TablaPosiciones equipos={z ? tabla.filter((e) => e.zona === z) : tabla} conAjustes={conAjustes} />
             </div>
