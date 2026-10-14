@@ -37,7 +37,9 @@ export default function CategoryTabs({
   }, [value, options])
 
   return (
-    <div ref={contenedor} className="relative flex flex-wrap justify-center gap-2 mb-10" role="tablist">
+    <div className="mb-10">
+    <p className="eyebrow !mb-3 text-center">Categorías</p>
+    <div ref={contenedor} className="relative flex flex-wrap justify-center gap-2" role="tablist" aria-label="Categorías">
       {medida && (
         <span
           aria-hidden
@@ -72,6 +74,7 @@ export default function CategoryTabs({
           {c}
         </button>
       ))}
+    </div>
     </div>
   )
 }
