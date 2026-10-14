@@ -14,12 +14,15 @@ export default function CartaPage() {
     <>
       <Navbar />
       <main className="min-h-screen" style={{ backgroundColor: 'var(--demo-bg)' }}>
-        <PageHeader eyebrow="Coronados Bar & Fernet Branca" title="Carta del bar" subtitle="Tragos, picadas y algo para comer después del partido." backgroundImage="/images/gallery-6.jpg" />
+        <PageHeader title="Carta del bar" subtitle="Tragos, picadas y algo para comer después del partido." backgroundImage="/images/gallery-6.jpg" cta={false} />
         <section className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-12 grid gap-6 md:grid-cols-2">
-          {CARTA.map((sec) => (
-            <article key={sec.titulo} className="rounded-3xl border border-[#d9e8ea] bg-white p-6">
+          {CARTA.map((sec, i) => {
+            // Con una cantidad impar de secciones, la última ocupa las dos columnas.
+            const ancha = i === CARTA.length - 1 && CARTA.length % 2 === 1
+            return (
+            <article key={sec.titulo} className={`rounded-3xl border border-[#d9e8ea] bg-white p-6 ${ancha ? 'md:col-span-2' : ''}`}>
               <h2 className="font-heading text-2xl text-[#062f36] mb-4">{sec.titulo}</h2>
-              <ul className="space-y-3">
+              <ul className={ancha ? 'grid gap-x-10 gap-y-3 md:grid-cols-2' : 'space-y-3'}>
                 {sec.items.map((it) => (
                   <li key={it.nombre} className="flex items-start justify-between gap-4">
                     <div>
@@ -35,7 +38,8 @@ export default function CartaPage() {
                 ))}
               </ul>
             </article>
-          ))}
+            )
+          })}
         </section>
       </main>
       <Footer />

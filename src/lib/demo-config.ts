@@ -33,6 +33,7 @@ export const demoConfig = {
     { label: 'Fixture',    href: '/fixture' },
     { label: 'Equipos',    href: '/equipos' },
     { label: 'Campeones',  href: '/campeones' },
+    { label: 'Sanciones',  href: '/sanciones' },
   ],
 
   // ── Identidad visual (tokens semánticos) ─────────────────
