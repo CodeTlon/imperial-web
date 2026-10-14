@@ -33,9 +33,9 @@ export default function TorneoHome() {
   return (
     <section id="torneo" className="section-pad scroll-mt-16" style={{ backgroundColor: 'var(--demo-bg)' }}>
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-8">
-          <p className="eyebrow">Clausura 2026</p>
-          <h2 className="section-title">El torneo</h2>
+        <div className="text-center mb-10">
+          <h2 className="section-title !mb-2">Fixture y posiciones</h2>
+          <p className="section-subtitle !text-base">Clausura 2026 · resultados y tabla al día, fecha por fecha.</p>
         </div>
 
         {/* Fixture */}
