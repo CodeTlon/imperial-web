@@ -1,6 +1,7 @@
 'use client'
 
 import { Pencil, Trash2 } from 'lucide-react'
+import { fechasTxt } from '@/lib/utils'
 import { useMemo, useState } from 'react'
 import { admiteDescargo, TOPE_PLANTEL, useDemo, type JugadorPlantel } from '@/lib/demo-store'
 import { categoriaDeEquipo, estadoPlantel, mismo } from '@/components/panel/datos'
@@ -60,7 +61,7 @@ function Inicio({ irA }: { irA: (t: string) => void }) {
           <ul className="divide-y divide-[color:var(--p-borde)]">
             {abiertos.map((s) => (
               <li key={s.id} className="py-3 flex flex-wrap items-center justify-between gap-3">
-                <div className="min-w-0"><p className="font-bold">{s.jugador}</p><p className={`text-xs ${K.suave}`}>{s.partido} · {s.fecha} · {s.fechasSuspension} fecha(s)</p></div>
+                <div className="min-w-0"><p className="font-bold">{s.jugador}</p><p className={`text-xs ${K.suave}`}>{s.partido} · {s.fecha} · {fechasTxt(s.fechasSuspension)}</p></div>
                 <ChipsArticulos s={s} />
                 <Boton variante="oro" onClick={() => irA('Descargos')}>Presentar descargo</Boton>
               </li>

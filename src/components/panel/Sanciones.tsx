@@ -1,6 +1,7 @@
 'use client'
 
 import { Gavel, Pencil, Plus, Trash2 } from 'lucide-react'
+import { fechasTxt } from '@/lib/utils'
 import { useMemo, useState } from 'react'
 import { articulosDe, useDemo, type Sancion } from '@/lib/demo-store'
 import { ARTICULOS, fechasSugeridas, tipoDeArticulo } from '@/lib/sugerir-articulos'
@@ -167,7 +168,7 @@ export default function Sanciones() {
               <ChipsArticulos s={s} max={3} />
               <p className="text-sm line-clamp-3">{s.motivo}</p>
               <div className="flex items-center justify-between gap-2">
-                <span className={`text-sm ${K.suave}`}>{s.fechasSuspension} fecha(s)</span>
+                <span className={`text-sm ${K.suave}`}>{fechasTxt(s.fechasSuspension)}</span>
                 <Acciones s={s} onEditar={() => editar(s)} onQuitar={() => pedir({ titulo: `Borrar la sanción de ${s.jugador}`, texto: 'Se elimina también su descargo y la conversación. No se puede deshacer.', etiqueta: 'Borrar sanción' }, () => quitarSancion(s.id))} />
               </div>
             </div>

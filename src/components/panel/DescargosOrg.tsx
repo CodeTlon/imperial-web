@@ -1,6 +1,7 @@
 'use client'
 
 import { ArrowLeft, Check, CheckCheck, Eye, Gavel, RotateCcw, X } from 'lucide-react'
+import { fechasTxt } from '@/lib/utils'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useDemo, type Sancion } from '@/lib/demo-store'
 import { CATEGORIAS, categoriaDeEquipo } from '@/components/panel/datos'
@@ -113,7 +114,7 @@ export default function DescargosOrg() {
           <article className={`space-y-5 rounded-2xl border ${K.borde} bg-white p-5 sm:p-7 min-w-0`}>
             <dl className="grid grid-cols-2 gap-x-6 gap-y-4 rounded-xl bg-[var(--p-fondo)] p-4 sm:grid-cols-4">
               <Dato titulo="Tipo">{s.tipo}</Dato>
-              <Dato titulo="Suspensión">{s.fechasSuspension} fecha(s)</Dato>
+              <Dato titulo="Suspensión">{fechasTxt(s.fechasSuspension)}</Dato>
               <Dato titulo="Fecha">{s.fecha}</Dato>
               <Dato titulo="Partido">{s.partido}</Dato>
               <div className="col-span-2 min-w-0 sm:col-span-4">
@@ -190,7 +191,7 @@ export default function DescargosOrg() {
               { titulo: 'Jugador', celda: (x) => <button type="button" onClick={() => abrir(x.id)} className="text-left font-bold text-[color:var(--p-navy)] hover:text-[color:var(--p-teal)] hover:underline">{x.jugador}</button> },
               { titulo: 'Equipo', celda: (x) => x.equipo },
               { titulo: 'Partido', celda: (x) => <>{x.partido}<span className={`block text-xs ${K.suave}`}>{x.fecha}</span></> },
-              { titulo: 'Suspensión', celda: (x) => `${x.fechasSuspension} fecha(s)` },
+              { titulo: 'Suspensión', celda: (x) => `${fechasTxt(x.fechasSuspension)}` },
               { titulo: 'Estado', celda: (x) => <Etiqueta texto={x.cumplida ? 'Cumplida' : x.estado} /> },
               { titulo: '', className: 'text-right', celda: ver },
             ]}
@@ -203,7 +204,7 @@ export default function DescargosOrg() {
                   </div>
                   <Etiqueta texto={x.cumplida ? 'Cumplida' : x.estado} />
                 </div>
-                <p className="text-sm">{x.partido} · {x.fechasSuspension} fecha(s)</p>
+                <p className="text-sm">{x.partido} · {fechasTxt(x.fechasSuspension)}</p>
                 <Boton variante="suave" icono={Eye} className="w-full" onClick={() => abrir(x.id)}>Ver descargo</Boton>
               </div>
             )}

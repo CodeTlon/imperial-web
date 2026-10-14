@@ -1,6 +1,7 @@
 'use client'
 
 import { useMemo } from 'react'
+import { fechasTxt } from '@/lib/utils'
 import { admiteDescargo, useDemo } from '@/lib/demo-store'
 import { categoriaDeEquipo, goleadoresCategoria, mismo } from '@/components/panel/datos'
 import { TablaPosiciones, TarjetaProximoPartido, partidosDe, resultadoPara, useFixture } from '@/components/panel/Compartidos'
@@ -87,7 +88,7 @@ function MisSanciones() {
           {sanciones.map((s) => (
             <article key={s.id} className={`rounded-xl border ${K.borde} p-4 space-y-2`}>
               <div className="flex flex-wrap items-start justify-between gap-2">
-                <div className="min-w-0"><p className="font-bold">{s.partido}</p><p className={`text-xs ${K.suave}`}>{s.fecha} · {s.tipo} · {s.fechasSuspension} fecha(s)</p></div>
+                <div className="min-w-0"><p className="font-bold">{s.partido}</p><p className={`text-xs ${K.suave}`}>{s.fecha} · {s.tipo} · {fechasTxt(s.fechasSuspension)}</p></div>
                 <Etiqueta texto={s.cumplida && s.estado === 'Firme' ? 'Cumplida' : s.estado} />
               </div>
               <ChipsArticulos s={s} />

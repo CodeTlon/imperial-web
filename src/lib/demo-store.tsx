@@ -62,7 +62,7 @@ export type Resultado = { id: string; categoria: string; fecha: number; local: s
 export type Gol = { id: string; categoria: string; jugador: string; equipo: string; goles: number; resultadoId?: string }
 
 export const CUENTAS: (Sesion & { clave: string })[] = [
-  { email: 'organizacion@imperial.com', nombre: 'Comisión Disciplinaria', rol: 'organizacion', clave: 'imperial123' },
+  { email: 'organizacion@imperial.com', nombre: 'Tribunal de Disciplina', rol: 'organizacion', clave: 'imperial123' },
   { email: 'delegado@imperial.com', nombre: 'Roberto Ibáñez', rol: 'delegado', equipo: 'Ankara +30', clave: 'imperial123' },
   { email: 'jugador@imperial.com', nombre: 'Cristian Agustín Salussolia', rol: 'jugador', equipo: 'Ankara +30', clave: 'imperial123' },
 ]

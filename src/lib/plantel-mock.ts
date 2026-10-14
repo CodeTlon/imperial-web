@@ -1,10 +1,14 @@
 import { PLANTEL_APP } from '@/lib/datos-app'
+import { PLANTEL_30 } from '@/lib/plantel-app'
 import { categorias, posiciones } from '@/lib/torneo-data'
 import type { JugadorPlantel } from '@/lib/demo-store'
 
-// Planteles de demostración para todos los equipos de todas las categorías (nombres y DNI inventados, sin fotos).
-// Es determinístico: el mismo equipo siempre genera los mismos jugadores. Los equipos con jugadores reales
-// cargados en datos-app.ts los conservan y solo se completan hasta TAMANO.
+// Planteles de demostración para los 100 equipos. Es el mismo criterio que usa la app
+// (torneo-imperial-app/src/lib/plantilla-mock.ts), así que ambas muestran los mismos jugadores:
+//  - los equipos de +30 con jugadores cargados en la app los conservan (PLANTEL_30 / PLANTEL_APP),
+//  - el resto se completa hasta TAMANO con nombres inventados y determinísticos (el mismo equipo siempre
+//    genera los mismos nombres; se sortean de un flujo aparte para que app y sitio coincidan),
+//  - los DNI son inventados y no vienen de la app.
 const TAMANO = 16
 
 const NOMBRES = ['Juan', 'Martín', 'Lucas', 'Matías', 'Nicolás', 'Facundo', 'Franco', 'Ezequiel', 'Gonzalo', 'Diego', 'Sebastián', 'Maximiliano', 'Agustín', 'Santiago', 'Federico', 'Leandro', 'Cristian', 'Pablo', 'Marcos', 'Ramiro', 'Julián', 'Emiliano', 'Rodrigo', 'Hernán', 'Gastón', 'Joaquín', 'Mauro', 'Damián', 'Walter', 'Claudio', 'Ariel', 'Esteban', 'Bruno', 'Iván', 'Axel', 'Tomás']
@@ -27,33 +31,36 @@ function azar(seed: number) {
   }
 }
 const dniFormato = (n: number) => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+const estadoDe = (rnd: () => number): JugadorPlantel['estadoDoc'] => { const r = rnd(); return r < 0.7 ? 'Aprobado' : r < 0.9 ? 'Pendiente' : 'Observado' }
 
 function generar(): JugadorPlantel[] {
   const sal: JugadorPlantel[] = []
   const equipos = Array.from(new Set(categorias.flatMap((c) => posiciones[c].map((e) => e.nombre))))
   for (const equipo of equipos) {
-    const existentes = PLANTEL_APP.filter((j) => j.equipo === equipo)
-    if (existentes.length >= TAMANO) continue
-    const rnd = azar(semilla(equipo))
-    const nombres = new Set(existentes.map((j) => j.nombre))
-    const dnis = new Set(existentes.map((j) => j.dni))
     const slug = equipo.toLowerCase().replace(/[^a-z0-9]+/g, '-')
-    for (let i = existentes.length; i < TAMANO; i++) {
+    const rndDni = azar(semilla(`${equipo}|dni`)), rndDoc = azar(semilla(`${equipo}|doc`)), rndNom = azar(semilla(`${equipo}|nombres`))
+    const dnis = new Set<string>()
+    const nuevoDni = () => { let d = ''; do { d = dniFormato(24000000 + Math.floor(rndDni() * 18000000)) } while (dnis.has(d)); dnis.add(d); return d }
+
+    // 1) los que ya existen: jugadores completos de la app (con DNI y estado) o, si no, solo los de +30 de la app
+    const completos = PLANTEL_APP.filter((j) => j.equipo === equipo)
+    const base: JugadorPlantel[] = completos.length
+      ? completos.map((j) => ({ ...j }))
+      : (PLANTEL_30[equipo] ?? []).map((j, i) => ({ id: `a-${slug}-${i + 1}`, equipo, nombre: j.nombre, dni: nuevoDni(), posicion: j.posicion, estadoDoc: estadoDe(rndDoc) }))
+    base.forEach((j) => dnis.add(j.dni))
+    sal.push(...base)
+
+    // 2) se completa hasta TAMANO con nombres inventados
+    const nombres = new Set((PLANTEL_30[equipo] ?? base).map((j) => j.nombre))
+    base.forEach((j) => nombres.add(j.nombre))
+    for (let i = base.length; i < TAMANO; i++) {
       let nombre = ''
-      do { nombre = `${NOMBRES[Math.floor(rnd() * NOMBRES.length)]} ${APELLIDOS[Math.floor(rnd() * APELLIDOS.length)]}` } while (nombres.has(nombre))
+      do { nombre = `${NOMBRES[Math.floor(rndNom() * NOMBRES.length)]} ${APELLIDOS[Math.floor(rndNom() * APELLIDOS.length)]}` } while (nombres.has(nombre))
       nombres.add(nombre)
-      let dni = ''
-      do { dni = dniFormato(24000000 + Math.floor(rnd() * 18000000)) } while (dnis.has(dni))
-      dnis.add(dni)
-      const r = rnd()
-      sal.push({ id: `m-${slug}-${i + 1}`, equipo, nombre, dni, posicion: POSICIONES[i % POSICIONES.length], estadoDoc: r < 0.7 ? 'Aprobado' : r < 0.9 ? 'Pendiente' : 'Observado' })
+      sal.push({ id: `m-${slug}-${i + 1}`, equipo, nombre, dni: nuevoDni(), posicion: POSICIONES[i % POSICIONES.length], estadoDoc: estadoDe(rndDoc) })
     }
   }
   return sal
 }
 
-// Ankara +30 (el equipo del delegado de prueba) viene con 26 jugadores, por encima del tope de 25: se deja en 24
-// para que se pueda probar agregar y editar jugadores.
-const PLANTEL_BASE = [...PLANTEL_APP.filter((j) => j.equipo !== 'Ankara +30'), ...PLANTEL_APP.filter((j) => j.equipo === 'Ankara +30').slice(0, 24)]
-
-export const PLANTEL_DEMO: JugadorPlantel[] = [...PLANTEL_BASE, ...generar()]
+export const PLANTEL_DEMO: JugadorPlantel[] = generar()

@@ -14,7 +14,7 @@ const TABS = ['Resumen', 'Descargos', 'Sanciones', 'Equipos', 'Resultados', 'Gol
 export default function PanelPage() {
   const [tab, setTab] = usePestanaUrl(TABS, 'Resumen')
   return (
-    <PanelShell rol="organizacion" titulo="Panel de administración" tabs={TABS} tab={tab} setTab={setTab}>
+    <PanelShell rol="organizacion" titulo="Panel de la organización" tabs={TABS} tab={tab} setTab={setTab}>
       {tab === 'Resumen' && <Resumen irA={setTab} />}
       {tab === 'Descargos' && <DescargosOrg />}
       {tab === 'Sanciones' && <Sanciones />}

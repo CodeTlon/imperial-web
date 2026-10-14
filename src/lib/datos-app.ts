@@ -263,7 +263,7 @@ export const PLANTEL_APP: JugadorPlantel[] = [
     "equipo": "Ankara +30",
     "nombre": "Nicolás Vera",
     "dni": "30.502.848",
-    "posicion": "Portero",
+    "posicion": "Arquero",
     "estadoDoc": "Observado"
   },
   {
@@ -327,7 +327,7 @@ export const PLANTEL_APP: JugadorPlantel[] = [
     "equipo": "Ankara +30",
     "nombre": "Julian Ibañez",
     "dni": "30.838.696",
-    "posicion": "Portero",
+    "posicion": "Arquero",
     "estadoDoc": "Observado"
   },
   {
@@ -375,7 +375,7 @@ export const PLANTEL_APP: JugadorPlantel[] = [
     "equipo": "Ankara +30",
     "nombre": "Cristian Villalba",
     "dni": "28.340.082",
-    "posicion": "Portero",
+    "posicion": "Arquero",
     "estadoDoc": "Aprobado"
   },
   {

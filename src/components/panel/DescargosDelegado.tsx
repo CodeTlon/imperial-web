@@ -1,6 +1,7 @@
 'use client'
 
 import { ArrowLeft, Eye, FilePenLine, Gavel, Send } from 'lucide-react'
+import { fechasTxt } from '@/lib/utils'
 import { useMemo, useState } from 'react'
 import { admiteDescargo, useDemo, type Sancion } from '@/lib/demo-store'
 import { ArchivosSancion, HiloMensajes } from '@/components/panel/Adjuntos'
@@ -59,7 +60,7 @@ export default function DescargosDelegado() {
           <article className={`space-y-5 rounded-2xl border ${K.borde} bg-white p-5 sm:p-7 min-w-0`}>
             <dl className="grid grid-cols-2 gap-x-6 gap-y-4 rounded-xl bg-[var(--p-fondo)] p-4 sm:grid-cols-4">
               <Dato titulo="Tipo">{s.tipo}</Dato>
-              <Dato titulo="Suspensión">{s.fechasSuspension} fecha(s)</Dato>
+              <Dato titulo="Suspensión">{fechasTxt(s.fechasSuspension)}</Dato>
               <Dato titulo="Fecha">{s.fecha}</Dato>
               <Dato titulo="Partido">{s.partido}</Dato>
               <div className="col-span-2 min-w-0 sm:col-span-4">
@@ -112,7 +113,7 @@ export default function DescargosDelegado() {
           <section aria-label="Conversación con la organización" className={`flex h-[78svh] min-h-[480px] min-w-0 flex-col rounded-2xl border ${K.borde} bg-white p-5 sm:p-6 xl:sticky xl:top-6 xl:h-[calc(100svh-3rem)]`}>
             <div className="mb-2 border-b border-[color:var(--p-borde)] pb-3">
               <h2 className="font-heading text-xl text-[color:var(--p-navy)]">Conversación con la organización</h2>
-              <p className={`mt-0.5 text-sm ${K.suave}`}>Lo que escribas lo ve la Comisión Disciplinaria.</p>
+              <p className={`mt-0.5 text-sm ${K.suave}`}>Lo que escribas lo ve el Tribunal de Disciplina.</p>
             </div>
             <div className="min-h-0 flex-1">
               <HiloMensajes variante="chat" s={s} quien="delegado" placeholder="Mensaje a la organización. Ej: Adjuntamos el video de la jugada" />
@@ -152,7 +153,7 @@ export default function DescargosDelegado() {
               { titulo: 'Jugador', celda: (x) => <button type="button" onClick={() => abrirSancion(x.id)} className="text-left font-bold text-[color:var(--p-navy)] hover:text-[color:var(--p-teal)] hover:underline">{x.jugador}</button> },
               { titulo: 'Partido', celda: (x) => <>{x.partido}<span className={`block text-xs ${K.suave}`}>{x.fecha}</span></> },
               { titulo: 'Artículos', celda: (x) => <ChipsArticulos s={x} max={2} /> },
-              { titulo: 'Suspensión', celda: (x) => `${x.fechasSuspension} fecha(s)` },
+              { titulo: 'Suspensión', celda: (x) => `${fechasTxt(x.fechasSuspension)}` },
               { titulo: 'Estado', celda: (x) => <Etiqueta texto={x.cumplida && x.estado === 'Firme' ? 'Cumplida' : x.estado} /> },
               { titulo: '', className: 'text-right', celda: accion },
             ]}
@@ -165,7 +166,7 @@ export default function DescargosDelegado() {
                   </div>
                   <Etiqueta texto={x.cumplida && x.estado === 'Firme' ? 'Cumplida' : x.estado} />
                 </div>
-                <p className="text-sm">{x.fechasSuspension} fecha(s) de suspensión</p>
+                <p className="text-sm">{fechasTxt(x.fechasSuspension)} de suspensión</p>
                 <div className="[&>button]:w-full">{accion(x)}</div>
               </div>
             )}
