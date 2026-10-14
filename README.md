@@ -35,12 +35,6 @@ public/images/    fotos, sponsors y escudos (los de +30 son reales, el resto est
 Estos archivos son iguales en `imperial-app` y hay que mantenerlos juntos:
 `src/lib/categorias-mock.ts`, `carta.ts` y `reglamento-ti.ts` (idénticos), y la paleta (`demo-config.ts` y `components/panel/ui.tsx` aquí; `tailwind.config.js` y `src/lib/theme.ts` allá). `plantel-mock.ts` y `sanciones-mock.ts` generan los mismos jugadores y sanciones que sus pares de la app. Las reglas y las sanciones salen solo del reglamento (`reglamento-ti.ts`): no se reescriben ni se inventan.
 
-## Documentación de trabajo
-
-- `PROGRESO.md`: estado y decisiones del proyecto.
-- `PEDIDOS-SESION-2026-10-13.md`: traspaso de las últimas sesiones (qué se pidió, qué está hecho y qué falta).
-- `GUION-LOOM.md`: guion del video de presentación.
-
 ## Changelog
 
 - **2026-10-14:** repo separado de `CodeTlon/demos`. Paleta del escudo unificada con la app, escudos para los 100 equipos, sanciones y planteles de demo en todas las categorías, reglamento reordenado, páginas de sanciones, carta y cómo llegar rehechas, descargos en tabla y detalle, validaciones en todos los formularios y menú lateral en los paneles.
