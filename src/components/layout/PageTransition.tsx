@@ -23,12 +23,11 @@ const CSS = [
   `@keyframes pt-in{from{${ENTRADA[0]}}to{${ENTRADA[1]}}}.pt-in{animation:pt-in ${ENTRA_MS}ms ${EASE} both}`,
   `@keyframes pt-out{from{${SALIDA[0]}}to{${SALIDA[1]}}}.pt-out{animation:pt-out ${SALE_MS}ms ${EASE} both}`,
   `.pt-logo{animation:pt-logo .8s .1s cubic-bezier(.22,1,.36,1) both}`,
-  `.pt-aro{stroke-dasharray:100;stroke-dashoffset:100;animation:pt-aro 1.3s .2s cubic-bezier(.65,0,.35,1) forwards}`,
+  `.pt-aro{animation:pt-giro 1.1s linear infinite;will-change:transform}`,
   `.pt-in,.pt-out{will-change:transform}.pt-out .pt-logo{animation:pt-logo-out .55s ease-in both}`,
-  `.pt-out .pt-aro{animation:none;stroke-dashoffset:0}`,
   `@keyframes pt-logo-out{from{opacity:1;transform:none}to{opacity:0;transform:scale(1.18)}}`,
   `@keyframes pt-logo{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:none}}`,
-  `@keyframes pt-aro{to{stroke-dashoffset:0}}`,
+  `@keyframes pt-giro{to{transform:rotate(360deg)}}`,
 ].join('')
 
 // Pantalla de carga con el escudo: cubre todo al abrir el sitio (ya viene en el HTML del servidor, así que se ve
@@ -106,9 +105,12 @@ export default function PageTransition() {
       <div className="absolute inset-x-0 top-0 h-1.5 bg-[#f3a21c]" />
       <div className="absolute inset-0 flex items-center justify-center">
         <div className="relative flex items-center justify-center h-40 w-40 pt-logo">
-          <svg className="absolute inset-0 -rotate-90" viewBox="0 0 100 100">
+          <svg className="absolute inset-0" viewBox="0 0 100 100">
             <circle cx="50" cy="50" r="46" fill="none" stroke="rgba(255,255,255,0.12)" strokeWidth="2" />
-            <circle cx="50" cy="50" r="46" fill="none" stroke="#f3a21c" strokeWidth="2.5" strokeLinecap="round" pathLength="100" className="pt-aro" />
+          </svg>
+          {/* arco que gira: solo transform (compositor), sin progreso que pueda saltar */}
+          <svg className="absolute inset-0 pt-aro" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="46" fill="none" stroke="#f3a21c" strokeWidth="2.5" strokeLinecap="round" pathLength="100" strokeDasharray="30 70" />
           </svg>
           <Image src="/images/logo-mark.png" alt="" width={150} height={150} priority className="h-20 w-20 object-contain" />
         </div>
