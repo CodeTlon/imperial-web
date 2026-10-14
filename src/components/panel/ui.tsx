@@ -54,9 +54,9 @@ const ROLES: Record<Rol, string> = { organizacion: 'Organización', delegado: 'D
 const CLAVE_DEMO_CERRADA = 'ti-demo-franja-cerrada'
 
 // Estructura común de los paneles: barra con marca, rol y usuario; navegación lateral en desktop y pestañas en celular.
-export function PanelShell({ rol, titulo, tabs, tab, setTab, contadores, children }: {
+export function PanelShell({ rol, titulo, tabs, tab, setTab, children }: {
   rol: Rol; titulo: string; tabs: string[]; tab: string; setTab: (t: string) => void
-  contadores?: Record<string, number>; children: ReactNode
+  children: ReactNode
 }) {
   const { sesion, listo, salir, reiniciar } = useDemo()
   const router = useRouter()
@@ -87,7 +87,7 @@ export function PanelShell({ rol, titulo, tabs, tab, setTab, contadores, childre
   }
   const lateral = (
     <MenuLateral
-      titulo={titulo} tabs={tabs} tab={tab} contadores={contadores}
+      titulo={titulo} tabs={tabs} tab={tab}
       nombre={sesion.nombre} detalle={`${ROLES[rol]}${sesion.equipo ? ` · ${sesion.equipo}` : ''}`}
       onTab={(t) => { setAbierto(false); setTab(t) }}
       onReiniciar={() => { setAbierto(false); reiniciar() }}
@@ -125,8 +125,8 @@ export function PanelShell({ rol, titulo, tabs, tab, setTab, contadores, childre
 }
 
 // Contenido de la barra lateral: marca arriba, secciones al medio y usuario con sus acciones abajo.
-function MenuLateral({ titulo, tabs, tab, contadores, nombre, detalle, onTab, onReiniciar, onSalir }: {
-  titulo: string; tabs: string[]; tab: string; contadores?: Record<string, number>; nombre: string; detalle: string
+function MenuLateral({ titulo, tabs, tab, nombre, detalle, onTab, onReiniciar, onSalir }: {
+  titulo: string; tabs: string[]; tab: string; nombre: string; detalle: string
   onTab: (t: string) => void; onReiniciar: () => void; onSalir: () => void
 }) {
   return (
@@ -138,7 +138,6 @@ function MenuLateral({ titulo, tabs, tab, contadores, nombre, detalle, onTab, on
       <nav aria-label={`Secciones: ${titulo}`} className="flex-1 overflow-y-auto px-3 space-y-1">
         {tabs.map((t) => {
           const activa = tab === t
-          const n = contadores?.[t]
           return (
             <button
               key={t}
@@ -150,9 +149,6 @@ function MenuLateral({ titulo, tabs, tab, contadores, nombre, detalle, onTab, on
               {activa && <span aria-hidden className="absolute inset-y-2 left-0 w-1 rounded-r-full" style={{ background: C.oro }} />}
               <Icono i={ICONOS[t] ?? LayoutDashboard} t="md" className={activa ? 'text-[var(--p-oro)]' : ''} />
               <span className="min-w-0 flex-1 truncate">{t}</span>
-              {n !== undefined && n > 0 && (
-                <span className={`min-w-[1.5rem] rounded-full px-1.5 py-0.5 text-center text-xs font-bold ${activa ? 'bg-[var(--p-oro)] text-[color:var(--p-navy)]' : 'bg-white/15 text-white'}`}>{n}</span>
-              )}
             </button>
           )
         })}
