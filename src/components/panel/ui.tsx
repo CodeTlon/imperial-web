@@ -91,7 +91,6 @@ export function PanelShell({ rol, titulo, tabs, tab, setTab, contadores, onComoF
         <div className="mx-auto max-w-[1800px] 2xl:max-w-[2200px] px-4 sm:px-6 lg:px-8 py-3 flex items-center gap-3 justify-between">
           <div className="flex items-center gap-3 min-w-0">
             <Link href="/" aria-label="Ir al sitio de Torneo Imperial" className="shrink-0"><Marca tamano="sm" color="#fff" /></Link>
-            <span className="hidden sm:inline-flex items-center rounded-full border border-white/25 px-3 py-1 text-xs font-bold uppercase tracking-wider" style={{ color: C.oro }}>{ROLES[rol]}</span>
           </div>
           <div className="flex items-center gap-2">
             {onComoFunciona && <Boton variante="fantasma" icono={CircleHelp} onClick={onComoFunciona}><span className="hidden sm:inline">Cómo funciona</span><span className="sm:hidden sr-only">Cómo funciona</span></Boton>}

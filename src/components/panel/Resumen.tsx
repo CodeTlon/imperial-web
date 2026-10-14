@@ -14,10 +14,7 @@ export default function Resumen({ irA, ayuda, setAyuda }: { irA: (t: string) => 
   const { datos } = useDemo()
   const [cat, setCat] = useState('+30')
 
-  const enRevision = datos.sanciones.filter((s) => s.estado === 'En revisión').length
-  const firmes = datos.sanciones.filter((s) => s.estado === 'Firme').length
   const doc = estadoPlantel(datos.plantel)
-  const docPend = doc.pendientes + doc.observados
 
   const golesPorCat = useMemo(
     () => CATEGORIAS.map((c) => ({ etiqueta: c, valor: goleadoresCategoria(c, datos.goleadores).reduce((a, g) => a + g.goles, 0) })),
@@ -64,9 +61,6 @@ export default function Resumen({ irA, ayuda, setAyuda }: { irA: (t: string) => 
       <Encabezado titulo="Resumen" descripcion="Lo que necesita tu atención hoy y cómo viene el torneo." />
       <ComoFunciona abierto={ayuda} onCambiar={setAyuda} />
       <div className="grid gap-4 grid-cols-2 xl:grid-cols-4">
-        <Kpi titulo="Descargos en revisión" valor={enRevision} color={C.oro} onClick={() => irA('Descargos')} detalle="Esperan tu resolución" />
-        <Kpi titulo="Sanciones firmes" valor={firmes} color={C.rojo} onClick={() => irA('Sanciones')} detalle={`${datos.sanciones.length} cargadas en total`} />
-        <Kpi titulo="Documentación sin aprobar" valor={docPend} color={C.teal} onClick={() => irA('Equipos')} detalle={`${doc.aprobados} de ${datos.plantel.length} jugadores aprobados · Ir a Equipos`} />
         <Kpi titulo="Resultados cargados" valor={datos.resultados.length} color={C.profundo} onClick={() => irA('Resultados')} detalle="Desde este panel" />
       </div>
 
