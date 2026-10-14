@@ -89,6 +89,8 @@ type Ctx = {
   enviarDescargo: (id: string, texto: string) => void
   mensaje: (id: string, texto: string, adjuntos?: Adjunto[]) => void
   resolver: (id: string, aceptar: boolean) => void
+  reabrir: (id: string) => void
+  marcarCumplida: (id: string, cumplida: boolean) => void
   crearSancion: (s: Omit<Sancion, 'id' | 'mensajes' | 'estado'>) => void
   editarSancion: (id: string, cambios: Partial<Omit<Sancion, 'id'>>) => void
   quitarSancion: (id: string) => void
@@ -155,6 +157,8 @@ export function DemoProvider({ children }: { children: ReactNode }) {
     mensaje: (id, texto, adjuntos) =>
       actualizarSancion(id, (s) => ({ ...s, mensajes: [...s.mensajes, { de: sesion?.rol === 'organizacion' ? 'organizacion' : 'delegado', texto, fecha: hoy(), ...(adjuntos?.length ? { adjuntos } : {}) }] })),
     resolver: (id, aceptar) => actualizarSancion(id, (s) => ({ ...s, estado: aceptar ? 'Descargo aceptado' : 'Descargo rechazado' })),
+    reabrir: (id) => actualizarSancion(id, (s) => ({ ...s, estado: s.descargo ? 'En revisión' : 'Firme', cumplida: false })),
+    marcarCumplida: (id, cumplida) => actualizarSancion(id, (s) => ({ ...s, cumplida })),
     crearSancion: (s) => guardar((d) => ({ ...d, sanciones: [{ ...s, id: nuevoId('s'), estado: 'Firme', mensajes: [] }, ...d.sanciones] })),
     editarSancion: (id, cambios) => actualizarSancion(id, (s) => ({ ...s, ...cambios })),
     quitarSancion: (id) => guardar((d) => ({ ...d, sanciones: d.sanciones.filter((s) => s.id !== id) })),
