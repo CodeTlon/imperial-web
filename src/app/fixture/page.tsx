@@ -40,12 +40,12 @@ export default function FixturePage() {
         <section className="section-pad">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
 
-            {/* Un solo contenedor: fechas arriba, categorías abajo */}
+            {/* Categorías primero (fuera de la card), después el carrusel de fechas */}
+            <div className="[&>div]:!mb-5">
+              <CategoryTabs options={categoriasConDatos} value={cat} onChange={(c) => setCat(c as Categoria)} />
+            </div>
             <div className="card mb-8">
-              <CarruselFechas fechas={fechas} numero={numeroFecha} onChange={setNumeroFecha} className="mb-2" />
-              <div className="[&>div]:!mb-0">
-                <CategoryTabs options={categoriasConDatos} value={cat} onChange={(c) => setCat(c as Categoria)} />
-              </div>
+              <CarruselFechas fechas={fechas} numero={numeroFecha} onChange={setNumeroFecha} />
             </div>
 
             {fecha && (

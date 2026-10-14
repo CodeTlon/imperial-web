@@ -40,11 +40,11 @@ export default function TorneoHome() {
 
         {/* Fixture */}
         <div className="max-w-3xl mx-auto">
+          <div className="[&>div]:!mb-5">
+            <CategoryTabs options={categoriasConDatos} value={cat} onChange={(c) => setCategoria(c as Categoria)} />
+          </div>
           <div className="card mb-5">
-            <CarruselFechas fechas={fechas} numero={numero} onChange={setNumero} className="mb-2" />
-            <div className="[&>div]:!mb-0">
-              <CategoryTabs options={categoriasConDatos} value={cat} onChange={(c) => setCategoria(c as Categoria)} />
-            </div>
+            <CarruselFechas fechas={fechas} numero={numero} onChange={setNumero} />
           </div>
 
           <div className="space-y-3">
