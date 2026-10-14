@@ -62,6 +62,8 @@ export default function PageTransition() {
   }, [])
 
   useEffect(() => {
+    // Fase de captura: corre antes que el onClick de next/link (que navega al instante y marca el evento como
+    // prevenido). Así la cortina entra primero y recién después se cambia de página.
     const onClick = (e: MouseEvent) => {
       if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return
       const a = (e.target as HTMLElement).closest('a')
@@ -71,6 +73,7 @@ export default function PageTransition() {
       if (url.pathname === window.location.pathname) return   // mismo path o solo ancla: navegación normal
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
       e.preventDefault()
+      e.stopPropagation()
       destino.current = url.pathname + url.search + url.hash
       setFase('entra')
       setTimeout(() => {
@@ -78,8 +81,8 @@ export default function PageTransition() {
         if (destino.current) router.push(destino.current)
       }, ENTRA_MS)
     }
-    document.addEventListener('click', onClick)
-    return () => document.removeEventListener('click', onClick)
+    document.addEventListener('click', onClick, true)
+    return () => document.removeEventListener('click', onClick, true)
   }, [router])
 
   // Navegación pedida por código (ej. botón "Salir"): la cortina cubre primero y recién ahí corre `antes`
