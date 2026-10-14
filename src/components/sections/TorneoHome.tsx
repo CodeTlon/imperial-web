@@ -38,11 +38,14 @@ export default function TorneoHome() {
           <h2 className="section-title">El torneo</h2>
         </div>
 
-        <CategoryTabs options={categoriasConDatos} value={cat} onChange={(c) => setCategoria(c as Categoria)} />
-
         {/* Fixture */}
         <div className="max-w-3xl mx-auto">
-          <CarruselFechas fechas={fechas} numero={numero} onChange={setNumero} className="mb-5" />
+          <div className="card mb-5">
+            <CarruselFechas fechas={fechas} numero={numero} onChange={setNumero} className="mb-2" />
+            <div className="[&>div]:!mb-0">
+              <CategoryTabs options={categoriasConDatos} value={cat} onChange={(c) => setCategoria(c as Categoria)} />
+            </div>
+          </div>
 
           <div className="space-y-3">
             {fecha.partidos.map((p, i) => <div key={`${cat}-${fecha.numero}-${i}`} className="fila-in" style={{ ['--i' as string]: i } as React.CSSProperties}><MatchCard p={p} categoria={cat} /></div>)}

@@ -188,71 +188,71 @@ export type Fecha = {
 // Fixture viejo (solo para referencia de los partidos reales de +30). La fuente vigente es `fixturePorCategoria`, de abajo.
 export const fixtureViejo: Record<Categoria, Fecha[]> = {
   'Libre': [
-    { numero: 1, fechaLabel: 'SÁBADO 01-08', partidos: [
+    { numero: 1, fechaLabel: '01-08', partidos: [
       { local: 'Deportivo Argüello', visitante: 'Unión Villa Retiro', hora: '18:00 hs', cancha: 'Cancha 1', golesLocal: 3, golesVisitante: 1 },
       { local: 'Atlético Guiñazú', visitante: 'Sportivo Colón', hora: '19:30 hs', cancha: 'Cancha 2', golesLocal: 2, golesVisitante: 2 },
     ] },
-    { numero: 2, fechaLabel: 'SÁBADO 08-08', partidos: [
+    { numero: 2, fechaLabel: '08-08', partidos: [
       { local: 'Atlético Guiñazú', visitante: 'Racing Guiñazú', hora: '18:00 hs', cancha: 'Cancha 1' },
       { local: 'Deportivo Argüello', visitante: 'Sportivo Colón', hora: '19:30 hs', cancha: 'Cancha 2' },
     ] },
   ],
   '+30': [
-    { numero: 1, fechaLabel: 'SÁBADO 01-08', partidos: [
+    { numero: 1, fechaLabel: '01-08', partidos: [
       { local: 'Atl.Gral.Bustos +30', visitante: 'El Banco +30', hora: '10:00 hs', cancha: 'Cancha 1', golesLocal: 4, golesVisitante: 0 },
       { local: 'Smata +30', visitante: 'Ankara +30', hora: '10:00 hs', cancha: 'Cancha 2', golesLocal: 2, golesVisitante: 1 },
       { local: 'Alianza +30', visitante: 'Las Torres +30', hora: '11:30 hs', cancha: 'Cancha 1', golesLocal: 3, golesVisitante: 1 },
     ] },
-    { numero: 2, fechaLabel: 'SÁBADO 08-08', partidos: [
+    { numero: 2, fechaLabel: '08-08', partidos: [
       { local: 'El Tala +30', visitante: 'Chape +30', hora: '10:00 hs', cancha: 'Cancha 1', golesLocal: 3, golesVisitante: 2 },
       { local: 'Newbery +30', visitante: 'Ospaca +30', hora: '11:30 hs', cancha: 'Cancha 2', golesLocal: 1, golesVisitante: 1 },
     ] },
-    { numero: 3, fechaLabel: 'DOMINGO 16-08', partidos: [
+    { numero: 3, fechaLabel: '16-08', partidos: [
       { local: 'Atl.Gral.Bustos +30', visitante: 'Ankara +30', hora: '10:00 hs', cancha: 'Cancha 1' },
       { local: 'Alianza +30', visitante: 'Celtic +30', hora: '11:30 hs', cancha: 'Cancha 2' },
       { local: 'Triangulo +30', visitante: 'Monaco FC +30', hora: '13:00 hs', cancha: 'Cancha 1' },
     ] },
-    { numero: 4, fechaLabel: 'DOMINGO 23-08', partidos: [
+    { numero: 4, fechaLabel: '23-08', partidos: [
       { local: 'La Sede +30', visitante: 'Arias Jrs +30', hora: '10:00 hs', cancha: 'Cancha 1' },
       { local: 'Borussia +30', visitante: 'Azzurra +30', hora: '11:30 hs', cancha: 'Cancha 2' },
     ] },
   ],
   '+35': [
-    { numero: 1, fechaLabel: 'DOMINGO 02-08', partidos: [
+    { numero: 1, fechaLabel: '02-08', partidos: [
       { local: 'El Tala +35', visitante: 'Alta Córdoba FC', hora: '10:00 hs', cancha: 'Cancha 1', golesLocal: 4, golesVisitante: 1 },
       { local: 'Smata +35', visitante: 'Villa Belgrano', hora: '11:30 hs', cancha: 'Cancha 2', golesLocal: 2, golesVisitante: 0 },
     ] },
-    { numero: 2, fechaLabel: 'DOMINGO 09-08', partidos: [
+    { numero: 2, fechaLabel: '09-08', partidos: [
       { local: 'Colorado FC', visitante: 'Nacional +35', hora: '10:00 hs', cancha: 'Cancha 1' },
       { local: 'El Tala +35', visitante: 'Villa Belgrano', hora: '11:30 hs', cancha: 'Cancha 2' },
     ] },
   ],
   '+40': [
-    { numero: 1, fechaLabel: 'DOMINGO 02-08', partidos: [
+    { numero: 1, fechaLabel: '02-08', partidos: [
       { local: 'Deportivo San Martín', visitante: 'Juniors +40', hora: '17:00 hs', cancha: 'Cancha 1', golesLocal: 2, golesVisitante: 0 },
       { local: 'Nacional +40', visitante: 'Colorado +40', hora: '18:30 hs', cancha: 'Cancha 2', golesLocal: 1, golesVisitante: 1 },
     ] },
-    { numero: 2, fechaLabel: 'DOMINGO 09-08', partidos: [
+    { numero: 2, fechaLabel: '09-08', partidos: [
       { local: 'Güemes +40', visitante: 'El Pasaje +40', hora: '17:00 hs', cancha: 'Cancha 1' },
       { local: 'Deportivo San Martín', visitante: 'Colorado +40', hora: '18:30 hs', cancha: 'Cancha 2' },
     ] },
   ],
   '+45': [
-    { numero: 1, fechaLabel: 'DOMINGO 02-08', partidos: [
+    { numero: 1, fechaLabel: '02-08', partidos: [
       { local: 'Los Fundadores', visitante: 'Unión +45', hora: '17:00 hs', cancha: 'Cancha 1', golesLocal: 3, golesVisitante: 1 },
       { local: 'Veteranos del Norte', visitante: 'Real Guiñazú', hora: '18:30 hs', cancha: 'Cancha 2', golesLocal: 2, golesVisitante: 2 },
     ] },
-    { numero: 2, fechaLabel: 'DOMINGO 09-08', partidos: [
+    { numero: 2, fechaLabel: '09-08', partidos: [
       { local: 'Atlético Yofre +45', visitante: 'Sportivo Argüello', hora: '17:00 hs', cancha: 'Cancha 1' },
       { local: 'Los Fundadores', visitante: 'Real Guiñazú', hora: '18:30 hs', cancha: 'Cancha 2' },
     ] },
   ],
   'Femenino': [
-    { numero: 1, fechaLabel: 'SÁBADO 01-08', partidos: [
+    { numero: 1, fechaLabel: '01-08', partidos: [
       { local: 'Las Imperiales FEM', visitante: 'Deportivo Argüello FEM', hora: '16:00 hs', cancha: 'Cancha 1', golesLocal: 5, golesVisitante: 0 },
       { local: 'Guerreras del Sur', visitante: 'Rojas FC Femenino', hora: '17:30 hs', cancha: 'Cancha 2', golesLocal: 3, golesVisitante: 2 },
     ] },
-    { numero: 2, fechaLabel: 'SÁBADO 08-08', partidos: [
+    { numero: 2, fechaLabel: '08-08', partidos: [
       { local: 'Las Imperiales FEM', visitante: 'Rojas FC Femenino', hora: '16:00 hs', cancha: 'Cancha 1' },
       { local: 'Guerreras del Sur', visitante: 'Atlético Femenino CBA', hora: '17:30 hs', cancha: 'Cancha 2' },
     ] },
@@ -263,7 +263,7 @@ export const fixtureViejo: Record<Categoria, Fecha[]> = {
 // 10/10/2026. Misma generación que la app (ida y vuelta, resultados fijos).
 const aFecha = (f: FechaFixture): Fecha => ({
   numero: f.numero,
-  fechaLabel: f.fechaTexto.toUpperCase().replace('/', '-'),
+  fechaLabel: f.fechaTexto.replace(/^\S+\s+/, '').replace('/', '-'),
   partidos: f.partidos.map((p) => ({
     zona: p.zona,
     local: p.local,
