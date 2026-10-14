@@ -94,11 +94,11 @@ export default function InscripcionPage() {
         />
         <section className="section-pad">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start">
+            <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:items-stretch">
               {/* Banner + requisitos reales del reglamento */}
-              <div className="lg:col-span-2 flex flex-col gap-6">
-                <div className="card">
-                  <h3 className="font-bold text-lg mb-4" style={{ color: 'var(--demo-heading)' }}>Cómo funciona</h3>
+              <div className="lg:col-span-2 flex flex-col gap-6 lg:gap-5">
+                <div className="card lg:flex-1">
+                  <h2 className="font-heading text-2xl mb-5" style={{ color: 'var(--demo-heading)' }}>Cómo funciona</h2>
                   <ul className="space-y-3">
                     {requisitos.map(({ icon: Icon, text }) => (
                       <li key={text} className="flex items-center gap-3 text-sm" style={{ color: 'var(--demo-text)' }}>
@@ -108,7 +108,7 @@ export default function InscripcionPage() {
                     ))}
                   </ul>
                 </div>
-          <div className="card">
+          <div className="card lg:flex-1">
             <h2 className="font-heading text-2xl mb-5 flex items-center gap-2" style={{ color: 'var(--demo-heading)' }}>
               <CreditCard size={22} style={{ color: 'var(--demo-accent)' }} /> Qué necesitás para inscribirte
             </h2>
@@ -121,7 +121,7 @@ export default function InscripcionPage() {
               ))}
             </ul>
           </div>
-          <div className="card">
+          <div className="card lg:flex-1">
             <h2 className="font-heading text-2xl mb-5 flex items-center gap-2" style={{ color: 'var(--demo-heading)' }}>
               <MapPin size={22} style={{ color: 'var(--demo-accent)' }} /> Sede
             </h2>
