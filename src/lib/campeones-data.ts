@@ -5,7 +5,7 @@
 // categorías/temporadas distintas — no se inventó nada acá).
 
 export const categoriasCampeones = [
-  '+30', '+35', '+40', '+45', 'Libre', 'Femenino Pro', 'Femenino Amateur',
+  '+30', '+35', '+40', '+45', 'Libre', 'Femenino',
 ] as const
 
 export type CampeonEntry = {
@@ -30,8 +30,6 @@ export const campeonesData: CampeonEntry[] = [
   { categoria: 'Libre', copa: 'Oro',    campeon: 'Impresentables', subcampeon: 'Mecha',      tercero: 'Juan B. Justo', img: '/images/campeones/libre-oro.jpg' },
   { categoria: 'Libre', copa: 'Plata',  campeon: 'La Caseros',     subcampeon: 'El Nothi',                             img: '/images/campeones/libre-plata.jpg' },
   { categoria: 'Libre', copa: 'Bronce', campeon: 'Dep. Unión',     subcampeon: 'Isotopos',                             img: '/images/campeones/libre-bronce.jpg' },
-  { categoria: 'Femenino Pro', copa: 'Oro',   campeon: 'La Chaza',  subcampeon: 'Ankara',    tercero: 'Dep. Milán',   img: '/images/campeones/femenino-pro-oro.jpg' },
-  { categoria: 'Femenino Pro', copa: 'Plata', campeon: 'El Deport', subcampeon: 'Oregon',                             img: '/images/campeones/femenino-pro-plata.jpg' },
-  { categoria: 'Femenino Amateur', copa: 'Oro',   campeon: '70/30',   subcampeon: 'Lucha FC', tercero: 'Atl. Granada', img: '/images/campeones/femenino-amateur-oro.jpg' },
-  { categoria: 'Femenino Amateur', copa: 'Plata', campeon: 'Labanda', subcampeon: 'Hornero',                          img: '/images/campeones/femenino-amateur-plata.jpg' },
+  { categoria: 'Femenino', copa: 'Oro',   campeon: 'La Chaza',  subcampeon: 'Ankara',    tercero: 'Dep. Milán',   img: '/images/campeones/femenino-oro.jpg' },
+  { categoria: 'Femenino', copa: 'Plata', campeon: 'El Deport', subcampeon: 'Oregon',                             img: '/images/campeones/femenino-plata.jpg' },
 ]

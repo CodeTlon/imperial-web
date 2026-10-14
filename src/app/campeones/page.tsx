@@ -15,11 +15,8 @@ const COPA_COLOR: Record<string, string> = {
 }
 
 export default function CampeonesPage() {
-  // Categoría local, NO conectada al selector global (CategoryProvider):
-  // `categoriasCampeones` no mapea 1:1 con el tipo `Categoria` compartido
-  // (ej. "Femenino Pro"/"Femenino Amateur" acá vs "Femenino" en el resto del
-  // sitio), así que sincronizarla mostraría categorías inconsistentes en
-  // /posiciones, /fixture o /equipos.
+  // Categoría local, no conectada al selector global (CategoryProvider): este filtro suma la opción "Todas"
+  // y cambiarlo acá no debería mover la categoría de /posiciones, /fixture o /equipos.
   const [cat, setCat] = useState<(typeof categoriasCampeones)[number] | 'Todas'>('Todas')
   const [copa, setCopa] = useState<'Todas' | 'Oro' | 'Plata' | 'Bronce'>('Todas')
   const items = campeonesData.filter((c) => (cat === 'Todas' || c.categoria === cat) && (copa === 'Todas' || c.copa === copa))
