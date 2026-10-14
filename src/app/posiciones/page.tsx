@@ -64,7 +64,7 @@ export default function PosicionesPage() {
                 <p className="eyebrow !mb-4 flex items-center gap-2"><ShieldAlert size={16} aria-hidden /> Jugadores suspendidos · {cat}</p>
                 <ul className="sm:hidden space-y-3">
                   {sancionados.map((s) => (
-                    <li key={`${s.jugador}-${s.equipo}`} className="p-3 text-sm" style={{ backgroundColor: 'var(--demo-surface-alt)', borderRadius: 'var(--demo-radius)' }}>
+                    <li key={`${s.jugador}-${s.equipo}`} className="px-5 py-4 text-sm" style={{ backgroundColor: 'var(--demo-surface-alt)', borderRadius: 'var(--demo-radius-lg)' }}>
                       <div className="flex items-start justify-between gap-3">
                         <div className="min-w-0">
                           <p className="font-semibold" style={{ color: 'var(--demo-heading)' }}>{s.jugador}</p>
