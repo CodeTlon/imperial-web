@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import { usePathname, useRouter } from 'next/navigation'
+import { EVENTO_NAVEGAR, type NavegarDetalle } from '@/lib/navegar'
 
 // inicio: cortina al abrir el sitio · entra: sube sobre la página actual · tapa: cubre mientras llega la nueva · sale: se va
 type Fase = 'inicio' | 'idle' | 'entra' | 'tapa' | 'sale'
@@ -79,6 +80,25 @@ export default function PageTransition() {
     }
     document.addEventListener('click', onClick)
     return () => document.removeEventListener('click', onClick)
+  }, [router])
+
+  // Navegación pedida por código (ej. botón "Salir"): la cortina cubre primero y recién ahí corre `antes`
+  // (borrar la sesión) y se cambia de página, así no se ve ni un cuadro del destino ni del panel vaciándose.
+  useEffect(() => {
+    const onNavegar = (e: Event) => {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return   // navegarConCortina navega directo
+      const { href, antes } = (e as CustomEvent<NavegarDetalle>).detail
+      e.preventDefault()   // avisa que alguien lo escucha
+      destino.current = href
+      setFase('entra')
+      setTimeout(() => {
+        antes?.()
+        setFase(f => (f === 'entra' ? 'tapa' : f))
+        router.replace(href)
+      }, ENTRA_MS)
+    }
+    window.addEventListener(EVENTO_NAVEGAR, onNavegar)
+    return () => window.removeEventListener(EVENTO_NAVEGAR, onNavegar)
   }, [router])
 
   // Llegó la página nueva: se queda tapada un rato con el logo y se va con una animación al azar.
