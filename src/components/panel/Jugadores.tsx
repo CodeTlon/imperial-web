@@ -28,7 +28,7 @@ export default function Equipos() {
   const equipos: Resumen[] = useMemo(() => {
     const nombres = new Set<string>(CATEGORIAS.flatMap((c) => equiposDe(c)))
     datos.plantel.forEach((j) => nombres.add(j.equipo))
-    return Array.from(nombres).sort((a, b) => a.localeCompare(b, 'es')).map((nombre) => {
+    return Array.from(nombres).map((nombre) => {
       const js = datos.plantel.filter((j) => j.equipo === nombre)
       return {
         nombre, categoria: categoriaDeEquipo(nombre) ?? '', jugadores: js,
@@ -36,7 +36,7 @@ export default function Equipos() {
         pendientes: js.filter((j) => j.estadoDoc === 'Pendiente').length,
         observados: js.filter((j) => j.estadoDoc === 'Observado').length,
       }
-    })
+    }).sort((a, b) => (b.jugadores.length > 0 ? 1 : 0) - (a.jugadores.length > 0 ? 1 : 0) || a.nombre.localeCompare(b.nombre, 'es'))
   }, [datos.plantel])
 
   const listaEq = useMemo(() => {
@@ -54,10 +54,10 @@ export default function Equipos() {
 
   const acciones = (j: JugadorPlantel) => (
     <span className="inline-flex flex-nowrap gap-1.5">
-      <Boton variante="suave" icono={Eye} onClick={() => setVer(j)} aria-label={`Ver documentos de ${j.nombre}`} title="Ver documentos" className="!px-3 sm:!px-4"><span className="hidden sm:inline">Ver documentos</span></Boton>
-      <Boton variante="suave" icono={Check} disabled={j.estadoDoc === 'Aprobado'} onClick={() => revisarDoc(j.id, 'Aprobado')} aria-label={`Aprobar a ${j.nombre}`} title="Aprobar" className="!px-3 sm:!px-4"><span className="hidden sm:inline">Aprobar</span></Boton>
-      <Boton variante="peligro" icono={TriangleAlert} disabled={j.estadoDoc === 'Observado'} onClick={() => revisarDoc(j.id, 'Observado')} aria-label={`Observar a ${j.nombre}`} title="Observar" className="!px-3 sm:!px-4"><span className="hidden sm:inline">Observar</span></Boton>
-      <Boton variante="peligro" icono={Trash2} onClick={() => pedir({ titulo: `Borrar a ${j.nombre}`, texto: `Se quita del plantel de ${j.equipo}. No se puede deshacer.`, etiqueta: 'Borrar jugador' }, () => quitarJugador(j.id))} aria-label={`Borrar a ${j.nombre}`} title="Borrar" className="!px-3 sm:!px-4"><span className="hidden sm:inline">Borrar</span></Boton>
+      <Boton variante="suave" icono={Eye} onClick={() => setVer(j)} aria-label={`Ver documentos de ${j.nombre}`} title="Ver documentos" className="!px-3 2xl:!px-4"><span className="hidden 2xl:inline">Ver documentos</span></Boton>
+      <Boton variante="suave" icono={Check} disabled={j.estadoDoc === 'Aprobado'} onClick={() => revisarDoc(j.id, 'Aprobado')} aria-label={`Aprobar a ${j.nombre}`} title="Aprobar" className="!px-3 2xl:!px-4"><span className="hidden 2xl:inline">Aprobar</span></Boton>
+      <Boton variante="peligro" icono={TriangleAlert} disabled={j.estadoDoc === 'Observado'} onClick={() => revisarDoc(j.id, 'Observado')} aria-label={`Observar a ${j.nombre}`} title="Observar" className="!px-3 2xl:!px-4"><span className="hidden 2xl:inline">Observar</span></Boton>
+      <Boton variante="peligro" icono={Trash2} onClick={() => pedir({ titulo: `Borrar a ${j.nombre}`, texto: `Se quita del plantel de ${j.equipo}. No se puede deshacer.`, etiqueta: 'Borrar jugador' }, () => quitarJugador(j.id))} aria-label={`Borrar a ${j.nombre}`} title="Borrar" className="!px-3 2xl:!px-4"><span className="hidden 2xl:inline">Borrar</span></Boton>
     </span>
   )
 
