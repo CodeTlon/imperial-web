@@ -5,11 +5,11 @@ import { useMemo, useState } from 'react'
 import { admiteDescargo, TOPE_PLANTEL, useDemo, type JugadorPlantel } from '@/lib/demo-store'
 import { categoriaDeEquipo, estadoPlantel, mismo } from '@/components/panel/datos'
 import { TablaPosiciones, TarjetaProximoPartido, partidosDe, resultadoPara, useFixture } from '@/components/panel/Compartidos'
-import { ArchivosSancion, HiloMensajes } from '@/components/panel/Adjuntos'
+import DescargosDelegado from '@/components/panel/DescargosDelegado'
 import { ChipsArticulos } from '@/components/panel/Sanciones'
 import { BarrasH, Kpi, Semaforo } from '@/components/panel/graficos'
 import {
-  AreaTexto, BarraFiltros, Boton, Buscador, C, Campo, Etiqueta, Filtro, K, MensajeError, Paginador, PanelShell, SubirFoto, Tabla, Tarjeta, normalizar, usePaginas, usePestanaUrl,
+  BarraFiltros, Boton, Buscador, C, Campo, Etiqueta, Filtro, K, MensajeError, Paginador, PanelShell, SubirFoto, Tabla, Tarjeta, normalizar, usePaginas, usePestanaUrl,
 } from '@/components/panel/ui'
 
 const POSICIONES = ['Arquero', 'Defensor', 'Mediocampista', 'Delantero']
@@ -23,7 +23,7 @@ export default function DelegadoPage() {
     <PanelShell rol="delegado" titulo="Panel del delegado" tabs={TABS} tab={tab} setTab={setTab}>
       {tab === 'Inicio' && <Inicio irA={setTab} />}
       {tab === 'Fixture y posiciones' && <FixturePosiciones />}
-      {tab === 'Descargos' && <Descargos />}
+      {tab === 'Descargos' && <DescargosDelegado />}
       {tab === 'Plantel' && <Plantel />}
     </PanelShell>
   )
@@ -130,78 +130,6 @@ function Resul({ r }: { r: 'G' | 'E' | 'P' | null }) {
   if (!r) return null
   const c = { G: ['Ganó', 'bg-[#16a34a]/10 text-[#16a34a]'], E: ['Empató', 'bg-[#f3a21c]/30 text-[#8a5a00]'], P: ['Perdió', 'bg-[#dc2626]/10 text-[#dc2626]'] }[r]
   return <span className={`rounded-full px-3 py-1 text-xs font-bold ${c[1]}`}>{c[0]}</span>
-}
-
-function Descargos() {
-  const { sesion, datos, enviarDescargo } = useDemo()
-  const [estado, setEstado] = useState('')
-  const [q, setQ] = useState('')
-  const base = datos.sanciones.filter((s) => s.equipo === sesion?.equipo)
-  const propias = base.filter((s) => (!estado || s.estado === estado) && (!q || normalizar(`${s.jugador} ${s.partido} ${s.motivo}`).includes(normalizar(q))))
-  const pag = usePaginas(propias, 4)
-  const [texto, setTexto] = useState<Record<string, string>>({})
-  const [intentoD, setIntentoD] = useState<Record<string, boolean>>({})
-  // Un descargo necesita explicar lo ocurrido: entre 30 y 1500 caracteres.
-  const errorDescargo = (t: string) => {
-    const n = t.trim().length
-    if (n === 0) return 'Escribí el descargo del equipo.'
-    if (n < 30) return `Explicá lo ocurrido con más detalle (mínimo 30 caracteres, tenés ${n}).`
-    if (n > 1500) return `El descargo es muy largo: máximo 1500 caracteres (tenés ${n}).`
-    return undefined
-  }
-  return (
-    <Tarjeta titulo={`Sanciones de ${sesion?.equipo}`}>
-      <BarraFiltros>
-        <Buscador value={q} onChange={setQ} placeholder="Buscar jugador, partido o texto del informe" />
-        <Filtro label="Estado" value={estado} onChange={setEstado} opciones={['Firme', 'En revisión', 'Descargo aceptado', 'Descargo rechazado']} />
-      </BarraFiltros>
-      {propias.length === 0 && <p className={`text-sm ${K.suave}`}>{base.length === 0 ? 'Tu equipo no tiene sanciones.' : 'No hay sanciones con esos filtros.'}</p>}
-      <div className="grid gap-4 xl:grid-cols-2">
-        {pag.items.map((s) => {
-          const abierta = admiteDescargo(s)
-          return (
-            <article key={s.id} className={`rounded-xl border ${K.borde} p-4 space-y-3 min-w-0`}>
-              <div className="flex flex-wrap items-start justify-between gap-2">
-                <div className="min-w-0">
-                  <p className="font-bold">{s.jugador}</p>
-                  <p className={`text-xs ${K.suave}`}>{s.partido} · {s.fecha} · {s.tipo} · {s.fechasSuspension} fecha(s)</p>
-                </div>
-                <Etiqueta texto={s.cumplida && s.estado === 'Firme' ? 'Cumplida' : s.estado} />
-              </div>
-              <ChipsArticulos s={s} />
-              <div className="text-sm"><span className={`block text-xs font-bold uppercase ${K.suave}`}>Informe de expulsión</span>{s.motivo}</div>
-              {s.descargo && <div className="rounded-lg bg-[var(--p-fondo)] p-3 text-sm"><span className="font-bold">Descargo enviado: </span>{s.descargo}</div>}
-              {abierta ? (
-                <div className="space-y-2">
-                  <AreaTexto
-                    value={texto[s.id] ?? ''}
-                    onChange={(e) => setTexto({ ...texto, [s.id]: e.target.value })}
-                    rows={3}
-                    aria-label={`Descargo por la sanción de ${s.jugador}`}
-                    error={intentoD[s.id] ? errorDescargo(texto[s.id] ?? '') : undefined}
-                    placeholder={s.descargo ? 'Actualizá el descargo del equipo' : 'Escribí el descargo del equipo. Ej: El contacto fue accidental, el jugador disputaba la pelota.'}
-                  />
-                  <p className={`text-right text-xs ${K.suave}`}>{(texto[s.id] ?? '').trim().length}/1500</p>
-                  <Boton onClick={() => {
-                    setIntentoD({ ...intentoD, [s.id]: true })
-                    if (errorDescargo(texto[s.id] ?? '')) return
-                    enviarDescargo(s.id, texto[s.id].trim()); setTexto({ ...texto, [s.id]: '' }); setIntentoD({ ...intentoD, [s.id]: false })
-                  }}>
-                    {s.descargo ? 'Actualizar descargo' : 'Enviar descargo'}
-                  </Boton>
-                </div>
-              ) : (
-                <p className={`text-xs ${K.suave}`}>Esta sanción ya está {s.cumplida && s.estado === 'Firme' ? 'cumplida' : 'resuelta'}: no admite descargo.</p>
-              )}
-              <ArchivosSancion mensajes={s.mensajes} />
-              <HiloMensajes s={s} quien="delegado" placeholder="Mensaje a la organización. Ej: Adjuntamos el video de la jugada" />
-            </article>
-          )
-        })}
-      </div>
-      <Paginador {...pag} />
-    </Tarjeta>
-  )
 }
 
 function Plantel() {

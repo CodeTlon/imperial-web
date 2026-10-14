@@ -14,10 +14,10 @@ const PASOS = ['Cargada', 'Con descargo', 'Resuelta']
 const PASO_CORTO: Record<string, string> = { 'Con descargo': 'Descargo' }
 
 // Paso alcanzado: 0 cargada, 1 con descargo del equipo, 2 resuelta por la organización.
-const pasoDe = (s: Sancion) => (s.estado === 'Descargo aceptado' || s.estado === 'Descargo rechazado' ? 2 : s.descargo ? 1 : 0)
+export const pasoDe = (s: Sancion) => (s.estado === 'Descargo aceptado' || s.estado === 'Descargo rechazado' ? 2 : s.descargo ? 1 : 0)
 
 // Avance en una sola línea horizontal, de punta a punta.
-function LineaDeTiempo({ s }: { s: Sancion }) {
+export function LineaDeTiempo({ s }: { s: Sancion }) {
   const paso = pasoDe(s)
   return (
     <ol className="flex w-full items-center" aria-label="Avance de la sanción">
@@ -34,7 +34,7 @@ function LineaDeTiempo({ s }: { s: Sancion }) {
   )
 }
 
-function Seccion({ titulo, children }: { titulo: string; children: React.ReactNode }) {
+export function Seccion({ titulo, children }: { titulo: string; children: React.ReactNode }) {
   return (
     <section className="space-y-3 border-t border-[color:var(--p-borde)] pt-5">
       <h4 className={`text-xs font-bold uppercase tracking-wider ${K.suave}`}>{titulo}</h4>
@@ -43,7 +43,7 @@ function Seccion({ titulo, children }: { titulo: string; children: React.ReactNo
   )
 }
 
-function Dato({ titulo, children }: { titulo: string; children: React.ReactNode }) {
+export function Dato({ titulo, children }: { titulo: string; children: React.ReactNode }) {
   return (
     <div className="min-w-0">
       <dt className={`text-xs font-bold uppercase tracking-wide ${K.suave}`}>{titulo}</dt>
@@ -53,7 +53,7 @@ function Dato({ titulo, children }: { titulo: string; children: React.ReactNode 
 }
 
 // El descargo abierto va en la URL (?tab=descargos&d=ID): se puede compartir el enlace y "atrás" vuelve a la tabla.
-function useDescargoUrl(): [string | null, (id: string | null) => void] {
+export function useDescargoUrl(): [string | null, (id: string | null) => void] {
   const [id, setId] = useState<string | null>(null)
   useEffect(() => {
     const leer = () => setId(new URLSearchParams(window.location.search).get('d'))
