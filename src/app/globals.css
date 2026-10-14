@@ -261,3 +261,16 @@
 .panel-fondo { position: fixed; inset: 0; z-index: 40; background: rgba(6,47,54,.55); opacity: 0; pointer-events: none; transition: opacity .3s ease-out; }
 .panel-fondo[data-open="true"] { opacity: 1; pointer-events: auto; }
 @media (prefers-reduced-motion: reduce) { .panel-cajon, .panel-fondo { transition: none !important; } }
+
+/* Barra de scroll con los colores de la marca: teal sobre fondo claro, dorado al pasar el mouse.
+   Chrome, Edge y Safari usan los pseudo-elementos webkit; Firefox, las propiedades estándar. */
+:root { --sb-thumb: #0494a4; --sb-hover: #f3a21c; --sb-track: #eef6f7; }
+.sb-oscuro { --sb-thumb: rgba(255,255,255,.28); --sb-hover: rgba(255,255,255,.5); --sb-track: transparent; }
+*::-webkit-scrollbar { width: 12px; height: 12px; }
+*::-webkit-scrollbar-track { background: var(--sb-track); }
+*::-webkit-scrollbar-thumb { background: var(--sb-thumb); border-radius: 999px; border: 3px solid var(--sb-track); background-clip: padding-box; min-height: 40px; }
+*::-webkit-scrollbar-thumb:hover { background: var(--sb-hover); background-clip: padding-box; }
+*::-webkit-scrollbar-corner { background: var(--sb-track); }
+@supports (-moz-appearance: none) {
+  * { scrollbar-width: thin; scrollbar-color: var(--sb-thumb) var(--sb-track); }
+}

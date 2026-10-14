@@ -97,7 +97,7 @@ export function PanelShell({ rol, titulo, tabs, tab, setTab, children }: {
   return (
     <div className="min-h-screen bg-[var(--p-fondo)] text-[color:var(--p-texto)] lg:grid lg:grid-cols-[264px_minmax(0,1fr)]" style={VARS_PANEL}>
       {/* Escritorio: barra lateral fija a la izquierda, de punta a punta */}
-      <aside className="hidden lg:block sticky top-0 h-screen" style={{ background: `linear-gradient(180deg, ${C.navy}, #04434d)` }}>{lateral}</aside>
+      <aside className="sb-oscuro hidden lg:block sticky top-0 h-screen" style={{ background: `linear-gradient(180deg, ${C.navy}, #04434d)` }}>{lateral}</aside>
 
       {/* Celular: barra superior mínima con el botón del menú */}
       <header className="lg:hidden sticky top-0 z-30 flex h-14 items-center gap-2 px-3 text-white" style={{ background: C.navy }}>
@@ -109,7 +109,7 @@ export function PanelShell({ rol, titulo, tabs, tab, setTab, children }: {
         <span className="ml-auto truncate text-sm font-semibold text-white/80">{tab}</span>
       </header>
       <div className="panel-fondo lg:hidden" data-open={abierto} onClick={() => setAbierto(false)} aria-hidden />
-      <aside id="menu-panel" className="panel-cajon lg:hidden" data-open={abierto} style={{ background: `linear-gradient(180deg, ${C.navy}, #04434d)` }}>{lateral}</aside>
+      <aside id="menu-panel" className="sb-oscuro panel-cajon lg:hidden" data-open={abierto} style={{ background: `linear-gradient(180deg, ${C.navy}, #04434d)` }}>{lateral}</aside>
 
       <main className="min-w-0 px-4 sm:px-6 lg:px-10 py-6 space-y-6 max-w-[1800px]">
         {!demoOculta && (
