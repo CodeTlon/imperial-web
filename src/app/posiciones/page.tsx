@@ -88,7 +88,7 @@ export default function PosicionesPage() {
 
             <div className="space-y-8">
               {/* Tabla(s) de posiciones */}
-              <div className={`grid grid-cols-1 gap-8 ${zonas.length > 1 ? '2xl:grid-cols-2' : ''}`}>
+              <div className={`grid grid-cols-1 gap-8 `}>
                 {zonas.length > 0 ? (
                   zonas.map((z) => (
                     <div key={z} className="card overflow-x-auto">
@@ -114,7 +114,7 @@ export default function PosicionesPage() {
                 <h3 className="font-bold text-lg mb-5 flex items-center gap-2" style={{ color: 'var(--demo-heading)' }}>
                   <Trophy size={20} style={{ color: 'var(--demo-accent)' }} /> Goleadores — {cat}
                 </h3>
-                <ol className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-4">
+                <ol className="space-y-4">
                   {top.map((g, i) => (
                     <li key={g.jugador} className="flex items-center justify-between gap-3 min-w-0">
                       <div className="flex items-center gap-3 min-w-0">
