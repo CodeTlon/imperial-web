@@ -4,9 +4,9 @@ import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import { Trophy } from 'lucide-react'
 import { escudoPorEquipo } from '@/lib/torneo-data'
-import type { CampeonEntry } from '@/lib/campeones-data'
+import { MISMO_CLUB_QUE, slugCampeon, type CampeonTI } from '@/lib/campeones-ti'
 
-const COPA: Record<CampeonEntry['copa'], { color: string; fondo: string }> = {
+const COPA: Record<CampeonTI['copa'], { color: string; fondo: string }> = {
   Oro: { color: '#f3a21c', fondo: 'rgba(243,162,28,0.10)' },
   Plata: { color: '#9aa3ad', fondo: 'rgba(154,163,173,0.12)' },
   Bronce: { color: '#b86f3a', fondo: 'rgba(184,111,58,0.10)' },
@@ -20,7 +20,11 @@ const norm = (s: string) =>
 const ESCUDOS = new Map<string, string>(
   Object.entries(escudoPorEquipo).map(([nombre, src]) => [norm(nombre), src as string])
 )
-const escudoDe = (equipo: string, categoria: string) => ESCUDOS.get(norm(`${equipo} ${categoria}`))
+// 1) equipo de esa categoría con ese nombre (los 7 de +30), 2) mismo club que un equipo real de +30, 3) escudo generado del campeón.
+const escudoDe = (equipo: string, categoria: string) =>
+  ESCUDOS.get(norm(`${equipo} ${categoria}`)) ??
+  (MISMO_CLUB_QUE[equipo] ? escudoPorEquipo[MISMO_CLUB_QUE[equipo]] : undefined) ??
+  `/images/escudos/camp-${slugCampeon(equipo)}.png`
 
 function iniciales(n: string) {
   const p = n.replace(/[^\p{L}\p{N}\s]/gu, ' ').split(/\s+/).filter(Boolean)
@@ -48,7 +52,7 @@ function Escudo({ nombre, categoria, size }: { nombre: string; categoria: string
 
 type Puesto = { pos: 1 | 2 | 3; equipo: string; alto: string }
 
-export default function Podio({ item }: { item: CampeonEntry }) {
+export default function Podio({ item }: { item: CampeonTI }) {
   const ref = useRef<HTMLDivElement>(null)
   const [visto, setVisto] = useState(false)
   const copa = COPA[item.copa]

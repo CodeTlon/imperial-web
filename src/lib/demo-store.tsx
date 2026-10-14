@@ -66,6 +66,7 @@ export const CUENTAS: (Sesion & { clave: string })[] = [
   { email: 'organizacion@imperial.com', nombre: 'Tribunal de Disciplina', rol: 'organizacion', clave: 'imperial123' },
   { email: 'delegado@imperial.com', nombre: 'Roberto Ibáñez', rol: 'delegado', equipo: 'Ankara +30', clave: 'imperial123' },
   { email: 'jugador@imperial.com', nombre: 'Cristian Agustín Salussolia', rol: 'jugador', equipo: 'Ankara +30', clave: 'imperial123' },
+  { email: 'jugador2@imperial.com', nombre: 'Mallky Facundo Godoy', rol: 'jugador', equipo: 'Ankara +30', clave: 'imperial123' },
 ]
 
 // Textos del sitio que la organización puede cambiar desde el panel (Contenido). Lo que no se toca queda como en demo-config.ts.

@@ -87,7 +87,7 @@ function Formulario() {
                     <button type="button" data-cuenta onClick={() => usar(c)} className="flex w-full items-center gap-3 rounded-xl border border-[#d9e8ea] bg-[#eef6f7] px-4 py-3 text-left transition hover:border-[#0494a4] hover:bg-[#dff0f2] active:scale-[0.99] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#0494a4]">
                       <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-white" style={{ background: 'linear-gradient(135deg,#062f36,#0494a4)' }}><Icono size={22} aria-hidden /></span>
                       <span className="min-w-0 flex-1">
-                        <span className="block text-sm font-bold text-[#062f36]">{r.texto}</span>
+                        <span className="block text-sm font-bold text-[#062f36]">{r.texto} <span className="font-semibold text-[#04707c]">· {c.nombre}</span></span>
                         <span className="block truncate text-xs text-[#1f3a40]">{c.email}</span>
                         <span className="mt-0.5 block text-xs leading-snug text-[#5b7479]">{r.detalle}</span>
                       </span>

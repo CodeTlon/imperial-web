@@ -6,7 +6,7 @@ import Footer from '@/components/layout/Footer'
 import PageHeader from '@/components/ui/PageHeader'
 import CategoryTabs from '@/components/ui/CategoryTabs'
 import Podio from '@/components/campeones/Podio'
-import { campeonesData, categoriasCampeones } from '@/lib/campeones-data'
+import { CAMPEONES_TI, CATEGORIAS_CAMPEONES } from '@/lib/campeones-ti'
 
 const COPA_COLOR: Record<string, string> = {
   Oro: '#f3a21c',
@@ -17,9 +17,9 @@ const COPA_COLOR: Record<string, string> = {
 export default function CampeonesPage() {
   // Categoría local, no conectada al selector global (CategoryProvider): este filtro suma la opción "Todas"
   // y cambiarlo acá no debería mover la categoría de /posiciones, /fixture o /equipos.
-  const [cat, setCat] = useState<(typeof categoriasCampeones)[number] | 'Todas'>('Todas')
+  const [cat, setCat] = useState<(typeof CATEGORIAS_CAMPEONES)[number] | 'Todas'>('Todas')
   const [copa, setCopa] = useState<'Todas' | 'Oro' | 'Plata' | 'Bronce'>('Todas')
-  const items = campeonesData.filter((c) => (cat === 'Todas' || c.categoria === cat) && (copa === 'Todas' || c.copa === copa))
+  const items = CAMPEONES_TI.filter((c) => (cat === 'Todas' || c.categoria === cat) && (copa === 'Todas' || c.copa === copa))
 
   return (
     <>
@@ -36,9 +36,9 @@ export default function CampeonesPage() {
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
 
             <CategoryTabs
-              options={['Todas', ...categoriasCampeones]}
+              options={['Todas', ...CATEGORIAS_CAMPEONES]}
               value={cat}
-              onChange={(c) => setCat(c as (typeof categoriasCampeones)[number] | 'Todas')}
+              onChange={(c) => setCat(c as (typeof CATEGORIAS_CAMPEONES)[number] | 'Todas')}
             />
 
             <div className="flex flex-wrap justify-center gap-2 mb-8" role="group" aria-label="Filtrar por copa">
