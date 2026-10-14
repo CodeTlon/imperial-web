@@ -276,3 +276,10 @@
 @supports (-moz-appearance: none) {
   * { scrollbar-width: thin; scrollbar-color: var(--sb-thumb) var(--sb-track); }
 }
+
+/* Celular: los campos a 16px evitan el zoom automático de iOS al enfocarlos, y los enlaces chicos ganan área de toque. */
+@media (max-width: 639px) {
+  input:not([type='file']):not([type='checkbox']):not([type='radio']), select, textarea { font-size: 16px !important; }
+  footer a { display: inline-block; padding-block: 0.5rem; }
+  main a.inline-flex.items-center.gap-1\.5 { padding-block: 0.625rem; }
+}

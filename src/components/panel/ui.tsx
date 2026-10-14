@@ -115,7 +115,7 @@ export function PanelShell({ rol, titulo, tabs, tab, setTab, children }: {
         {!demoOculta && (
           <p className={`inline-flex items-center gap-2 rounded-full bg-white border ${K.borde} pl-3 pr-1.5 py-1 text-xs ${K.suave}`}>
             <span className="font-bold text-[color:var(--p-navy)]">Demo</span> los datos se guardan solo en este navegador
-            <button type="button" aria-label="Ocultar aviso de demo" onClick={() => { setDemoOculta(true); try { localStorage.setItem(CLAVE_DEMO_CERRADA, '1') } catch {} }} className="rounded-full p-1 hover:bg-[var(--p-fondo)]"><X size={12} aria-hidden /></button>
+            <button type="button" aria-label="Ocultar aviso de demo" onClick={() => { setDemoOculta(true); try { localStorage.setItem(CLAVE_DEMO_CERRADA, '1') } catch {} }} className="-my-2 -mr-1 flex h-10 w-10 items-center justify-center rounded-full hover:bg-[var(--p-fondo)]"><X size={14} aria-hidden /></button>
           </p>
         )}
         {children}

@@ -8,10 +8,12 @@ import { EVENTO_NAVEGAR, type NavegarDetalle } from '@/lib/navegar'
 // inicio: cortina al abrir el sitio · entra: sube sobre la página actual · tapa: cubre mientras llega la nueva · sale: se va
 type Fase = 'inicio' | 'idle' | 'entra' | 'tapa' | 'sale'
 
-const INICIO_MS = 1700   // mínimo que se ve la pantalla de carga al abrir el sitio
-const ENTRA_MS = 1000
-const TAPA_MS = 800     // mínimo que se ve el logo al cambiar de página, ya con la página nueva cargada
-const SALE_MS = 1300
+const INICIO_MS = 600    // mínimo que se ve la pantalla de carga al abrir el sitio (después dura lo que tarde en cargar)
+const TOPE_INICIO_MS = 4000   // si algún recurso se cuelga, al abrir el sitio no se espera más que esto
+const TOPE_PAGINA_MS = 4000   // ídem al cambiar de página
+const ENTRA_MS = 450
+const TAPA_MS = 300     // mínimo que se ve el logo al cambiar de página; después dura lo que tarden en cargar las imágenes de esa página
+const SALE_MS = 600
 
 
 // Un solo efecto: cortina que sube. Entra desde abajo y sale hacia arriba, siempre en la misma dirección,
@@ -23,13 +25,38 @@ const EASE = 'cubic-bezier(.83,0,.17,1)'
 const CSS = [
   `@keyframes pt-in{from{${ENTRADA[0]}}to{${ENTRADA[1]}}}.pt-in{animation:pt-in ${ENTRA_MS}ms ${EASE} both}`,
   `@keyframes pt-out{from{${SALIDA[0]}}to{${SALIDA[1]}}}.pt-out{animation:pt-out ${SALE_MS}ms ${EASE} both}`,
-  `.pt-logo{animation:pt-logo .8s .1s cubic-bezier(.22,1,.36,1) both}`,
-  `.pt-aro{animation:pt-giro 1.1s linear infinite;will-change:transform}`,
-  `.pt-in,.pt-out{will-change:transform}.pt-out .pt-logo{animation:pt-logo-out .55s ease-in both}`,
+  `.pt-logo{animation:pt-logo .45s .05s cubic-bezier(.22,1,.36,1) both}`,
+  `.pt-aro{animation:pt-giro .9s linear infinite;will-change:transform}`,
+  `.pt-in,.pt-out{will-change:transform}.pt-out .pt-logo{animation:pt-logo-out .3s ease-in both}`,
   `@keyframes pt-logo-out{from{opacity:1;transform:none}to{opacity:0;transform:scale(1.18)}}`,
   `@keyframes pt-logo{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:none}}`,
   `@keyframes pt-giro{to{transform:rotate(360deg)}}`,
 ].join('')
+
+// Espera a lo que la página nueva necesita para verse completa: fuentes, imágenes que están en pantalla (o casi)
+// y el póster del video. Las imágenes más abajo no se esperan: se cargan mientras se scrollea. `tope` evita colgarse.
+function esperarRecursos(tope: number): Promise<void> {
+  return new Promise((resolve) => {
+    const corte = setTimeout(resolve, tope)
+    // Dos cuadros de espera: así React ya pintó la página nueva y se pueden contar sus imágenes.
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      const limite = window.innerHeight * 1.25
+      const pendientes: Promise<unknown>[] = []
+      document.querySelectorAll('img').forEach((img) => {
+        if (img.complete || !(img.currentSrc || img.src)) return
+        const r = img.getBoundingClientRect()
+        if (r.bottom < 0 || r.top > limite) return
+        pendientes.push(new Promise((ok) => { img.addEventListener('load', ok, { once: true }); img.addEventListener('error', ok, { once: true }) }))
+      })
+      document.querySelectorAll<HTMLVideoElement>('video[poster]').forEach((v) => {
+        const im = new window.Image()
+        pendientes.push(new Promise((ok) => { im.onload = im.onerror = () => ok(null); im.src = v.poster }))
+      })
+      if (document.fonts?.ready) pendientes.push(document.fonts.ready)
+      Promise.all(pendientes).then(() => { clearTimeout(corte); resolve() })
+    }))
+  })
+}
 
 // Pantalla de carga con el escudo: cubre todo al abrir el sitio (ya viene en el HTML del servidor, así que se ve
 // antes que la página) y también al cambiar de página interceptando los links internos. Entrada y salida usan siempre la cortina que sube.
@@ -46,19 +73,23 @@ export default function PageTransition() {
     return () => { document.documentElement.style.overflow = '' }
   }, [fase])
 
-  // Al abrir el sitio: espera a que cargue todo (mínimo INICIO_MS) y se va con una animación al azar.
+  // Al abrir el sitio: dura lo que tarde en cargar todo (mínimo INICIO_MS, máximo TOPE_INICIO_MS) y se va.
   useEffect(() => {
     const t0 = Date.now()
     let fin: ReturnType<typeof setTimeout>
+    let saliendo = false
     const salir = () => {
+      if (saliendo) return
+      saliendo = true
       fin = setTimeout(() => {
         setFase('sale')
         fin = setTimeout(() => setFase('idle'), SALE_MS + 50)
       }, Math.max(0, INICIO_MS - (Date.now() - t0)))
     }
+    const tope = setTimeout(salir, TOPE_INICIO_MS)
     if (document.readyState === 'complete') salir()
     else window.addEventListener('load', salir, { once: true })
-    return () => { window.removeEventListener('load', salir); clearTimeout(fin) }
+    return () => { window.removeEventListener('load', salir); clearTimeout(tope); clearTimeout(fin) }
   }, [])
 
   useEffect(() => {
@@ -111,9 +142,18 @@ export default function PageTransition() {
     destino.current = null
     window.scrollTo(0, 0)
     setFase('tapa')
-    const a = setTimeout(() => { setFase('sale') }, TAPA_MS)
-    const b = setTimeout(() => setFase('idle'), TAPA_MS + SALE_MS + 50)
-    return () => { clearTimeout(a); clearTimeout(b) }
+    // La cortina queda hasta que carguen las imágenes de esta página (mínimo TAPA_MS) y recién ahí sale.
+    let vivo = true
+    let fin: ReturnType<typeof setTimeout>
+    const t0 = Date.now()
+    esperarRecursos(TOPE_PAGINA_MS).then(() => {
+      if (!vivo) return
+      fin = setTimeout(() => {
+        setFase('sale')
+        fin = setTimeout(() => setFase('idle'), SALE_MS + 50)
+      }, Math.max(0, TAPA_MS - (Date.now() - t0)))
+    })
+    return () => { vivo = false; clearTimeout(fin) }
   }, [pathname])
 
   if (fase === 'idle') return null
