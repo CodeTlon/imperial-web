@@ -82,10 +82,10 @@ export default function InscripcionPage() {
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:items-stretch">
               {/* Banner + requisitos reales del reglamento */}
-              <div className="lg:col-span-2 flex flex-col gap-6 lg:gap-5">
-                <div className="card lg:flex-1">
-                  <h2 className="font-heading text-2xl mb-5" style={{ color: 'var(--demo-heading)' }}>Cómo funciona</h2>
-                  <ul className="space-y-3">
+              <div className="lg:col-span-2 flex flex-col gap-5 lg:gap-4">
+                <div className="card lg:flex-1 !p-5">
+                  <h2 className="font-heading text-xl mb-3" style={{ color: 'var(--demo-heading)' }}>Cómo funciona</h2>
+                  <ul className="space-y-2">
                     {requisitos.map((text, i) => { const Icon = ICONOS_REQUISITOS[i % ICONOS_REQUISITOS.length]; return (
                       <li key={text} className="flex items-center gap-3 text-sm" style={{ color: 'var(--demo-text)' }}>
                         <Icon size={18} style={{ color: 'var(--demo-accent)' }} className="flex-shrink-0" />
@@ -94,11 +94,11 @@ export default function InscripcionPage() {
                     ) })}
                   </ul>
                 </div>
-          <div className="card lg:flex-1">
-            <h2 className="font-heading text-2xl mb-5 flex items-center gap-2" style={{ color: 'var(--demo-heading)' }}>
-              <CreditCard size={22} style={{ color: 'var(--demo-accent)' }} /> Qué necesitás para inscribirte
+          <div className="card lg:flex-1 !p-5">
+            <h2 className="font-heading text-xl mb-3 flex items-center gap-2" style={{ color: 'var(--demo-heading)' }}>
+              <CreditCard size={20} style={{ color: 'var(--demo-accent)' }} /> Qué necesitás para inscribirte
             </h2>
-            <ul className="space-y-3">
+            <ul className="space-y-2">
               {necesitas.map((t) => (
                 <li key={t} className="flex items-start gap-3 text-sm leading-relaxed" style={{ color: 'var(--demo-text)' }}>
                   <CheckCircle2 size={18} className="mt-0.5 flex-shrink-0" style={{ color: 'var(--demo-accent)' }} />
@@ -107,9 +107,9 @@ export default function InscripcionPage() {
               ))}
             </ul>
           </div>
-          <div className="card lg:flex-1">
-            <h2 className="font-heading text-2xl mb-5 flex items-center gap-2" style={{ color: 'var(--demo-heading)' }}>
-              <MapPin size={22} style={{ color: 'var(--demo-accent)' }} /> Sede
+          <div className="card lg:flex-1 !p-5">
+            <h2 className="font-heading text-xl mb-3 flex items-center gap-2" style={{ color: 'var(--demo-heading)' }}>
+              <MapPin size={20} style={{ color: 'var(--demo-accent)' }} /> Sede
             </h2>
             <p className="text-sm leading-relaxed" style={{ color: 'var(--demo-text)' }}>
               Los partidos se juegan en {business.address}. Cada partido tiene árbitro y veedor.
