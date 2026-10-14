@@ -3,7 +3,7 @@
 // Todo determinista (hash de ids, sin Math.random) para que las capturas de la
 // demo siempre muestren lo mismo. Solo se importan TIPOS de mobile-data para
 // evitar un ciclo de módulos en runtime.
-// Misma lógica que la app (torneo-imperial-app/src/lib/categorias-mock.ts) para
+// Misma lógica que la app (imperial-app/src/lib/categorias-mock.ts) para
 // que sitio y app muestren exactamente los mismos datos de demo.
 export type Equipo = {
   id: string

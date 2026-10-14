@@ -6,7 +6,7 @@ import { useSitio } from '@/lib/useSitio'
 import { waLink } from '@/lib/utils'
 
 // Mismo patrón que el grid de "accesos rápidos" de la app mobile
-// (torneo-imperial-app/src/app/(tabs)/inicio.tsx) — se porta acá el layout,
+// (imperial-app/src/app/(tabs)/inicio.tsx) — se porta acá el layout,
 // no el código: card clara + chip de ícono oscuro sobre fondo estructural.
 const accesos = [
   { icon: ListOrdered, label: 'Tabla de posiciones', href: '/posiciones' },

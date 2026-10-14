@@ -1,4 +1,4 @@
-// Planteles de +30 tal cual están en la app (torneo-imperial-app/src/lib/mobile-data.ts, EQUIPOS_30), para que
+// Planteles de +30 tal cual están en la app (imperial-app/src/lib/mobile-data.ts, EQUIPOS_30), para que
 // sitio y app muestren los mismos jugadores. Si se cambian allá, regenerar acá.
 export const PLANTEL_30: Record<string, { nombre: string; dorsal: number; posicion: string }[]> = {
   'Atl.Gral.Bustos +30': [

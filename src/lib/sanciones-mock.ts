@@ -1,7 +1,7 @@
 import type { Sancion } from '@/lib/demo-store'
 
 // Sanciones de demostración de las categorías que no son +30 (Libre, +35, +40, +45 y Femenino): los mismos casos
-// que en la app (torneo-imperial-app/src/lib/sanciones-mock.ts). Los artículos y los rangos de fechas salen del
+// que en la app (imperial-app/src/lib/sanciones-mock.ts). Los artículos y los rangos de fechas salen del
 // reglamento (Art. 36, 37, 39 y 43 Bis); los jugadores son de los planteles de demostración.
 export type SancionMock = Sancion & { categoria: string; porCumplir: number }
 

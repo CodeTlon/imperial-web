@@ -4,7 +4,7 @@ import { categorias, posiciones } from '@/lib/torneo-data'
 import type { JugadorPlantel } from '@/lib/demo-store'
 
 // Planteles de demostración para los 100 equipos. Es el mismo criterio que usa la app
-// (torneo-imperial-app/src/lib/plantilla-mock.ts), así que ambas muestran los mismos jugadores:
+// (imperial-app/src/lib/plantilla-mock.ts), así que ambas muestran los mismos jugadores:
 //  - los equipos de +30 con jugadores cargados en la app los conservan (PLANTEL_30 / PLANTEL_APP),
 //  - el resto se completa hasta TAMANO con nombres inventados y determinísticos (el mismo equipo siempre
 //    genera los mismos nombres; se sortean de un flujo aparte para que app y sitio coincidan),

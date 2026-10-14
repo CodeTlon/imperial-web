@@ -1,62 +1,46 @@
-# CodeTlon Demo Template (Nivel 0)
+# Imperial Web — Torneo Imperial
 
-Template para demos visuales de clientes. Sin backend, sin lógica. Solo UI.
+Sitio web y paneles de demostración del **Torneo Imperial** (fútbol amateur, Córdoba). Next.js 15, React 18 y Tailwind. Sin backend: los datos de demo se guardan en el navegador (localStorage) y los paneles usan un login simulado.
+
+Repo hermano: [`CodeTlon/imperial-app`](https://github.com/CodeTlon/imperial-app) (app mobile). Comparten paleta, vocabulario y datos de demo: ver "Sincronía con la app".
 
 ## Uso rápido
 
 ```bash
 npm install
-npm run dev
+npm run dev      # http://localhost:3000
+npm run build    # compila y verifica tipos
 ```
 
-Abre http://localhost:3000
+Para verlo desde otra máquina de la red: `npx next dev -H 0.0.0.0 -p <puerto>`.
 
-## Cómo personalizar
+## Qué incluye
 
-**Solo hay un archivo que tocar:** `src/lib/demo-config.ts`
+- **Sitio público:** inicio, fixture, posiciones, equipos, campeones, sanciones, reglamento, carta del bar, cómo llegar e inscripción.
+- **Paneles** (`/ingresar`): organización, delegado y jugador. Las cuentas de prueba están en la propia pantalla de login ("Cuentas de prueba"); la contraseña de todas es `imperial123`.
+- **Contenido editable** desde el panel de organización (contacto, portada, llamado a inscribirse e inscripción).
+- Formularios con validación en todos los campos, accesibilidad (WCAG) y diseño responsive.
 
-Ahí configurás:
-- `business` — nombre, teléfono, email, dirección, WhatsApp
-- `brand` — colores HEX y Google Font
-- `images` — paths locales (en `public/images/`) o URLs de Picsum
-- `sections` — `true`/`false` por sección para mostrar u ocultar
-- `content` — servicios, testimonios, FAQ, precios, equipo, stats
+## Estructura
 
-## Secciones disponibles
-
-| Key | Nombre | Típico para |
-|---|---|---|
-| `hero` | Hero | Todos |
-| `about` | Nosotros | Todos |
-| `services` | Servicios | Todos |
-| `gallery` | Galería | Peluquerías, tatuajes, restaurantes |
-| `pricing` | Precios | Gimnasios, software, suscripciones |
-| `testimonials` | Testimonios | Todos |
-| `faq` | Preguntas frecuentes | Clínicas, estudios |
-| `contact` | Contacto | Todos |
-| `team` | Equipo | Agencias, estudios, clínicas |
-| `schedule` | Turnero | Peluquerías, clínicas, masajes |
-| `stats` | Métricas | Empresas con track record |
-| `cta` | Call to Action | Todos |
-
-## Imágenes
-
-Si no tenés imágenes del cliente, usá URLs de Picsum:
-```ts
-hero: "https://picsum.photos/1920/1080?random=1",
-gallery: [
-  "https://picsum.photos/800/600?random=2",
-  "https://picsum.photos/800/600?random=3",
-]
+```
+src/app/          páginas (sitio público y paneles: /panel, /delegado, /jugador)
+src/components/   sections/, panel/, ui/, layout/, match/
+src/lib/          datos de demo (torneo-data, categorias-mock, plantel-mock, sanciones-mock), estado (demo-store), configuración (demo-config)
+public/images/    fotos, sponsors y escudos (los de +30 son reales, el resto está generado)
 ```
 
----
+## Sincronía con la app
 
-*CodeTlon Demo Template v1.0*
+Estos archivos son iguales en `imperial-app` y hay que mantenerlos juntos:
+`src/lib/categorias-mock.ts`, `carta.ts` y `reglamento-ti.ts` (idénticos), y la paleta (`demo-config.ts` y `components/panel/ui.tsx` aquí; `tailwind.config.js` y `src/lib/theme.ts` allá). `plantel-mock.ts` y `sanciones-mock.ts` generan los mismos jugadores y sanciones que sus pares de la app. Las reglas y las sanciones salen solo del reglamento (`reglamento-ti.ts`): no se reescriben ni se inventan.
 
-## Licencia
+## Documentación de trabajo
 
-Este template (y cualquier proyecto generado a partir de él) es software propietario de
-CodeTlon o del cliente correspondiente. Incluye `LICENSE` (all-rights-reserved) y
-`"license": "UNLICENSED"` en `package.json` por defecto — actualizar el titular del copyright
-al entregar el proyecto a un cliente.
+- `PROGRESO.md`: estado y decisiones del proyecto.
+- `PEDIDOS-SESION-2026-10-13.md`: traspaso de las últimas sesiones (qué se pidió, qué está hecho y qué falta).
+- `GUION-LOOM.md`: guion del video de presentación.
+
+## Changelog
+
+- **2026-10-14:** repo separado de `CodeTlon/demos`. Paleta del escudo unificada con la app, escudos para los 100 equipos, sanciones y planteles de demo en todas las categorías, reglamento reordenado, páginas de sanciones, carta y cómo llegar rehechas, descargos en tabla y detalle, validaciones en todos los formularios y menú lateral en los paneles.

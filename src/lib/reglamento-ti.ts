@@ -1,7 +1,7 @@
 // Resumen del Reglamento oficial de Torneo Imperial 2026 (9 capítulos).
 // No es el texto completo: son los puntos que un jugador/delegado consulta.
 // Cada punto cita el número de artículo del reglamento.
-// Es el mismo archivo que usa la app (torneo-imperial-app/src/lib/reglamento-ti.ts): si se cambia uno, cambiar el otro.
+// Es el mismo archivo que usa la app (imperial-app/src/lib/reglamento-ti.ts): si se cambia uno, cambiar el otro.
 
 export const categoriasInfo = [
   { nombre: 'Libre', edad: 'Clase 2009 en adelante', minutos: '2 x 40′', cambios: 7 },
