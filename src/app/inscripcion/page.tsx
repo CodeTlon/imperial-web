@@ -3,7 +3,7 @@
 import { useState, type FormEvent } from 'react'
 import Image from 'next/image'
 import PageHeader from '@/components/ui/PageHeader'
-import { CheckCircle2, ShieldCheck, Users, CalendarCheck } from 'lucide-react'
+import { CheckCircle2, ShieldCheck, Users, CalendarCheck, ClipboardList, MessageCircle, Wallet, CreditCard, MapPin, ChevronDown } from 'lucide-react'
 import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
 import { demoConfig } from '@/lib/demo-config'
@@ -30,6 +30,30 @@ const requisitos = [
   { icon: Users, text: 'Lista de buena fe: hasta 25 jugadores' },
   { icon: CalendarCheck, text: 'Se completa antes de la segunda fecha' },
   { icon: ShieldCheck, text: 'Árbitro y veedor en cada partido' },
+]
+
+const pasos = [
+  { icon: ClipboardList, titulo: 'Completá el formulario', texto: 'Equipo, categoría, delegado y un WhatsApp de contacto. Tarda un minuto.' },
+  { icon: MessageCircle, titulo: 'Te contactamos', texto: 'Te escribimos por WhatsApp para confirmar la inscripción y resolver dudas.' },
+  { icon: Wallet, titulo: 'Seña', texto: 'La seña forma parte de la inscripción. Te confirmamos por WhatsApp cómo abonarla.' },
+  { icon: Users, titulo: 'Lista de buena fe', texto: 'Cargás hasta 25 jugadores antes de la segunda fecha, desde el panel del delegado.' },
+]
+
+const necesitas = [
+  'Nombre del equipo y categoría en la que querés jugar',
+  'Un delegado responsable, con WhatsApp de contacto',
+  'Lista de buena fe: hasta 25 jugadores',
+  'De cada jugador: nombre, DNI (frente y dorso) y una foto',
+  'Completar la lista antes de la segunda fecha',
+]
+
+const preguntas = [
+  { q: '¿Cuántos jugadores puede tener mi equipo?', a: 'La lista de buena fe es de hasta 25 jugadores por equipo.' },
+  { q: '¿Hasta cuándo puedo completar la lista?', a: 'Se completa antes de la segunda fecha del torneo.' },
+  { q: '¿Cómo cargo a los jugadores?', a: 'Una vez inscripto, el delegado ingresa a su panel y carga a cada jugador con su DNI (frente y dorso) y su foto. La organización revisa la documentación.' },
+  { q: '¿Quién dirige los partidos?', a: 'Cada partido cuenta con árbitro y veedor.' },
+  { q: '¿Cómo se paga la seña?', a: 'La seña es parte de la inscripción. Cuando te contactemos por WhatsApp te indicamos cómo abonarla.' },
+  { q: '¿Dónde se juega?', a: 'En el predio de Colectora Variante Juárez Celman 500, Córdoba.' },
 ]
 
 export default function InscripcionPage() {
@@ -66,7 +90,6 @@ export default function InscripcionPage() {
         <PageHeader
           backgroundImage="/images/hero-inscripcion.jpg"
           objectPosition="50% 15%"
-          eyebrow="Sumate al torneo"
           title="Inscribí tu equipo"
           subtitle="Completá los datos de tu equipo y te contactamos por WhatsApp para confirmar la inscripción."
           cta={false}
@@ -150,6 +173,70 @@ export default function InscripcionPage() {
             </div>
           </div>
         </section>
+
+      <section className="section-pad" style={{ backgroundColor: 'var(--demo-surface)' }}>
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="section-title text-center mb-10">¿Cómo es el proceso?</h2>
+          <ol className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {pasos.map((p, i) => (
+              <li key={p.titulo} className="card relative pt-9">
+                <span className="absolute -top-4 left-5 flex h-9 w-9 items-center justify-center rounded-full font-heading text-lg" style={{ backgroundColor: 'var(--demo-accent)', color: 'var(--demo-on-accent)' }}>{i + 1}</span>
+                <p.icon size={22} style={{ color: 'var(--demo-accent)' }} className="mb-3" />
+                <h3 className="font-bold mb-1.5" style={{ color: 'var(--demo-heading)' }}>{p.titulo}</h3>
+                <p className="text-sm leading-relaxed" style={{ color: 'var(--demo-muted)' }}>{p.texto}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      <section className="section-pad">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="card">
+            <h2 className="font-heading text-2xl mb-5 flex items-center gap-2" style={{ color: 'var(--demo-heading)' }}>
+              <CreditCard size={22} style={{ color: 'var(--demo-accent)' }} /> Qué necesitás para inscribirte
+            </h2>
+            <ul className="space-y-3">
+              {necesitas.map((t) => (
+                <li key={t} className="flex items-start gap-3 text-sm leading-relaxed" style={{ color: 'var(--demo-text)' }}>
+                  <CheckCircle2 size={18} className="mt-0.5 flex-shrink-0" style={{ color: 'var(--demo-accent)' }} />
+                  {t}
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="card">
+            <h2 className="font-heading text-2xl mb-5 flex items-center gap-2" style={{ color: 'var(--demo-heading)' }}>
+              <MapPin size={22} style={{ color: 'var(--demo-accent)' }} /> Categorías y sede
+            </h2>
+            <div className="flex flex-wrap gap-2 mb-5">
+              {categorias.map((c) => (
+                <span key={c} className="px-4 py-1.5 text-sm font-semibold rounded-full" style={{ backgroundColor: 'var(--demo-surface)', color: 'var(--demo-heading)', border: '1px solid var(--demo-border)' }}>{c}</span>
+              ))}
+            </div>
+            <p className="text-sm leading-relaxed" style={{ color: 'var(--demo-text)' }}>
+              Los partidos se juegan en {business.address}. Cada partido tiene árbitro y veedor.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section className="section-pad" style={{ backgroundColor: 'var(--demo-surface)' }}>
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="section-title text-center mb-8">Preguntas frecuentes</h2>
+          <div className="space-y-3">
+            {preguntas.map((f) => (
+              <details key={f.q} className="faq card group !p-0 overflow-hidden">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 font-semibold" style={{ color: 'var(--demo-heading)' }}>
+                  {f.q}
+                  <ChevronDown size={18} className="flex-shrink-0 transition-transform duration-300 group-open:rotate-180" style={{ color: 'var(--demo-accent)' }} />
+                </summary>
+                <p className="px-5 pb-5 text-sm leading-relaxed" style={{ color: 'var(--demo-muted)' }}>{f.a}</p>
+              </details>
+            ))}
+          </div>
+        </div>
+      </section>
       </main>
       <Footer />
     </>
