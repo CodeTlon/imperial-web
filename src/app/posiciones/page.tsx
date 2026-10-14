@@ -76,10 +76,9 @@ export default function PosicionesPage() {
       <main className="min-h-screen" style={{ backgroundColor: 'var(--demo-bg)' }}>
       <PageHeader
         backgroundImage="/images/gallery-2.jpg"
-        eyebrow="Resultados y tablas"
         title="Posiciones"
         subtitle="Tabla acumulada de la temporada, categoría por categoría."
-        pills={[{ label: 'Torneo', value: 'Clausura 2026' }, { label: 'Categoría', value: cat }]}
+        cta={false}
       />
 
         <section className="section-pad">

@@ -19,7 +19,7 @@ export default function Hero() {
   const dias = Math.floor(falta / 86400000), horas = Math.floor((falta % 86400000) / 3600000)
 
   return (
-    <section id="hero" className="relative h-[50svh] min-h-[380px] overflow-hidden flex flex-col text-white" style={{ backgroundColor: '#062f36' }}>
+    <section id="hero" className="relative h-[50svh] min-h-[460px] xl:min-h-[520px] 2xl:min-h-[680px] overflow-hidden flex flex-col text-white" style={{ backgroundColor: '#062f36' }}>
       <video
         className="absolute inset-0 h-full w-full object-cover"
         src="/video/home.mp4"
@@ -29,7 +29,7 @@ export default function Hero() {
       <div className="absolute inset-0 bg-[#062f36]/80" />
       <div className="absolute inset-x-0 bottom-0 h-1/2" style={{ background: 'linear-gradient(180deg, transparent, rgba(6,47,54,0.95))' }} />
 
-      <div className="relative flex-1 flex flex-col items-center justify-center text-center px-4 pt-16 pb-4">
+      <div className="relative flex-1 flex flex-col items-center justify-center text-center px-4 pt-28 sm:pt-32 pb-14 sm:pb-16">
         {falta > 0 && (
           <p className="hero-in mb-3 px-3 py-1 text-xs sm:text-sm font-semibold border border-white/25 bg-white/10 backdrop-blur-sm rounded-full" style={{ ['--d' as string]: '60ms' }}>
             {categoria} · Fecha {prox.numero} · faltan {dias > 0 ? `${dias} d ` : ''}{horas} h
@@ -39,7 +39,7 @@ export default function Hero() {
           <span className="hero-in block" style={{ ['--d' as string]: '120ms' }}>Torneo</span>
           <span className="hero-in block hero-shine" style={{ ['--d' as string]: '240ms' }}>Imperial</span>
         </h1>
-        <p className="hero-in mt-6 sm:mt-8 xl:mt-10 max-w-xl 2xl:max-w-3xl text-sm sm:text-base xl:text-lg 2xl:text-2xl text-white/80" style={{ ['--d' as string]: '380ms' }}>
+        <p className="hero-in mt-1 max-w-xl sm:max-w-2xl 2xl:max-w-4xl text-base sm:text-lg xl:text-xl 2xl:text-3xl text-white/85" style={{ ['--d' as string]: '380ms' }}>
           Fixture, posiciones, goleadores y sanciones de las seis categorías, siempre al día.
         </p>
       </div>

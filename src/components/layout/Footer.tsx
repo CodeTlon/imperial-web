@@ -6,11 +6,11 @@ import Image from 'next/image'
 import { demoConfig } from '@/lib/demo-config'
 
 const sponsors = [
-  { name: 'Gatorade', src: '/images/sponsors/gatorade.png' },
-  { name: 'Quilmes', src: '/images/sponsors/quilmes.png' },
-  { name: 'IFK Sports', src: '/images/sponsors/ifk.jpeg' },
-  { name: 'Speed Unlimited', src: '/images/sponsors/speed.png' },
-  { name: 'Vidón Bar', src: '/images/sponsors/vidon.png' },
+  { name: 'Gatorade', src: '/images/sponsors/gatorade-t.png' },
+  { name: 'Quilmes', src: '/images/sponsors/quilmes-t.png' },
+  { name: 'IFK Sports', src: '/images/sponsors/ifk-t.png' },
+  { name: 'Speed Unlimited', src: '/images/sponsors/speed-t.png' },
+  { name: 'Vidón Bar', src: '/images/sponsors/vidon-t.png' },
 ]
 
 export default function Footer() {
@@ -97,18 +97,16 @@ export default function Footer() {
                 </a>
               )}
             </div>
-          </div>
-        </div>
 
-        <div className="mt-12 pt-8 border-t text-center" style={{ borderColor: 'var(--demo-border)' }}>
-          <p className="text-xs font-semibold uppercase tracking-widest opacity-50 mb-5">Nos acompañan</p>
-          <ul className="flex flex-wrap items-center justify-center gap-4 2xl:gap-6">
-            {sponsors.map((s) => (
-              <li key={s.name} className="relative h-16 w-16 sm:h-20 sm:w-20 2xl:h-24 2xl:w-24 overflow-hidden rounded-xl grayscale opacity-80 transition hover:grayscale-0 hover:opacity-100">
-                <Image src={s.src} alt={s.name} fill sizes="96px" className="object-cover" />
-              </li>
-            ))}
-          </ul>
+            <p className="mt-6 mb-3 text-[10px] font-semibold uppercase tracking-widest opacity-50">Nos acompañan</p>
+            <ul className="flex flex-wrap items-center gap-x-5 gap-y-4 max-w-[17rem] 2xl:max-w-md 2xl:gap-x-7">
+              {sponsors.map((s) => (
+                <li key={s.name} className="relative h-10 w-[4.5rem] 2xl:h-12 2xl:w-24 opacity-85 transition-opacity hover:opacity-100">
+                  <Image src={s.src} alt={s.name} fill sizes="80px" className="object-contain" />
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
 
         <div

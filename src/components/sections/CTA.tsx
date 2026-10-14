@@ -12,7 +12,7 @@ export default function CTA() {
   return (
     <section id="cta" className="section-pad" style={{ backgroundColor: 'var(--demo-accent)' }}>
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h2 className="text-4xl md:text-5xl font-bold mb-6 leading-tight" style={{ color: 'var(--demo-on-accent)' }}>
+        <h2 className="text-4xl md:text-5xl font-bold mb-6 leading-[1.35] md:leading-[1.3]" style={{ color: 'var(--demo-on-accent)' }}>
           {title}
         </h2>
         <p className="text-lg mb-10 opacity-80" style={{ color: 'var(--demo-on-accent)' }}>

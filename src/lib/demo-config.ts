@@ -22,7 +22,7 @@ export const demoConfig = {
   // ── Acción principal del negocio ─────────────────────────
   // Un solo lugar que sincroniza Navbar + Hero + botón flotante de WhatsApp.
   cta: {
-    label: 'Anotate tu equipo',
+    label: 'Inscribí a tu equipo',
     whatsappMessage: 'Hola! Quiero anotar a mi equipo en el Torneo Imperial.',
   },
 

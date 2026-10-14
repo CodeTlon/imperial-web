@@ -45,7 +45,7 @@ export default function Navbar() {
             ))}
             <Link
               href="/inscripcion"
-              className="px-4 py-2 text-sm font-semibold whitespace-nowrap transition-opacity hover:opacity-90"
+              className="inline-flex items-center h-10 px-5 text-sm font-bold whitespace-nowrap transition-all hover:brightness-110"
               style={{ backgroundColor: 'var(--demo-accent)', color: 'var(--demo-on-accent)', borderRadius: '0.5rem' }}
             >
               {cta.label}
@@ -67,7 +67,7 @@ export default function Navbar() {
           ))}
           <Link
             href="/inscripcion"
-            className="mt-2 px-4 py-2 text-sm font-semibold text-center"
+            className="mt-2 px-5 py-3 text-sm font-bold text-center"
             style={{ backgroundColor: 'var(--demo-accent)', color: 'var(--demo-on-accent)', borderRadius: '0.5rem' }}
             onClick={() => setOpen(false)}
           >
