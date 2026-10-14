@@ -1,12 +1,11 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { CalendarDays, Trophy, ArrowRight } from 'lucide-react'
+import { Trophy, ArrowRight } from 'lucide-react'
 import MatchCard from '@/components/match/MatchCard'
 import ShareButton from '@/components/share/ShareButton'
-import MiProximoPartido from '@/components/match/MiProximoPartido'
 import CategoryTabs from '@/components/ui/CategoryTabs'
 import {
   categoriasConDatos, fixturePorCategoria, proximaFechaDe, posiciones, goleadores,
@@ -23,6 +22,14 @@ export default function TorneoHome() {
   const { datos } = useDemo()
   const [numero, setNumero] = useState(proximaFechaDe(cat).numero)
   useEffect(() => setNumero(proximaFechaDe(cat).numero), [cat])
+
+  const carrusel = useRef<HTMLDivElement>(null)
+  // Centra la fecha elegida en el carrusel (sin mover la página).
+  useEffect(() => {
+    const c = carrusel.current
+    const el = c?.querySelector<HTMLElement>('[data-activa="true"]')
+    if (c && el) c.scrollTo({ left: el.offsetLeft - c.clientWidth / 2 + el.offsetWidth / 2, behavior: 'smooth' })
+  }, [numero, cat])
 
   const fechas = fixturePorCategoria[cat]
   const fecha = aplicarAFecha(fechas.find((f) => f.numero === numero) ?? fechas[0], datos.resultados, cat)
@@ -42,36 +49,38 @@ export default function TorneoHome() {
 
         {/* Fixture */}
         <div className="max-w-3xl mx-auto">
-          <div className="text-center mb-5">
-            <h3 className="font-bold text-xl flex items-center justify-center gap-2" style={{ color: 'var(--demo-heading)' }}>
-              <CalendarDays size={20} style={{ color: 'var(--demo-accent)' }} />
-              {fecha.partidos.some((p) => p.golesLocal === undefined) ? 'El sábado que viene' : `Fecha ${fecha.numero}`}
-            </h3>
-            <p className="text-sm uppercase tracking-wide mt-1" style={{ color: 'var(--demo-muted)' }}>Fecha {fecha.numero} · {fecha.fechaLabel}</p>
-          </div>
-
-          <div className="flex flex-wrap justify-center gap-2 mb-6">
-            {fechas.map((f) => (
-              <button
-                key={f.numero}
-                onClick={() => setNumero(f.numero)}
-                aria-label={`Fecha ${f.numero}`}
-                className="w-9 h-9 rounded-full text-sm font-bold transition-colors"
-                style={{
-                  backgroundColor: numero === f.numero ? 'var(--demo-accent)' : 'var(--demo-surface-alt)',
-                  color: numero === f.numero ? 'var(--demo-on-accent)' : 'var(--demo-text)',
-                  border: `1px solid ${numero === f.numero ? 'var(--demo-accent)' : 'var(--demo-border)'}`,
-                }}
-              >
-                {f.numero}
-              </button>
-            ))}
-          </div>
-
-          <MiProximoPartido />
+            <div
+              ref={carrusel}
+              className="fechas-carrusel flex gap-2.5 overflow-x-auto snap-x snap-mandatory px-[calc(50%-3.25rem)] py-3 mb-6"
+              role="tablist"
+              aria-label="Fechas"
+            >
+              {fechas.map((f) => {
+                const activa = numero === f.numero
+                return (
+                  <button
+                    key={f.numero}
+                    data-activa={activa}
+                    role="tab"
+                    aria-selected={activa}
+                    onClick={() => setNumero(f.numero)}
+                    className="fecha-pill snap-center flex-shrink-0 w-[6.5rem] py-2.5 rounded-2xl text-center"
+                    style={{
+                      backgroundColor: activa ? 'var(--demo-accent)' : 'var(--demo-surface-alt)',
+                      color: activa ? 'var(--demo-on-accent)' : 'var(--demo-text)',
+                      border: `1px solid ${activa ? 'var(--demo-accent)' : 'var(--demo-border)'}`,
+                    }}
+                  >
+                    <span className="block text-[10px] font-semibold uppercase tracking-widest opacity-70">Fecha</span>
+                    <span className="block font-heading text-3xl leading-none my-1">{f.numero}</span>
+                    <span className="block text-[11px] font-medium opacity-80 truncate px-1">{f.fechaLabel}</span>
+                  </button>
+                )
+              })}
+            </div>
 
           <div className="space-y-3">
-            {fecha.partidos.map((p, i) => <MatchCard key={i} p={p} categoria={cat} />)}
+            {fecha.partidos.map((p, i) => <div key={`${cat}-${fecha.numero}-${i}`} className="fila-in" style={{ ['--i' as string]: i } as React.CSSProperties}><MatchCard p={p} categoria={cat} /></div>)}
           </div>
           <div className="flex flex-wrap items-center justify-center gap-4 mt-5">
             <ShareButton

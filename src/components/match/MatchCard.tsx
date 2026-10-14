@@ -3,7 +3,6 @@
 import Image from 'next/image'
 import { Clock, MapPin } from 'lucide-react'
 import { escudoPorEquipo, type Partido } from '@/lib/torneo-data'
-import { useMiEquipo } from '@/lib/mi-equipo'
 
 const iniciales = (n: string) =>
   n.split(' ').filter((w) => w[0] === w[0].toUpperCase()).slice(0, 2).map((w) => w[0]).join('')
@@ -24,9 +23,8 @@ export function Escudo({ nombre, size = 44 }: { nombre: string; size?: number })
 }
 
 // Tarjeta de partido única (home y /fixture). Si ya se jugó, el ganador va en negrita y el perdedor
-// atenuado; si no, "VS". Cada equipo tiene ☆ para marcarlo como "mi equipo".
+// atenuado; si no, "VS".
 export default function MatchCard({ p, categoria }: { p: Partido; categoria: string }) {
-  const { esFavorito, alternar } = useMiEquipo()
   const jugado = p.golesLocal !== undefined && p.golesVisitante !== undefined
   const gana = (lado: 'l' | 'v') =>
     jugado && (lado === 'l' ? p.golesLocal! > p.golesVisitante! : p.golesVisitante! > p.golesLocal!)
@@ -34,21 +32,10 @@ export default function MatchCard({ p, categoria }: { p: Partido; categoria: str
     jugado && (lado === 'l' ? p.golesLocal! < p.golesVisitante! : p.golesVisitante! < p.golesLocal!)
 
   const Lado = ({ nombre, lado }: { nombre: string; lado: 'l' | 'v' }) => {
-    const fav = esFavorito(nombre, categoria)
     return (
       <div className="flex-1 flex flex-col items-center gap-1.5 min-w-0" style={{ opacity: pierde(lado) ? 0.55 : 1 }}>
         <Escudo nombre={nombre} />
         <p className={`text-xs sm:text-sm text-center ${gana(lado) ? 'font-extrabold' : 'font-semibold'}`} style={{ color: 'var(--demo-heading)' }}>{nombre}</p>
-        <button
-          type="button"
-          onClick={() => alternar(nombre, categoria)}
-          aria-pressed={fav}
-          aria-label={fav ? `Quitar ${nombre} de mi equipo` : `Marcar ${nombre} como mi equipo`}
-          className="text-base leading-none transition-transform active:scale-125"
-          style={{ color: fav ? 'var(--demo-accent)' : 'var(--demo-muted)' }}
-        >
-          {fav ? '★' : '☆'}
-        </button>
       </div>
     )
   }

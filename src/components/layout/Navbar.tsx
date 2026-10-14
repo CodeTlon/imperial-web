@@ -7,14 +7,15 @@ import { usePathname } from 'next/navigation'
 import { Menu, X } from 'lucide-react'
 import { demoConfig } from '@/lib/demo-config'
 
-// Sobre el home (video a pantalla completa) arranca transparente y pasa a navy al scrollear.
+// Sobre las páginas con mini hero oscuro arranca transparente y pasa a sólido al scrollear.
 export default function Navbar() {
   const [open, setOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
-  const esHome = usePathname() === '/'
+  const ruta = usePathname()
+  const sobreHero = !['/ingresar', '/panel', '/delegado', '/jugador'].some((r) => ruta.startsWith(r))
   const { business, cta, sitemap } = demoConfig
   const links = [...sitemap, { label: 'Ingresar', href: '/ingresar' }]
-  const solido = !esHome || scrolled || open
+  const solido = !sobreHero || scrolled || open
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40)

@@ -7,9 +7,9 @@ import { usePathname, useRouter } from 'next/navigation'
 // inicio: cortina al abrir el sitio · entra: sube sobre la página actual · tapa: cubre mientras llega la nueva · sale: se va
 type Fase = 'inicio' | 'idle' | 'entra' | 'tapa' | 'sale'
 
-const INICIO_MS = 2600   // mínimo que se ve la pantalla de carga al abrir el sitio
+const INICIO_MS = 1700   // mínimo que se ve la pantalla de carga al abrir el sitio
 const ENTRA_MS = 1000
-const TAPA_MS = 1300     // mínimo que se ve el logo al cambiar de página, ya con la página nueva cargada
+const TAPA_MS = 800     // mínimo que se ve el logo al cambiar de página, ya con la página nueva cargada
 const SALE_MS = 1300
 
 
@@ -23,7 +23,7 @@ const CSS = [
   `@keyframes pt-in{from{${ENTRADA[0]}}to{${ENTRADA[1]}}}.pt-in{animation:pt-in ${ENTRA_MS}ms ${EASE} both}`,
   `@keyframes pt-out{from{${SALIDA[0]}}to{${SALIDA[1]}}}.pt-out{animation:pt-out ${SALE_MS}ms ${EASE} both}`,
   `.pt-logo{animation:pt-logo .8s .1s cubic-bezier(.22,1,.36,1) both}`,
-  `.pt-aro{stroke-dasharray:100;stroke-dashoffset:100;animation:pt-aro 2s .25s ease-in-out forwards}`,
+  `.pt-aro{stroke-dasharray:100;stroke-dashoffset:100;animation:pt-aro 1.3s .2s cubic-bezier(.65,0,.35,1) forwards}`,
   `.pt-in,.pt-out{will-change:transform}.pt-out .pt-logo{animation:pt-logo-out .55s ease-in both}`,
   `.pt-out .pt-aro{animation:none;stroke-dashoffset:0}`,
   `@keyframes pt-logo-out{from{opacity:1;transform:none}to{opacity:0;transform:scale(1.18)}}`,

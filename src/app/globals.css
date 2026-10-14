@@ -208,3 +208,10 @@
 /* Pantallas muy anchas: escala todo lo basado en rem (contenedores y tipografía). */
 @media (min-width: 1920px) { html { font-size: 118%; } }
 @media (min-width: 2400px) { html { font-size: 137.5%; } }
+
+/* Carrusel de fechas: sin barra de scroll y con transición suave al elegir */
+.fechas-carrusel{scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.fechas-carrusel::-webkit-scrollbar{display:none}
+.fecha-pill{transition:transform .35s cubic-bezier(.22,1,.36,1),background-color .25s,box-shadow .35s,opacity .25s;opacity:.85}
+.fecha-pill[data-activa="true"]{transform:scale(1.1);opacity:1;box-shadow:0 8px 22px -8px color-mix(in srgb,var(--demo-accent) 70%,transparent)}
+.fecha-pill:hover{transform:translateY(-2px)}
