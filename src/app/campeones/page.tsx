@@ -29,11 +29,10 @@ export default function CampeonesPage() {
       <Navbar />
       <main className="min-h-screen" style={{ backgroundColor: 'var(--demo-bg)' }}>
         <PageHeader
-          eyebrow="Apertura 2026"
           title="Campeones"
           subtitle="Copa de Oro, Plata y Bronce de cada categoría."
           backgroundImage="/images/hero-campeones.jpg"
-          pills={[{ label: 'Torneo', value: 'Apertura 2026' }, { label: 'Categoría', value: cat }]}
+          cta={false}
         />
 
         <section className="section-pad !pt-14">
