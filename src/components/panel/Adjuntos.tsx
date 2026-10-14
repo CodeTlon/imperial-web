@@ -138,7 +138,9 @@ export function ArchivosSancion({ mensajes }: { mensajes: Mensaje[] }) {
 // ---------- Hilo completo: mensajes + redactor ----------
 type Pendiente = { key: string; nombre: string; tamano: number; clase: ReturnType<typeof claseDe>; preview?: string; estado: 'guardando' | 'listo'; adj?: Adjunto }
 
-export function HiloMensajes({ s, quien, placeholder }: { s: Sancion; quien: 'organizacion' | 'delegado'; placeholder: string }) {
+export function HiloMensajes({ s, quien, placeholder, variante = 'lista' }: { s: Sancion; quien: 'organizacion' | 'delegado'; placeholder: string; variante?: 'lista' | 'chat' }) {
+  const chat = variante === 'chat'
+  const logRef = useRef<HTMLDivElement>(null)
   const { mensaje } = useDemo()
   const [texto, setTexto] = useState('')
   const [pend, setPend] = useState<Pendiente[]>([])
@@ -150,6 +152,8 @@ export function HiloMensajes({ s, quien, placeholder }: { s: Sancion; quien: 'or
   const contador = useRef(0)
 
   const enviado = useRef(new Set<string>())
+  // En el chat el panel de mensajes siempre baja al último mensaje.
+  useEffect(() => { if (chat) logRef.current?.scrollTo({ top: logRef.current.scrollHeight }) }, [chat, s.mensajes.length])
   // Si se desmonta con adjuntos sin enviar, se limpian de la base y se revocan las previews.
   useEffect(() => () => {
     pendRef.current.forEach((p) => { if (p.preview) URL.revokeObjectURL(p.preview); if (p.adj && !enviado.current.has(p.adj.id)) void borrar(p.adj.id).catch(() => {}) })
@@ -214,10 +218,25 @@ export function HiloMensajes({ s, quien, placeholder }: { s: Sancion; quien: 'or
 
   const yo = quien
   return (
-    <div className="space-y-2 min-w-0" onDragOver={(e) => { e.preventDefault(); setArrastrando(true) }} onDragLeave={(e) => { if (!e.currentTarget.contains(e.relatedTarget as Node)) setArrastrando(false) }} onDrop={soltar} onPaste={pegar}>
-      <div className="space-y-1.5" role="log" aria-label="Mensajes del descargo">
+    <div className={chat ? 'flex h-full min-h-0 min-w-0 flex-col' : 'space-y-2 min-w-0'} onDragOver={(e) => { e.preventDefault(); setArrastrando(true) }} onDragLeave={(e) => { if (!e.currentTarget.contains(e.relatedTarget as Node)) setArrastrando(false) }} onDrop={soltar} onPaste={pegar}>
+      <div ref={logRef} className={chat ? 'min-h-0 flex-1 space-y-4 overflow-y-auto px-1 py-3' : 'space-y-1.5'} role="log" aria-label="Mensajes del descargo">
+        {chat && s.mensajes.length === 0 && <p className={`py-10 text-center text-sm ${K.suave}`}>Todavía no hay mensajes. Escribí el primero abajo.</p>}
         {s.mensajes.map((m, i) => {
           const org = m.de === 'organizacion'
+          if (chat) {
+            const mio = (m.de === 'organizacion') === (yo === 'organizacion')
+            return (
+              <div key={i} className={`flex min-w-0 flex-col ${mio ? 'items-end' : 'items-start'}`}>
+                <p className={`mb-1 px-1 text-xs ${K.suave}`}><span className="font-bold text-[color:var(--p-navy)]">{org ? 'Organización' : yo === 'delegado' ? 'Vos' : 'Delegado'}</span> · {m.fecha}</p>
+                <div className={`min-w-0 max-w-[88%] break-words rounded-2xl px-4 py-2.5 text-[15px] leading-relaxed ${mio ? 'rounded-br-md border border-[color:var(--p-teal)]/25 bg-[var(--p-teal)]/10 text-[color:var(--p-navy)]' : `rounded-bl-md border ${K.borde} bg-white`}`}>
+                  {m.texto && <p>{m.texto}</p>}
+                  {m.adjuntos && m.adjuntos.length > 0 && (
+                    <div className={`flex min-w-0 flex-wrap gap-2 ${m.texto ? 'mt-2' : ''}`}>{m.adjuntos.map((a) => <AdjuntoVista key={a.id} a={a} />)}</div>
+                  )}
+                </div>
+              </div>
+            )
+          }
           return (
             <div key={i} className={`min-w-0 break-words rounded-lg px-3 py-2 text-sm ${org ? 'bg-[var(--p-navy)] text-white' : 'bg-[var(--p-oro)]/30'}`}>
               <p className="font-bold">{org ? 'Organización' : yo === 'delegado' ? 'Vos' : 'Delegado'} · {m.fecha}{m.texto ? ':' : ''} {m.texto && <span className="font-normal">{m.texto}</span>}</p>
@@ -229,7 +248,7 @@ export function HiloMensajes({ s, quien, placeholder }: { s: Sancion; quien: 'or
         })}
       </div>
 
-      <div className={`rounded-xl border-2 border-dashed p-2 transition-colors ${arrastrando ? 'border-[color:var(--p-teal)] bg-[var(--p-teal)]/10' : 'border-transparent'}`}>
+      <div className={`${chat ? 'mt-2 border-t border-[color:var(--p-borde)] pt-3 ' : ''}rounded-xl border-2 border-dashed p-2 transition-colors ${arrastrando ? 'border-[color:var(--p-teal)] bg-[var(--p-teal)]/10' : 'border-transparent'}`}>
         {arrastrando && <p className="mb-1 text-center text-xs font-semibold text-[color:var(--p-teal)]">Soltá los archivos acá para adjuntarlos</p>}
         {pend.length > 0 && (
           <ul className="mb-2 flex flex-wrap gap-2" aria-label="Adjuntos para enviar">

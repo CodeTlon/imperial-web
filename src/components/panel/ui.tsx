@@ -187,6 +187,7 @@ export function usePestanaUrl(tabs: string[], inicial: string): [string, (t: str
     setTabState(t)
     const url = new URL(window.location.href)
     if (t === inicial) url.searchParams.delete('tab'); else url.searchParams.set('tab', slug(t))
+    url.searchParams.delete('d')   // un detalle abierto (ej. un descargo) no se arrastra a otra sección
     window.history.pushState(null, '', url.pathname + url.search)
     window.scrollTo({ top: 0 })
   }, [inicial])
