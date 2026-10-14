@@ -9,7 +9,7 @@ import {
   AlertTriangle, CalendarDays, ChevronDown, ChevronLeft, ChevronRight, CircleHelp, ClipboardList, Inbox, LogOut, RotateCcw, Shield, Gavel, Goal, Home, Image as ImagenIcon, LayoutDashboard, Search, ShieldAlert,
   Table2, Trophy, User, Users, X, type LucideIcon,
 } from 'lucide-react'
-import { useCallback, useEffect, useRef, useState, type ButtonHTMLAttributes, type CSSProperties, type InputHTMLAttributes, type ReactNode, type SelectHTMLAttributes, type TextareaHTMLAttributes } from 'react'
+import { useCallback, useEffect, useId, useRef, useState, type ButtonHTMLAttributes, type CSSProperties, type InputHTMLAttributes, type ReactNode, type SelectHTMLAttributes, type TextareaHTMLAttributes } from 'react'
 import { createPortal } from 'react-dom'
 import { useDemo, type Rol } from '@/lib/demo-store'
 
@@ -307,31 +307,44 @@ export function Boton({ variante = 'primario', className = '', icono, children, 
   )
 }
 
-export function Campo({ label, className = '', ...p }: InputHTMLAttributes<HTMLInputElement> & { label: string }) {
+// Mensaje de error de un campo: texto rojo con ícono, anunciado a lectores de pantalla.
+export function MensajeError({ id, children }: { id?: string; children?: ReactNode }) {
+  if (!children) return null
+  return <p id={id} role="alert" className="mt-1.5 flex items-start gap-1.5 text-xs font-semibold text-[#dc2626]"><AlertTriangle size={14} className="mt-px shrink-0" aria-hidden />{children}</p>
+}
+const conError = (error?: string) => (error ? ' !border-[#dc2626] focus:!border-[#dc2626] focus:!ring-[#dc2626]/20' : '')
+
+export function Campo({ label, className = '', error, ...p }: InputHTMLAttributes<HTMLInputElement> & { label: string; error?: string }) {
+  const id = useId()
   return (
     <label className="block min-w-0">
       <span className={K.etiqueta}>{label}</span>
-      <input {...p} className={`${K.campo} ${className}`} />
+      <input {...p} aria-invalid={!!error || undefined} aria-describedby={error ? id : undefined} className={`${K.campo}${conError(error)} ${className}`} />
+      <MensajeError id={id}>{error}</MensajeError>
     </label>
   )
 }
 
-export function AreaTexto({ label, className = '', ...p }: TextareaHTMLAttributes<HTMLTextAreaElement> & { label?: string }) {
+export function AreaTexto({ label, className = '', error, ...p }: TextareaHTMLAttributes<HTMLTextAreaElement> & { label?: string; error?: string }) {
+  const id = useId()
   return (
     <label className="block min-w-0">
       {label && <span className={K.etiqueta}>{label}</span>}
-      <textarea {...p} className={`${K.campo} ${className}`} />
+      <textarea {...p} aria-invalid={!!error || undefined} aria-describedby={error ? id : undefined} className={`${K.campo}${conError(error)} ${className}`} />
+      <MensajeError id={id}>{error}</MensajeError>
     </label>
   )
 }
 
-export function Selector({ label, opciones, className = '', ...p }: SelectHTMLAttributes<HTMLSelectElement> & { label: string; opciones: { valor: string; texto: string }[] }) {
+export function Selector({ label, opciones, className = '', error, ...p }: SelectHTMLAttributes<HTMLSelectElement> & { label: string; opciones: { valor: string; texto: string }[]; error?: string }) {
+  const id = useId()
   return (
     <label className="block min-w-0">
       <span className={K.etiqueta}>{label}</span>
-      <select {...p} className={`${K.campo} ${className}`}>
+      <select {...p} aria-invalid={!!error || undefined} aria-describedby={error ? id : undefined} className={`${K.campo}${conError(error)} ${className}`}>
         {opciones.map((o) => <option key={o.valor} value={o.valor}>{o.texto}</option>)}
       </select>
+      <MensajeError id={id}>{error}</MensajeError>
     </label>
   )
 }
@@ -339,9 +352,10 @@ export function Selector({ label, opciones, className = '', ...p }: SelectHTMLAt
 export const normalizar = (s: string) => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').trim()
 
 // Campo de texto con lista desplegable filtrada mientras se escribe (autocompletado). Acepta texto libre.
-export function Combo({ label, value, onChange, opciones, placeholder, ayuda }: {
-  label: string; value: string; onChange: (v: string) => void; opciones: string[]; placeholder?: string; ayuda?: string
+export function Combo({ label, value, onChange, opciones, placeholder, ayuda, error }: {
+  label: string; value: string; onChange: (v: string) => void; opciones: string[]; placeholder?: string; ayuda?: string; error?: string
 }) {
+  const idError = useId()
   const [abierto, setAbierto] = useState(false)
   const q = normalizar(value)
   const lista = opciones.filter((o) => !q || normalizar(o).includes(q)).slice(0, 40)
@@ -358,9 +372,12 @@ export function Combo({ label, value, onChange, opciones, placeholder, ayuda }: 
           autoComplete="off"
           role="combobox"
           aria-expanded={abierto}
-          className={K.campo}
+          aria-invalid={!!error || undefined}
+          aria-describedby={error ? idError : undefined}
+          className={`${K.campo}${conError(error)}`}
         />
       </label>
+      <MensajeError id={idError}>{error}</MensajeError>
       {ayuda && <p className={`text-xs mt-1 ${K.suave}`}>{ayuda}</p>}
       {abierto && lista.length > 0 && !(lista.length === 1 && lista[0] === value) && (
         <ul role="listbox" className={`absolute z-30 mt-1 max-h-56 w-full overflow-auto rounded-xl border ${K.borde} bg-white shadow-lg`}>

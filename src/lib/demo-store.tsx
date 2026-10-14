@@ -1,7 +1,8 @@
 'use client'
 
 import { borrarTodo, type Adjunto } from '@/lib/adjuntos-db'
-import { SANCIONES_APP, PLANTEL_APP } from '@/lib/datos-app'
+import { SANCIONES_APP } from '@/lib/datos-app'
+import { PLANTEL_DEMO } from '@/lib/plantel-mock'
 import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from 'react'
 
 // Estado de la demo del sitio: login mockeado y datos de los paneles guardados en el navegador (localStorage).
@@ -55,8 +56,10 @@ export function articulosDe(s: Pick<Sancion, 'articulos' | 'articulo' | 'motivo'
   return Array.from(new Set(lista.map((a) => a.replace(/^Art\.?\s*/, 'Art. '))))
 }
 
-export type Resultado = { id: string; categoria: string; fecha: number; local: string; visitante: string; golesLocal: number; golesVisitante: number }
-export type Gol = { id: string; categoria: string; jugador: string; equipo: string; goles: number }
+// Quién hizo los goles de un resultado. Al guardar el resultado, estos goles también suman a la tabla de goleadores.
+export type GolDePartido = { equipo: string; jugador: string; goles: number }
+export type Resultado = { id: string; categoria: string; fecha: number; local: string; visitante: string; golesLocal: number; golesVisitante: number; goleadores?: GolDePartido[] }
+export type Gol = { id: string; categoria: string; jugador: string; equipo: string; goles: number; resultadoId?: string }
 
 export const CUENTAS: (Sesion & { clave: string })[] = [
   { email: 'organizacion@imperial.com', nombre: 'Comisión Disciplinaria', rol: 'organizacion', clave: 'imperial123' },
@@ -77,17 +80,21 @@ type Datos = { sanciones: Sancion[]; plantel: JugadorPlantel[]; resultados: Resu
 
 const INICIAL: Datos = {
   sanciones: SANCIONES_APP,
-  plantel: PLANTEL_APP,
+  plantel: PLANTEL_DEMO,
   resultados: [],
   goleadores: [],
   contenido: {},
   fotoFechaUrl: 'https://drive.google.com/drive/folders/1UijkT6B73qCudx_L0uSlaxrv83ILYRQA',
 }
 
-const CLAVE_DATOS = 'ti-demo-datos-v2'
+const CLAVE_DATOS = 'ti-demo-datos-v3'
 const CLAVE_SESION = 'ti-demo-sesion'
 const hoy = () => new Date().toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit' })
 const nuevoId = (p: string) => `${p}${Date.now().toString(36)}${Math.random().toString(36).slice(2, 5)}`
+
+// Los goles de un resultado como filas de la tabla de goleadores, enlazadas por resultadoId para poder editarlas o borrarlas con él.
+const golesDeResultado = (r: Resultado): Gol[] =>
+  (r.goleadores ?? []).map((g) => ({ id: nuevoId('g'), categoria: r.categoria, jugador: g.jugador, equipo: g.equipo, goles: g.goles, resultadoId: r.id }))
 
 type Ctx = {
   listo: boolean
@@ -174,8 +181,17 @@ export function DemoProvider({ children }: { children: ReactNode }) {
     crearSancion: (s) => guardar((d) => ({ ...d, sanciones: [{ ...s, id: nuevoId('s'), estado: 'Firme', mensajes: [] }, ...d.sanciones] })),
     editarSancion: (id, cambios) => actualizarSancion(id, (s) => ({ ...s, ...cambios })),
     quitarSancion: (id) => guardar((d) => ({ ...d, sanciones: d.sanciones.filter((s) => s.id !== id) })),
-    editarResultado: (id, cambios) => guardar((d) => ({ ...d, resultados: d.resultados.map((r) => (r.id === id ? { ...r, ...cambios } : r)) })),
-    quitarResultado: (id) => guardar((d) => ({ ...d, resultados: d.resultados.filter((r) => r.id !== id) })),
+    editarResultado: (id, cambios) => guardar((d) => {
+      const r = d.resultados.find((x) => x.id === id)
+      if (!r) return d
+      const nuevo = { ...r, ...cambios }
+      return {
+        ...d,
+        resultados: d.resultados.map((x) => (x.id === id ? nuevo : x)),
+        goleadores: [...d.goleadores.filter((g) => g.resultadoId !== id), ...golesDeResultado(nuevo)],
+      }
+    }),
+    quitarResultado: (id) => guardar((d) => ({ ...d, resultados: d.resultados.filter((r) => r.id !== id), goleadores: d.goleadores.filter((g) => g.resultadoId !== id) })),
     editarGol: (id, cambios) => guardar((d) => ({ ...d, goleadores: d.goleadores.map((g) => (g.id === id ? { ...g, ...cambios } : g)) })),
     quitarGol: (id) => guardar((d) => ({ ...d, goleadores: d.goleadores.filter((g) => g.id !== id) })),
     guardarJugador: (j) =>
@@ -195,7 +211,10 @@ export function DemoProvider({ children }: { children: ReactNode }) {
       }),
     quitarJugador: (id) => guardar((d) => ({ ...d, plantel: d.plantel.filter((p) => p.id !== id) })),
     revisarDoc: (id, estado) => guardar((d) => ({ ...d, plantel: d.plantel.map((p) => (p.id === id ? { ...p, estadoDoc: estado } : p)) })),
-    cargarResultado: (r) => guardar((d) => ({ ...d, resultados: [{ ...r, id: nuevoId('r') }, ...d.resultados] })),
+    cargarResultado: (r) => guardar((d) => {
+      const nuevo = { ...r, id: nuevoId('r') }
+      return { ...d, resultados: [nuevo, ...d.resultados], goleadores: [...golesDeResultado(nuevo), ...d.goleadores] }
+    }),
     cargarGoles: (g) => guardar((d) => ({ ...d, goleadores: [{ ...g, id: nuevoId('g') }, ...d.goleadores] })),
     setFotoFecha: (url) => guardar((d) => ({ ...d, fotoFechaUrl: url })),
     guardarContenido: (clave, valor) => guardar((d) => ({ ...d, contenido: { ...d.contenido, [clave]: valor } })),
