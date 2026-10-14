@@ -2,6 +2,7 @@
 
 import { useState, type FormEvent } from 'react'
 import Image from 'next/image'
+import PageHeader from '@/components/ui/PageHeader'
 import { CheckCircle2, ShieldCheck, Users, CalendarCheck } from 'lucide-react'
 import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
@@ -61,23 +62,20 @@ export default function InscripcionPage() {
   return (
     <>
       <Navbar />
-      <main className="pt-16 min-h-screen" style={{ backgroundColor: 'var(--demo-bg)' }}>
+      <main className="min-h-screen" style={{ backgroundColor: 'var(--demo-bg)' }}>
+        <PageHeader
+          backgroundImage="/images/hero-inscripcion.jpg"
+          objectPosition="50% 15%"
+          eyebrow="Sumate al torneo"
+          title="Inscribí tu equipo"
+          subtitle="Completá los datos de tu equipo y te contactamos por WhatsApp para confirmar la inscripción."
+          cta={false}
+        />
         <section className="section-pad">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-12">
-              <p className="eyebrow">Sumate al torneo</p>
-              <h1 className="section-title">Inscribí tu equipo</h1>
-              <p className="section-subtitle mt-4">
-                Completá los datos de tu equipo y te contactamos por WhatsApp para confirmar la inscripción.
-              </p>
-            </div>
-
             <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start">
               {/* Banner + requisitos reales del reglamento */}
               <div className="lg:col-span-2 flex flex-col gap-6">
-                <div className="relative w-full aspect-[4/5] overflow-hidden" style={{ borderRadius: 'var(--demo-radius-lg)' }}>
-                  <Image src="/images/hero-inscripcion.jpg" alt="Torneo Imperial" fill className="object-cover" style={{ objectPosition: '50% 15%' }} />
-                </div>
                 <div className="card">
                   <h3 className="font-bold text-lg mb-4" style={{ color: 'var(--demo-heading)' }}>Cómo funciona</h3>
                   <ul className="space-y-3">

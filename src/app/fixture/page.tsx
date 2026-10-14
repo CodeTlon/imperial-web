@@ -29,15 +29,17 @@ export default function FixturePage() {
   return (
     <>
       <Navbar />
-      <main className="pt-16 min-h-screen" style={{ backgroundColor: 'var(--demo-bg)' }}>
+      <main className="min-h-screen" style={{ backgroundColor: 'var(--demo-bg)' }}>
+      <PageHeader
+        backgroundImage="/images/gallery-1.jpg"
+        eyebrow="Resultados y tablas"
+        title="Fixture"
+        subtitle="Elegí una categoría y una fecha para ver el fixture."
+        pills={[{ label: 'Torneo', value: 'Clausura 2026' }, { label: 'Categoría', value: cat }]}
+      />
+
         <section className="section-pad">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <PageHeader
-              eyebrow="Resultados y tablas"
-              title="Fixture"
-              subtitle="Elegí una categoría y una fecha para ver el fixture."
-              pills={[{ label: 'Torneo', value: 'Clausura 2026' }, { label: 'Categoría', value: cat }]}
-            />
 
             <CategoryTabs options={categoriasConDatos} value={cat} onChange={(c) => setCat(c as Categoria)} />
 

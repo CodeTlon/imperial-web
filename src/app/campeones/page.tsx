@@ -31,15 +31,13 @@ export default function CampeonesPage() {
         <PageHeader
           eyebrow="Apertura 2026"
           title="Campeones"
+          subtitle="Copa de Oro, Plata y Bronce de cada categoría."
           backgroundImage="/images/hero-campeones.jpg"
           pills={[{ label: 'Torneo', value: 'Apertura 2026' }, { label: 'Categoría', value: cat }]}
         />
 
         <section className="section-pad !pt-14">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <p className="section-subtitle text-center mx-auto mb-10">
-              Copa de Oro, Plata y Bronce por categoría — resultados reales de la última temporada.
-            </p>
 
             <CategoryTabs
               options={['Todas', ...categoriasCampeones]}

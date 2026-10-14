@@ -15,15 +15,17 @@ export default function SancionesPage() {
   return (
     <>
       <Navbar />
-      <main className="pt-16 min-h-screen" style={{ backgroundColor: 'var(--demo-bg)' }}>
+      <main className="min-h-screen" style={{ backgroundColor: 'var(--demo-bg)' }}>
+      <PageHeader
+        backgroundImage="/images/gallery-4.jpg"
+        eyebrow="Tribunal de Disciplina"
+        title="Sanciones"
+        subtitle="Jugadores sancionados y fechas que les faltan cumplir. Los delegados presentan descargos desde la app."
+        pills={[{ label: 'Torneo', value: 'Clausura 2026' }, { label: 'Categoría', value: '+30' }]}
+      />
+
         <section className="section-pad">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <PageHeader
-              eyebrow="Tribunal de Disciplina"
-              title="Sanciones"
-              subtitle="Jugadores sancionados y fechas que les faltan cumplir. Los delegados presentan descargos desde la app."
-              pills={[{ label: 'Torneo', value: 'Clausura 2026' }, { label: 'Categoría', value: '+30' }]}
-            />
             <div className="grid gap-3">
               {lista.map((s, i) => (
                 <div

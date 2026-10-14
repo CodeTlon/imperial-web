@@ -30,15 +30,17 @@ export default function EquiposPage() {
   return (
     <>
       <Navbar />
-      <main className="pt-16 min-h-screen" style={{ backgroundColor: 'var(--demo-bg)' }}>
+      <main className="min-h-screen" style={{ backgroundColor: 'var(--demo-bg)' }}>
+      <PageHeader
+        backgroundImage="/images/gallery-3.jpg"
+        eyebrow="La competencia"
+        title="Equipos"
+        subtitle="Todos los equipos inscriptos en Torneo Imperial, por categoría."
+        pills={[{ label: 'Torneo', value: 'Clausura 2026' }, { label: 'Categoría', value: cat }]}
+      />
+
         <section className="section-pad">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <PageHeader
-              eyebrow="La competencia"
-              title="Equipos"
-              subtitle="Todos los equipos inscriptos en Torneo Imperial, por categoría."
-              pills={[{ label: 'Torneo', value: 'Clausura 2026' }, { label: 'Categoría', value: cat }]}
-            />
 
             <CategoryTabs options={['Todas', ...categorias]} value={cat} onChange={handleChange} />
 

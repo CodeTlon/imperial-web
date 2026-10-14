@@ -14,15 +14,17 @@ export default function ReglamentoPage() {
   return (
     <>
       <Navbar />
-      <main className="pt-16 min-h-screen" style={{ backgroundColor: 'var(--demo-bg)' }}>
+      <main className="min-h-screen" style={{ backgroundColor: 'var(--demo-bg)' }}>
+      <PageHeader
+        backgroundImage="/images/gallery-5.jpg"
+        eyebrow="Reglas de juego"
+        title="Reglamento"
+        subtitle="Resumen del reglamento oficial: lo que un jugador o delegado consulta todas las fechas."
+        pills={[{ label: 'Torneo', value: 'Clausura 2026' }]}
+      />
+
         <section className="section-pad">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <PageHeader
-              eyebrow="Reglas de juego"
-              title="Reglamento"
-              subtitle="Resumen del reglamento oficial: lo que un jugador o delegado consulta todas las fechas."
-              pills={[{ label: 'Torneo', value: 'Clausura 2026' }]}
-            />
 
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 mb-10">
               {reglamento.categorias.map((c) => (

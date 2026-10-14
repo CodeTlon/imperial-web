@@ -14,7 +14,7 @@ export default function CartaPage() {
     <>
       <Navbar />
       <main className="min-h-screen" style={{ backgroundColor: 'var(--demo-bg)' }}>
-        <PageHeader eyebrow="Coronados Bar & Fernet Branca" title="Carta del bar" backgroundImage="/images/hero.jpg" />
+        <PageHeader eyebrow="Coronados Bar & Fernet Branca" title="Carta del bar" subtitle="Tragos, picadas y algo para comer después del partido." backgroundImage="/images/gallery-6.jpg" />
         <section className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-12 grid gap-6 md:grid-cols-2">
           {CARTA.map((sec) => (
             <article key={sec.titulo} className="rounded-3xl border border-[#d9e8ea] bg-white p-6">

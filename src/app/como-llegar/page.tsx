@@ -18,7 +18,7 @@ export default function ComoLlegarPage() {
     <>
       <Navbar />
       <main className="min-h-screen" style={{ backgroundColor: 'var(--demo-bg)' }}>
-        <PageHeader eyebrow="Predio del torneo" title="Cómo llegar" backgroundImage="/images/hero.jpg" />
+        <PageHeader eyebrow="Predio del torneo" title="Cómo llegar" subtitle="Ubicación del predio y cómo llegar el día de tu partido." backgroundImage="/images/about.jpg" />
         <section className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-12 space-y-6">
           <div className="rounded-3xl overflow-hidden border border-[#d9e8ea] bg-[#eef6f7] h-[420px]">
             <iframe title="Mapa del predio del Torneo Imperial" src={EMBED} loading="lazy" className="h-full w-full border-0" allowFullScreen referrerPolicy="no-referrer-when-downgrade" />
