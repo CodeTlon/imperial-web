@@ -372,7 +372,8 @@ export function Combo({ label, value, onChange, opciones, placeholder, ayuda, er
         <input
           value={value}
           onChange={(e) => { onChange(e.target.value); setAbierto(true) }}
-          onFocus={() => setAbierto(true)}
+          onClick={() => setAbierto(true)}
+          onKeyDown={(e) => { if (e.key === 'ArrowDown') setAbierto(true); if (e.key === 'Escape') setAbierto(false) }}
           onBlur={() => setTimeout(() => setAbierto(false), 120)}
           placeholder={placeholder}
           autoComplete="off"

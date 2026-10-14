@@ -10,6 +10,8 @@ import { BarraFiltros, Boton, Buscador, Encabezado, Etiqueta, Filtro, K, Paginad
 
 const ESTADOS: Sancion['estado'][] = ['En revisión', 'Descargo aceptado', 'Descargo rechazado', 'Firme']
 const PASOS = ['Cargada', 'Con descargo', 'Resuelta']
+// En pantallas angostas los nombres se acortan para que entren los tres pasos en una línea.
+const PASO_CORTO: Record<string, string> = { 'Con descargo': 'Descargo' }
 
 // Paso alcanzado: 0 cargada, 1 con descargo del equipo, 2 resuelta por la organización.
 const pasoDe = (s: Sancion) => (s.estado === 'Descargo aceptado' || s.estado === 'Descargo rechazado' ? 2 : s.descargo ? 1 : 0)
@@ -24,7 +26,7 @@ function LineaDeTiempo({ s }: { s: Sancion }) {
           <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-bold ${i <= paso ? 'bg-[var(--p-teal)] text-white' : 'bg-[var(--p-fondo)] text-[color:var(--p-suave)] border border-[color:var(--p-borde)]'}`}>
             {i < paso ? <Check size={14} aria-hidden /> : i + 1}
           </span>
-          <span className={`text-xs sm:text-sm whitespace-nowrap ${i <= paso ? 'font-bold text-[color:var(--p-navy)]' : K.suave}`}>{p}</span>
+          <span className={`text-xs sm:text-sm whitespace-nowrap ${i <= paso ? 'font-bold text-[color:var(--p-navy)]' : K.suave}`}>{PASO_CORTO[p] ? <><span className="sm:hidden">{PASO_CORTO[p]}</span><span className="hidden sm:inline">{p}</span></> : p}</span>
           {i < PASOS.length - 1 && <span className={`h-0.5 min-w-3 flex-1 rounded-full ${i < paso ? 'bg-[var(--p-teal)]' : 'bg-[var(--p-borde)]'}`} aria-hidden />}
         </li>
       ))}

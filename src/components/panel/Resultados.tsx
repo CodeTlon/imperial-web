@@ -33,6 +33,9 @@ export default function Resultados() {
   // Nombre exacto del equipo si lo escrito coincide (sin importar mayúsculas ni tildes).
   const equipoValido = (t: string) => equipos.find((e) => normalizar(e) === normalizar(t))
 
+  const jugadoresLocal = useMemo(() => (equipoValido(f.local) ? jugadoresDe(equipoValido(f.local)!, datos.plantel, datos.sanciones, datos.goleadores) : []), [f.local, datos, equipos])
+  const jugadoresVisit = useMemo(() => (equipoValido(f.visitante) ? jugadoresDe(equipoValido(f.visitante)!, datos.plantel, datos.sanciones, datos.goleadores) : []), [f.visitante, datos, equipos])
+
   // ── Validación: devuelve un mensaje por campo con problema ──
   const errores = useMemo(() => {
     const e: Record<string, string> = {}
@@ -57,6 +60,7 @@ export default function Resultados() {
       if (rep) e.fecha = `Ya hay un resultado de la fecha ${rep.fecha} con ${rep.local} vs ${rep.visitante}. Editalo o borralo primero.`
     }
     // Goleadores: tienen que sumar los goles de cada equipo.
+    const jugadoresClave = (clave: 'filasL' | 'filasV') => (clave === 'filasL' ? jugadoresLocal : jugadoresVisit)
     const goleadoresDe = (filas: Fila[], goles: string, clave: 'filasL' | 'filasV') => {
       if (e[clave === 'filasL' ? 'golesLocal' : 'golesVisitante'] || !entero(goles)) return
       const total = Number(goles)
@@ -67,6 +71,7 @@ export default function Resultados() {
       filas.forEach((fi, i) => {
         if (!fi.jugador.trim()) e[`${clave}.${i}.jugador`] = 'Elegí o escribí el jugador.'
         else if (fi.jugador.trim().length < 3) e[`${clave}.${i}.jugador`] = 'El nombre es muy corto.'
+        else if (jugadoresClave(clave).length > 0 && !jugadoresClave(clave).some((j) => normalizar(j) === normalizar(fi.jugador))) e[`${clave}.${i}.jugador`] = 'No figura en el plantel de este equipo. Elegilo de la lista.'
         else if (vistos.has(normalizar(fi.jugador))) e[`${clave}.${i}.jugador`] = 'Este jugador ya está en la lista: sumá sus goles en una sola fila.'
         vistos.add(normalizar(fi.jugador))
         if (!entero(fi.goles) || Number(fi.goles) < 1) e[`${clave}.${i}.goles`] = 'Mínimo 1.'
@@ -77,11 +82,8 @@ export default function Resultados() {
     goleadoresDe(f.filasL, f.golesLocal, 'filasL')
     goleadoresDe(f.filasV, f.golesVisitante, 'filasV')
     return e
-  }, [f, fechasCat, datos.resultados, editando, equipos])
+  }, [f, fechasCat, datos.resultados, editando, equipos, jugadoresLocal, jugadoresVisit])
   const err = (k: string) => (intento ? errores[k] : undefined)
-
-  const jugadoresLocal = useMemo(() => (equipoValido(f.local) ? jugadoresDe(equipoValido(f.local)!, datos.plantel, datos.sanciones, datos.goleadores) : []), [f.local, datos, equipos])
-  const jugadoresVisit = useMemo(() => (equipoValido(f.visitante) ? jugadoresDe(equipoValido(f.visitante)!, datos.plantel, datos.sanciones, datos.goleadores) : []), [f.visitante, datos, equipos])
 
   const lista = useMemo(() => {
     const nq = normalizar(q)
