@@ -6,7 +6,6 @@ import Image from 'next/image'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { CUENTAS, useDemo } from '@/lib/demo-store'
 import Marca from '@/components/layout/Marca'
-import { PasosLista } from '@/components/panel/ComoFunciona'
 import { Eye, EyeOff, Loader2 } from 'lucide-react'
 import { NAVY, VARS_PANEL } from '@/components/panel/ui'
 
@@ -88,10 +87,6 @@ export default function IngresarPage() {
           <h1 className="font-heading text-3xl" style={{ color: NAVY }}>Ingresar</h1>
           <p className="mb-6 mt-1 text-sm text-[#5b7479]">Acceso para jugadores, delegados y organización.</p>
           <Suspense><Formulario /></Suspense>
-          <details className="mt-6 rounded-xl bg-[#eef6f7] p-4 text-sm text-[#5b7479]">
-            <summary className="cursor-pointer font-bold text-[#062f36]">Cómo funciona una sanción</summary>
-            <div className="mt-3 text-[#062f36]"><PasosLista /></div>
-          </details>
           <p className="mt-8 text-center text-xs text-[#5b7479]">
             <Link href="/" className="underline">Volver al sitio</Link> · Desarrollado por CodeTlon
           </p>
