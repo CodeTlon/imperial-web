@@ -5,6 +5,7 @@ import { useMemo, useState } from 'react'
 import { admiteDescargo, TOPE_PLANTEL, useDemo, type JugadorPlantel } from '@/lib/demo-store'
 import { categoriaDeEquipo, estadoPlantel, mismo } from '@/components/panel/datos'
 import { TablaPosiciones, TarjetaProximoPartido, partidosDe, resultadoPara, useFixture } from '@/components/panel/Compartidos'
+import { ArchivosSancion, HiloMensajes } from '@/components/panel/Adjuntos'
 import { ChipsArticulos } from '@/components/panel/Sanciones'
 import { BarrasH, Kpi, Semaforo } from '@/components/panel/graficos'
 import {
@@ -132,14 +133,13 @@ function Resul({ r }: { r: 'G' | 'E' | 'P' | null }) {
 }
 
 function Descargos() {
-  const { sesion, datos, enviarDescargo, mensaje } = useDemo()
+  const { sesion, datos, enviarDescargo } = useDemo()
   const [estado, setEstado] = useState('')
   const [q, setQ] = useState('')
   const base = datos.sanciones.filter((s) => s.equipo === sesion?.equipo)
   const propias = base.filter((s) => (!estado || s.estado === estado) && (!q || normalizar(`${s.jugador} ${s.partido} ${s.motivo}`).includes(normalizar(q))))
   const pag = usePaginas(propias, 4)
   const [texto, setTexto] = useState<Record<string, string>>({})
-  const [msg, setMsg] = useState<Record<string, string>>({})
   return (
     <Tarjeta titulo={`Sanciones de ${sesion?.equipo}`}>
       <BarraFiltros>
@@ -177,22 +177,8 @@ function Descargos() {
               ) : (
                 <p className={`text-xs ${K.suave}`}>Esta sanción ya está {s.cumplida && s.estado === 'Firme' ? 'cumplida' : 'resuelta'}: no admite descargo.</p>
               )}
-              <div className="space-y-1">
-                {s.mensajes.map((m, i) => (
-                  <p key={i} className={`text-sm rounded-lg px-3 py-2 ${m.de === 'organizacion' ? 'bg-[var(--p-navy)] text-white' : 'bg-[var(--p-oro)]/30'}`}>
-                    <span className="font-bold">{m.de === 'organizacion' ? 'Organización' : 'Vos'} · {m.fecha}: </span>{m.texto}
-                  </p>
-                ))}
-                <div className="flex gap-2">
-                  <input
-                    value={msg[s.id] ?? ''}
-                    onChange={(e) => setMsg({ ...msg, [s.id]: e.target.value })}
-                    placeholder="Mensaje a la organización. Ej: Adjuntamos el video por mail"
-                    className={`${K.campo} flex-1 !py-2.5`}
-                  />
-                  <Boton variante="suave" disabled={!(msg[s.id] ?? '').trim()} onClick={() => { mensaje(s.id, msg[s.id].trim()); setMsg({ ...msg, [s.id]: '' }) }}>Enviar</Boton>
-                </div>
-              </div>
+              <ArchivosSancion mensajes={s.mensajes} />
+              <HiloMensajes s={s} quien="delegado" placeholder="Mensaje a la organización. Ej: Adjuntamos el video de la jugada" />
             </article>
           )
         })}

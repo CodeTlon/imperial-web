@@ -4,18 +4,18 @@ import { Check, X } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { useDemo, type Sancion } from '@/lib/demo-store'
 import { CATEGORIAS, categoriaDeEquipo } from '@/components/panel/datos'
+import { ArchivosSancion, HiloMensajes } from '@/components/panel/Adjuntos'
 import { ChipsArticulos } from '@/components/panel/Sanciones'
 import { BarraFiltros, Boton, Buscador, Etiqueta, Filtro, K, Paginador, Tarjeta, normalizar, usePaginas } from '@/components/panel/ui'
 
 const ESTADOS: Sancion['estado'][] = ['En revisión', 'Descargo aceptado', 'Descargo rechazado', 'Firme']
 
 export default function DescargosOrg() {
-  const { datos, resolver, mensaje } = useDemo()
+  const { datos, resolver } = useDemo()
   const [q, setQ] = useState('')
   const [estado, setEstado] = useState('')
   const [catF, setCatF] = useState('')
   const [equipoF, setEquipoF] = useState('')
-  const [msg, setMsg] = useState<Record<string, string>>({})
 
   const base = datos.sanciones.filter((s) => s.descargo)
   const lista = useMemo(() => {
@@ -58,22 +58,8 @@ export default function DescargosOrg() {
                 <Boton variante="peligro" onClick={() => resolver(s.id, false)}><X size={15} className="inline mr-1" />Rechazar descargo</Boton>
               </div>
             )}
-            <div className="space-y-1">
-              {s.mensajes.map((m, i) => (
-                <p key={i} className={`text-sm rounded-lg px-3 py-2 ${m.de === 'organizacion' ? 'bg-[var(--p-navy)] text-white' : 'bg-[var(--p-oro)]/30'}`}>
-                  <span className="font-bold">{m.de === 'organizacion' ? 'Organización' : 'Delegado'} · {m.fecha}: </span>{m.texto}
-                </p>
-              ))}
-              <div className="flex gap-2">
-                <input
-                  value={msg[s.id] ?? ''}
-                  onChange={(e) => setMsg({ ...msg, [s.id]: e.target.value })}
-                  placeholder="Escribile al delegado. Ej: ¿Tienen video de la jugada?"
-                  className={`${K.campo} flex-1 !py-2.5`}
-                />
-                <Boton variante="suave" disabled={!(msg[s.id] ?? '').trim()} onClick={() => { mensaje(s.id, msg[s.id].trim()); setMsg({ ...msg, [s.id]: '' }) }}>Enviar</Boton>
-              </div>
-            </div>
+            <ArchivosSancion mensajes={s.mensajes} />
+            <HiloMensajes s={s} quien="organizacion" placeholder="Escribile al delegado. Ej: ¿Tienen video de la jugada?" />
           </article>
         ))}
       </div>

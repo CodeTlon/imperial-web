@@ -1,5 +1,6 @@
 'use client'
 
+import { borrarTodo, type Adjunto } from '@/lib/adjuntos-db'
 import { SANCIONES_APP, PLANTEL_APP } from '@/lib/datos-app'
 import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from 'react'
 
@@ -9,7 +10,8 @@ import { createContext, useCallback, useContext, useEffect, useState, type React
 export type Rol = 'organizacion' | 'delegado' | 'jugador'
 export type Sesion = { email: string; nombre: string; rol: Rol; equipo?: string }
 
-export type Mensaje = { de: 'organizacion' | 'delegado'; texto: string; fecha: string }
+export type { Adjunto }
+export type Mensaje = { de: 'organizacion' | 'delegado'; texto: string; fecha: string; adjuntos?: Adjunto[] }
 export type Sancion = {
   id: string
   jugador: string
@@ -85,7 +87,7 @@ type Ctx = {
   salir: () => void
   reiniciar: () => void
   enviarDescargo: (id: string, texto: string) => void
-  mensaje: (id: string, texto: string) => void
+  mensaje: (id: string, texto: string, adjuntos?: Adjunto[]) => void
   resolver: (id: string, aceptar: boolean) => void
   crearSancion: (s: Omit<Sancion, 'id' | 'mensajes' | 'estado'>) => void
   editarSancion: (id: string, cambios: Partial<Omit<Sancion, 'id'>>) => void
@@ -142,7 +144,7 @@ export function DemoProvider({ children }: { children: ReactNode }) {
     try { localStorage.removeItem(CLAVE_SESION) } catch {}
     document.cookie = 'ti_rol=; path=/; max-age=0'
   }
-  const reiniciar = () => guardar(() => INICIAL)
+  const reiniciar = () => { void borrarTodo(); guardar(() => INICIAL) }
 
   const actualizarSancion = (id: string, fn: (s: Sancion) => Sancion) =>
     guardar((d) => ({ ...d, sanciones: d.sanciones.map((s) => (s.id === id ? fn(s) : s)) }))
@@ -150,8 +152,8 @@ export function DemoProvider({ children }: { children: ReactNode }) {
   const value: Ctx = {
     listo, sesion, datos, ingresar, salir, reiniciar,
     enviarDescargo: (id, texto) => actualizarSancion(id, (s) => (admiteDescargo(s) ? { ...s, descargo: texto, estado: 'En revisión' } : s)),
-    mensaje: (id, texto) =>
-      actualizarSancion(id, (s) => ({ ...s, mensajes: [...s.mensajes, { de: sesion?.rol === 'organizacion' ? 'organizacion' : 'delegado', texto, fecha: hoy() }] })),
+    mensaje: (id, texto, adjuntos) =>
+      actualizarSancion(id, (s) => ({ ...s, mensajes: [...s.mensajes, { de: sesion?.rol === 'organizacion' ? 'organizacion' : 'delegado', texto, fecha: hoy(), ...(adjuntos?.length ? { adjuntos } : {}) }] })),
     resolver: (id, aceptar) => actualizarSancion(id, (s) => ({ ...s, estado: aceptar ? 'Descargo aceptado' : 'Descargo rechazado' })),
     crearSancion: (s) => guardar((d) => ({ ...d, sanciones: [{ ...s, id: nuevoId('s'), estado: 'Firme', mensajes: [] }, ...d.sanciones] })),
     editarSancion: (id, cambios) => actualizarSancion(id, (s) => ({ ...s, ...cambios })),
